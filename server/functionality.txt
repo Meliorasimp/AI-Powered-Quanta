@@ -1,0 +1,31 @@
+Income Tracking
+  - Salary, freelance payments, passive income
+  - Date received, source, and amount
+  - Recurring vs. one-time income
+
+Expense Tracking
+  - Categories: groceries, rent, utilities, entertainment, etc.
+  - Date, amount, payment method
+  - Notes or tags (e.g., “business expense” or “unexpected”)
+
+Budget Overview
+  - Monthly budget per category
+  - Actual vs. planned spending
+  - Visual indicators (bar charts, progress meters)
+
+Savings & Investments
+  - Savings goals (e.g., emergency fund, vacation)
+  - Investment accounts (stocks, crypto, retirement)
+  - Contributions, growth, and current value
+
+Recurring Transactions
+  - Subscriptions, bills, loan payments
+  - Auto-detection or manual entry
+  - Alerts for upcoming charges
+
+Financial Goals
+  - Short-term (e.g., save ₱10,000 in 3 months)
+  - Long-term (e.g., buy a house, retire early)
+  - Progress tracking and milestones
+
+Graphs & Dashboards: Visualize trends over time
