@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    font-family: "Inter", sans-serif;
+    --primary-background-color: #fff5f5;
+    --secondary-background-color: #ffffff;
+  }
+
+  .navbar {
+    background-color: var(--primary-background-color);
+  }
+
+  .main-content-area {
+    background-color: var(--secondary-background-color);
+  }
+
+  .navbar-button-color {
+    color: #484848;
+    font-weight: 400;
+  }
+}
