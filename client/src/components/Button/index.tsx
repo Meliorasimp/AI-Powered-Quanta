@@ -5,6 +5,7 @@ type ButtonProps = {
   className?: string;
   id?: string;
   ariaLabel?: string;
+  icon?: React.ReactNode;
 };
 
 function Button({
@@ -14,6 +15,7 @@ function Button({
   className,
   id,
   ariaLabel,
+  icon,
 }: ButtonProps) {
   return (
     <button
@@ -23,6 +25,7 @@ function Button({
       id={id}
       aria-label={ariaLabel}
     >
+      {icon && <span className="mr-2">{icon}</span>}
       {label}
     </button>
   );

@@ -3,10 +3,12 @@
 @layer base {
   :root {
     font-family: "Inter", sans-serif;
-    --primary-background-color: #fff5f5;
-    --secondary-background-color: #ffffff;
+    --primary-background-color: #353535;
+    --secondary-background-color: #222222;
   }
-
+  body {
+    background-color: var(--secondary-background-color);
+  }
   .navbar {
     background-color: var(--primary-background-color);
   }
@@ -15,8 +17,8 @@
     background-color: var(--secondary-background-color);
   }
 
-  .navbar-button-color {
-    color: #484848;
+  .main-website-text-color {
+    color: #e2e2e2;
     font-weight: 400;
   }
 }

@@ -6,8 +6,8 @@ type ParagraphProps = {
 };
 
 const styles = {
-  primary: "text-xl text-gray-900",
-  secondary: "text-base text-gray-700",
+  primary: "text-xl text-gray-100",
+  secondary: "text-base text-gray-300 font-light",
 };
 
 function Paragraph({ label, variant }: ParagraphProps) {
