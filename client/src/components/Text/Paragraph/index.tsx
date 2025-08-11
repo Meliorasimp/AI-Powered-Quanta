@@ -1,6 +1,6 @@
 type ParagraphProps = {
   label: string;
-  variant: "primary" | "secondary";
+  variant: "primary" | "secondary" | "tertiary";
   className?: string;
   id?: string;
 };
@@ -8,6 +8,7 @@ type ParagraphProps = {
 const styles = {
   primary: "text-xl text-gray-100",
   secondary: "text-base text-gray-300 font-light",
+  tertiary: "text-base text-gray-400",
 };
 
 function Paragraph({ label, variant }: ParagraphProps) {
