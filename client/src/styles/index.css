@@ -1,11 +1,19 @@
 @import "tailwindcss";
 
 @layer base {
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
   :root {
     font-family: "Inter", sans-serif;
     --primary-background-color: #353535;
     --secondary-background-color: #222222;
+    --budget-card-color: #444444;
   }
+
   body {
     background-color: var(--secondary-background-color);
   }
@@ -17,8 +25,15 @@
     background-color: var(--secondary-background-color);
   }
 
+  .budget-card {
+    background-color: var(--budget-card-color);
+    color: #e2e2e2;
+    border-radius: 10px;
+  }
+
   .main-website-text-color {
     color: #e2e2e2;
     font-weight: 400;
+    text-align: center;
   }
 }

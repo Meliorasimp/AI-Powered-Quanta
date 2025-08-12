@@ -1,5 +1,5 @@
 type ButtonProps = {
-  label: string;
+  label?: string;
   onClick: () => void;
   type: "button" | "submit" | "reset";
   className?: string;

@@ -25,42 +25,42 @@ const Navbar = () => {
           label="Dashboard"
           onClick={() => nav("/")}
           type="button"
-          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg"
+          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
           icon={<LayoutDashboard className="inline-block ml-2" />}
         />
         <Button
           label="Transactions"
           onClick={() => nav("/transactions")}
           type="button"
-          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg"
+          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
           icon={<BanknoteArrowDown className="inline-block ml-2" />}
         />
         <Button
           label="Budgets"
           onClick={() => nav("/budgets")}
           type="button"
-          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg"
+          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
           icon={<Wallet className="inline-block ml-2" />}
         />
         <Button
           label="Linked Accounts"
           onClick={() => nav("/linkedaccounts")}
           type="button"
-          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg"
+          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
           icon={<CreditCard className="inline-block ml-2" />}
         />
         <Button
           label="Notifications"
           onClick={() => nav("/notifications")}
           type="button"
-          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg"
+          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
           icon={<BellRing className="inline-block ml-2" />}
         />
         <Button
           label="Analytics"
           onClick={() => nav("/analytics")}
           type="button"
-          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg"
+          className="main-website-text-color text-xl hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
           icon={<ChartArea className="inline-block ml-2" />}
         />
         <div className="flex flex-col items-start gap-y-2 mt-auto">

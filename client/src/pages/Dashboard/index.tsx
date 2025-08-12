@@ -65,7 +65,7 @@ const Dashboard = () => {
             />
             <table className="w-full table-row">
               <thead>
-                <tr className="text-gray-100 text-left">
+                <tr className="text-gray-100 text-left bg-gray-700">
                   <th className="px-4 py-2 text-md font-normal align-top">
                     Transaction ID
                   </th>
