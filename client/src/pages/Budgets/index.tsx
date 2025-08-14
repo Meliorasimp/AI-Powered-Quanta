@@ -5,8 +5,12 @@ import Budgetcard from "../../components/Budgetcard";
 import "../../styles/index.css";
 import Button from "../../components/Button";
 import { Plus, SquareArrowLeft, SquareArrowRight } from "lucide-react";
+import { showPopup } from "../../modules/Interaction.ts";
+import { useDispatch } from "react-redux";
 
 const Budgets = () => {
+  const dispatch = useDispatch();
+
   return (
     <div className="flex flex-row">
       <Navbar />
@@ -26,7 +30,7 @@ const Budgets = () => {
           <div className="flex justify-center">
             <Button
               label="Add Budget"
-              onClick={() => console.log("Add Budget Clicked")}
+              onClick={() => dispatch(showPopup())}
               type="button"
               icon={<Plus className="inline-block" />}
               className="text-white text-base bg-gray-700 px-7 rounded-4xl hover:bg-gray-600 transition-colors duration-300 cursor-pointer"
@@ -41,7 +45,8 @@ const Budgets = () => {
               description="A budget for the new washing machine."
               startdate={new Date("2023-01-01")}
               enddate={new Date("2023-12-31")}
-              className="h-3/7"
+              className="h-3/7 hover:scale-101 transition-transform duration-200"
+              onClick={() => console.log("Budget Card Clicked")}
             />
             <Budgetcard
               title="Home Renovation"
@@ -49,7 +54,7 @@ const Budgets = () => {
               description="A budget for the home renovation."
               startdate={new Date("2023-01-01")}
               enddate={new Date("2023-12-31")}
-              className="h-3/7"
+              className="h-3/7 hover:scale-101 transition-transform duration-200"
             />
             <div className="flex flex-row justify-between">
               <Button
@@ -61,13 +66,13 @@ const Budgets = () => {
               <Button
                 onClick={() => console.log("Edit Clicked")}
                 type="button"
-                className="hover:cursor-pointer"
+                className="hover:cursor-pointer "
                 icon={<SquareArrowRight color="white" />}
               />
             </div>
           </div>
           <div className="h-full w-1/4 flex flex-col gap-y-5">
-            <div className="h-3/7 text-lg font-semibold budget-card shadow-2xl p-2">
+            <div className="h-3/7 text-lg font-semibold budget-card shadow-2xl p-2 hover:scale-101 transition-transform duration-200">
               <Heading label="Total Budget Amount" />
               <Paragraph
                 label="$5,500"
@@ -75,7 +80,7 @@ const Budgets = () => {
                 variant="primary"
               />
             </div>
-            <div className="h-3/7 text-lg font-semibold budget-card shadow-2xl p-2">
+            <div className="h-3/7 text-lg font-semibold budget-card shadow-2xl p-2 hover:scale-101 transition-transform duration-200">
               <Heading label="Income After Budget" />
               <Paragraph
                 label="$94,500"

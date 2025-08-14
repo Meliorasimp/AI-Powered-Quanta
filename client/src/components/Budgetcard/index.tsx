@@ -1,4 +1,5 @@
 import "../../styles/index.css";
+
 type budgetcardprops = {
   title: string;
   amountallocated: number;
@@ -7,6 +8,7 @@ type budgetcardprops = {
   className?: string;
   startdate: Date;
   enddate: Date;
+  onClick?: () => void;
 };
 
 function Budgetcard({
@@ -17,10 +19,12 @@ function Budgetcard({
   className,
   startdate,
   enddate,
+  onClick,
 }: budgetcardprops) {
   return (
     <div
-      className={`budget-card flex flex-col justify-between p-2 shadow-xl ${className}`}
+      className={`budget-card flex flex-col justify-between p-2 shadow-xl cursor-pointer ${className}`}
+      onClick={onClick}
     >
       <div className="flex flex-col">
         <span className="text-xl">{`$${amountallocated}`}</span>
