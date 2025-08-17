@@ -6,7 +6,7 @@ import LinkedAccounts from "../pages/LinkedAccounts";
 import Analytics from "../pages/Analytics";
 import Notifications from "../pages/Notifications";
 import Settings from "../pages/Settings";
-import Profile from "../pages/Profile";
+import Readonlyprofile from "../pages/Readonlyprofile";
 
 const routes: RouteObject[] = [
   {
@@ -30,7 +30,7 @@ const routes: RouteObject[] = [
     element: <Notifications />,
   },
   {
-    path: "/analytics",
+    path: "/analytics/financialoverview",
     element: <Analytics />,
   },
   {
@@ -39,7 +39,7 @@ const routes: RouteObject[] = [
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: <Readonlyprofile />,
   },
 ];
 

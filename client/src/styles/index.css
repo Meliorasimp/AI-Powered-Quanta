@@ -9,9 +9,9 @@
 
   :root {
     font-family: "Inter", sans-serif;
-    --primary-background-color: #353535;
-    --secondary-background-color: #222222;
-    --budget-card-color: #444444;
+    --primary-background-color: #13013f;
+    --secondary-background-color: #040020;
+    --budget-card-color: #220077;
   }
 
   body {

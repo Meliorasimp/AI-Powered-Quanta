@@ -1,8 +1,9 @@
 import Navbar from "../../components/Navbar";
 import Paragraph from "../../components/Text/Paragraph";
 import Heading from "../../components/Text/Heading";
+import Button from "../../components/Button";
 
-const Profile = () => {
+const Readonlyprofile = () => {
   return (
     <div className="flex flex-row">
       <Navbar />
@@ -18,10 +19,21 @@ const Profile = () => {
             variant="secondary"
           />
         </div>
-        <div>Hello world</div>
+        <div className="border-t border-white text-white justify-center items-center flex flex-col text-xl pt-10 w-full">
+          <Heading
+            label="You must be logged in to Change profile!"
+            className="text-white justify-center flex text-xl pt-10"
+          />
+          <Button
+            label="Login"
+            className="mt-4 bg-purple-600 w-1/5 py-2 rounded-lg hover:bg-purple-500 hover:cursor-pointer"
+            onClick={() => {}}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default Readonlyprofile;
