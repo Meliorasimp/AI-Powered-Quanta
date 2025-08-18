@@ -23,7 +23,7 @@ const LinkedAccounts = () => {
           <div className="flex flex-col gap-y-5 w-full h-full">
             <table className="table-fixed w-full">
               <thead className="py-10">
-                <tr className="bg-gray-700">
+                <tr className="bg-blue-900">
                   <th className="text-left px-4 py-3 align-middle">
                     <Heading
                       label="Bank Name"

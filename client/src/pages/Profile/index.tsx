@@ -18,7 +18,6 @@ const Profile = () => {
             variant="secondary"
           />
         </div>
-        <div>Hello world</div>
       </div>
     </div>
   );

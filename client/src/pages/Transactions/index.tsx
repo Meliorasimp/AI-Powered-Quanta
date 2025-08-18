@@ -23,7 +23,7 @@ const Transactions = () => {
           <div className=" h-full">
             <table className="w-full table-fixed">
               <thead>
-                <tr className="bg-gray-700 text-gray-100 text-left border-1 border-gray-500 ">
+                <tr className="bg-blue-900 text-gray-100 text-left border-1 border-gray-500 ">
                   <th className="px-4 py-2 text-sm font-normal align-top">
                     Transaction ID
                   </th>
