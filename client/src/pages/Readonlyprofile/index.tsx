@@ -3,12 +3,16 @@ import Paragraph from "../../components/Text/Paragraph";
 import Heading from "../../components/Text/Heading";
 import Button from "../../components/Button";
 import RegisterForm from "../../components/Register/index.tsx";
-import { showLoginForm, hideLoginForm } from "../../modules/Interaction.ts";
+import Login from "../../components/Login/index.tsx";
+import { showRegisterForm } from "../../modules/Interaction.ts/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store.ts";
 
 const Readonlyprofile = () => {
   const dispatch = useDispatch();
+  const isRegisterFormVisible = useSelector(
+    (state: RootState) => state.interaction.isRegisterFormVisible
+  );
   const isLoginFormVisible = useSelector(
     (state: RootState) => state.interaction.isLoginFormVisible
   );
@@ -37,19 +41,14 @@ const Readonlyprofile = () => {
             label="Login"
             className="mt-4 bg-purple-600 w-1/5 py-2 rounded-lg hover:bg-purple-500 hover:cursor-pointer"
             onClick={() => {
-              dispatch(showLoginForm());
-              console.log("Login button clicked");
+              dispatch(showRegisterForm());
             }}
             type="button"
           />
         </div>
       </div>
-      {isLoginFormVisible && (
-        <RegisterForm
-          isOpen={isLoginFormVisible}
-          onClose={() => dispatch(hideLoginForm())}
-        />
-      )}
+      {isRegisterFormVisible && <RegisterForm />}
+      {isLoginFormVisible && <Login />}
     </div>
   );
 };

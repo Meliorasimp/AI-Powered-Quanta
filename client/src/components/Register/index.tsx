@@ -2,14 +2,14 @@ import Button from "../Button";
 import Heading from "../Text/Heading";
 import Paragraph from "../Text/Paragraph";
 import investment from "../../assets/undraw_investment-data_frxx.svg";
+import {
+  switchToLoginForm,
+  hideRegisterForm,
+} from "../../modules/Interaction.ts";
+import { useDispatch } from "react-redux";
 
-type RegisterFormProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-const RegisterForm = ({ isOpen, onClose }: RegisterFormProps) => {
-  if (!isOpen) return null;
-
+const RegisterForm = () => {
+  const dispatch = useDispatch();
   return (
     <div
       className="fixed inset-0 flex items-center justify-center 
@@ -50,7 +50,7 @@ const RegisterForm = ({ isOpen, onClose }: RegisterFormProps) => {
               className="mb-4 p-2 rounded border"
             />
             <Button
-              label="Sign Up"
+              label="Register"
               type="button"
               onClick={() => {}}
               className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4"
@@ -58,16 +58,20 @@ const RegisterForm = ({ isOpen, onClose }: RegisterFormProps) => {
             <Button
               label="Cancel"
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                dispatch(hideRegisterForm());
+              }}
               className="bg-red-400 py-2 rounded-lg cursor-pointer hover:bg-red-500 transition-colors duration-200 mb-4"
             />
             <div className="flex flex-row justify-center gap-x-2">
               <Paragraph label="Already have an account?" variant="tertiary" />
               <Button
                 label="Log in"
-                onClick={() => {}}
+                onClick={() => {
+                  dispatch(switchToLoginForm());
+                }}
                 type="button"
-                className="text-gray-200"
+                className="text-gray-200 hover:underline cursor-pointer"
               />
             </div>
           </form>
