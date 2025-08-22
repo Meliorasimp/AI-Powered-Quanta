@@ -2,7 +2,7 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import Statcard from "../../components/Statcard";
-import Tabledata from "../../components/Text/Tabledata";
+import TableData from "../../components/Text/Tabledata";
 
 import {
   LineChart,
@@ -83,7 +83,7 @@ const Dashboard = () => {
               <tbody>
                 <tr className="text-gray-800 text-sm">
                   {/* Placeholder data */}
-                  <Tabledata
+                  <TableData
                     className="px-4 py-2 align-top text-gray-200"
                     transactionid="123456789"
                     amount="1000"

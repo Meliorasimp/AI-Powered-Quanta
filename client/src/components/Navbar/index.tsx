@@ -3,11 +3,11 @@ import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
-  BanknoteArrowDown,
+  ArrowDownUp,
   Wallet,
   CreditCard,
   BellRing,
-  ChartArea,
+  BarChart3,
   Settings,
   User,
 } from "lucide-react";
@@ -33,7 +33,7 @@ const Navbar = () => {
           onClick={() => nav("/transactions")}
           type="button"
           className="main-website-text-color text-lg hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
-          icon={<BanknoteArrowDown className="inline-block ml-2" />}
+          icon={<ArrowDownUp className="inline-block ml-2" />}
         />
         <Button
           label="Budgets"
@@ -61,7 +61,7 @@ const Navbar = () => {
           onClick={() => nav("/analytics/financialoverview")}
           type="button"
           className="main-website-text-color text-lg hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
-          icon={<ChartArea className="inline-block ml-2" />}
+          icon={<BarChart3 className="inline-block ml-2" />}
         />
         <div className="flex flex-col items-start gap-y-2 mt-auto">
           <Button

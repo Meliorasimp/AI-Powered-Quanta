@@ -4,7 +4,7 @@ import Paragraph from "../../components/Text/Paragraph";
 import Budgetcard from "../../components/Budgetcard";
 import "../../styles/index.css";
 import Button from "../../components/Button";
-import { Plus, SquareArrowLeft, SquareArrowRight } from "lucide-react";
+import { Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { showPopup } from "../../modules/Interaction.ts";
 import { useDispatch } from "react-redux";
 
@@ -61,13 +61,13 @@ const Budgets = () => {
                 onClick={() => console.log("Edit Clicked")}
                 type="button"
                 className="hover:cursor-pointer"
-                icon={<SquareArrowLeft color="white" />}
+                icon={<ArrowLeft color="white" />}
               />
               <Button
                 onClick={() => console.log("Edit Clicked")}
                 type="button"
                 className="hover:cursor-pointer "
-                icon={<SquareArrowRight color="white" />}
+                icon={<ArrowRight color="white" />}
               />
             </div>
           </div>

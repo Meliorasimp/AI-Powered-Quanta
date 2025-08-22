@@ -6,10 +6,38 @@ import {
   switchToLoginForm,
   hideRegisterForm,
 } from "../../modules/Interaction.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store.ts";
+import {
+  setRegisterEmail,
+  setRegisterUsername,
+  setRegisterPassword,
+} from "../../modules/Api/user.ts";
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
+  const emailAddressValue = useSelector(
+    (state: RootState) => state.register.email
+  );
+  const usernameValue = useSelector(
+    (state: RootState) => state.register.username
+  );
+  const passwordValue = useSelector(
+    (state: RootState) => state.register.password
+  );
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setRegisterEmail(e.target.value));
+  };
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setRegisterUsername(e.target.value));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setRegisterPassword(e.target.value));
+  };
+
   return (
     <div
       className="fixed inset-0 flex items-center justify-center 
@@ -37,16 +65,22 @@ const RegisterForm = () => {
             <input
               type="email"
               placeholder="E-mail address"
+              value={emailAddressValue}
+              onChange={handleEmailChange}
               className="mb-4 p-2 rounded border"
             />
             <input
               type="text"
               placeholder="Username"
+              value={usernameValue}
+              onChange={handleUsernameChange}
               className="mb-4 p-2 rounded border"
             />
             <input
               type="password"
               placeholder="Password"
+              value={passwordValue}
+              onChange={handlePasswordChange}
               className="mb-4 p-2 rounded border"
             />
             <Button

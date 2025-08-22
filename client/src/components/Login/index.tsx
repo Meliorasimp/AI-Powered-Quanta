@@ -1,23 +1,32 @@
 import Heading from "../Text/Heading";
 import Paragraph from "../Text/Paragraph";
 import { hideLoginForm } from "../../modules/Interaction.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaGithub, FaTwitter, FaMicrosoft } from "react-icons/fa";
 import Button from "../Button";
+import { RootState } from "../../store.ts";
+import { setLoginPassword, setLoginEmail } from "../../modules/Api/user.ts";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const emailValue = useSelector((state: RootState) => state.login.email);
+  const passwordValue = useSelector((state: RootState) => state.login.password);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setLoginEmail(e.target.value));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setLoginPassword(e.target.value));
+  };
 
   return (
     <div
       className="fixed inset-0 flex items-center justify-center 
                 bg-black/50 backdrop-blur-xs z-50"
     >
-      <div
-        className="bg-[rgba(10,1,63,0.9)] w-2/3 h-3/4 flex flex-row justify-center rounded-2xl"
-        onClick={() => dispatch(hideLoginForm())}
-      >
+      <div className="bg-[rgba(10,1,63,0.9)] w-2/3 h-3/4 flex flex-row justify-center rounded-2xl">
         <div className="w-full pt-8 pr-8 pl-8">
           <div className="text-white">
             <Heading
@@ -32,11 +41,15 @@ const Login = () => {
               <input
                 type="email"
                 placeholder="E-mail address"
+                value={emailValue}
+                onChange={handleEmailChange}
                 className="mb-4 p-2 rounded border"
               />
               <input
                 type="password"
                 placeholder="Password"
+                value={passwordValue}
+                onChange={handlePasswordChange}
                 className="mb-4 p-2 rounded bg-transparent border border-white"
               />
               <Button
@@ -48,7 +61,7 @@ const Login = () => {
               <Button
                 label="Cancel"
                 type="button"
-                onClick={() => {}}
+                onClick={() => dispatch(hideLoginForm())}
                 className="bg-red-400 py-2 rounded-lg cursor-pointer hover:bg-red-500 transition-colors duration-200 mb-4"
               />
             </form>
