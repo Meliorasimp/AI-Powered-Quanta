@@ -6,23 +6,25 @@ import {
   switchToLoginForm,
   hideRegisterForm,
 } from "../../modules/Interaction.ts";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store.ts";
 import {
   setRegisterEmail,
   setRegisterUsername,
   setRegisterPassword,
-} from "../../modules/Api/user.ts";
+  registerUser,
+  resetRegisterForm,
+} from "../../modules/Api/Users/userslice.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/index.ts";
 
 const RegisterForm = () => {
-  const dispatch = useDispatch();
-  const emailAddressValue = useSelector(
+  const dispatch = useAppDispatch();
+  const emailAddressValue = useAppSelector(
     (state: RootState) => state.register.email
   );
-  const usernameValue = useSelector(
+  const usernameValue = useAppSelector(
     (state: RootState) => state.register.username
   );
-  const passwordValue = useSelector(
+  const passwordValue = useAppSelector(
     (state: RootState) => state.register.password
   );
 
@@ -36,6 +38,33 @@ const RegisterForm = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setRegisterPassword(e.target.value));
+  };
+
+  const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (
+      emailAddressValue === "" ||
+      usernameValue === "" ||
+      passwordValue === ""
+    ) {
+      alert("All fields are required.");
+      return;
+    }
+    if (passwordValue.length < 6) {
+      alert("Password must be at least 6 characters long.");
+      return;
+    }
+    dispatch(
+      registerUser({
+        email: emailAddressValue,
+        username: usernameValue,
+        password: passwordValue,
+      })
+    );
+    dispatch(resetRegisterForm());
+    dispatch(hideRegisterForm());
+    console.log("Registration form submitted");
   };
 
   return (
@@ -61,7 +90,10 @@ const RegisterForm = () => {
             className="text-white"
             variant="secondary"
           />
-          <form className="flex flex-col text-white pt-10 justify-center">
+          <form
+            className="flex flex-col text-white pt-10 justify-center"
+            onSubmit={handleRegisterSubmit}
+          >
             <input
               type="email"
               placeholder="E-mail address"
@@ -85,7 +117,7 @@ const RegisterForm = () => {
             />
             <Button
               label="Register"
-              type="button"
+              type="submit"
               onClick={() => {}}
               className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4"
             />

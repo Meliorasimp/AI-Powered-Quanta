@@ -1,17 +1,22 @@
 import Heading from "../Text/Heading";
 import Paragraph from "../Text/Paragraph";
 import { hideLoginForm } from "../../modules/Interaction.ts";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/index.ts";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaGithub, FaTwitter, FaMicrosoft } from "react-icons/fa";
 import Button from "../Button";
 import { RootState } from "../../store.ts";
-import { setLoginPassword, setLoginEmail } from "../../modules/Api/user.ts";
+import {
+  setLoginPassword,
+  setLoginEmail,
+} from "../../modules/Api/Users/userslice.ts";
 
 const Login = () => {
-  const dispatch = useDispatch();
-  const emailValue = useSelector((state: RootState) => state.login.email);
-  const passwordValue = useSelector((state: RootState) => state.login.password);
+  const dispatch = useAppDispatch();
+  const emailValue = useAppSelector((state: RootState) => state.login.email);
+  const passwordValue = useAppSelector(
+    (state: RootState) => state.login.password
+  );
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setLoginEmail(e.target.value));
