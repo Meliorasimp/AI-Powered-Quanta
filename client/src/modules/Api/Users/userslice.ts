@@ -133,7 +133,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userData: LoginPayload) => {
     const response = await axios.post(
-      "https://api.example.com/login",
+      "http://localhost:5000/api/users/login",
       userData
     );
     return response.data;
@@ -144,7 +144,7 @@ export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (userData: RegisterPayload) => {
     const response = await axios.post(
-      "https://api.example.com/register",
+      "http://localhost:5000/api/users/register",
       userData
     );
     return response.data;

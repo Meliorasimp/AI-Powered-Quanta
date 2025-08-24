@@ -7,15 +7,27 @@ import Login from "../../components/Login/index.tsx";
 import { showRegisterForm } from "../../modules/Interaction.ts/index.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store.ts";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Readonlyprofile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isRegisterFormVisible = useSelector(
     (state: RootState) => state.interaction.isRegisterFormVisible
   );
   const isLoginFormVisible = useSelector(
     (state: RootState) => state.interaction.isLoginFormVisible
   );
+  const isUserLoggedIn = useSelector(
+    (state: RootState) => state.interaction.isUserLoggedIn
+  );
+
+  useEffect(() => {
+    if (isUserLoggedIn) {
+      navigate("/profile");
+    }
+  }, [isUserLoggedIn, navigate]);
 
   return (
     <div className="flex flex-row">

@@ -7,6 +7,8 @@ import Analytics from "../pages/Analytics";
 import Notifications from "../pages/Notifications";
 import Settings from "../pages/Settings";
 import Readonlyprofile from "../pages/Readonlyprofile";
+import Profile from "../pages/Profile";
+import AuthRedirect from "../components/Redirect";
 
 const routes: RouteObject[] = [
   {
@@ -38,8 +40,17 @@ const routes: RouteObject[] = [
     element: <Settings />,
   },
   {
-    path: "/profile",
+    path: "/readonly-profile",
     element: <Readonlyprofile />,
+  },
+  {
+    element: <AuthRedirect />,
+    children: [
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+    ],
   },
 ];
 

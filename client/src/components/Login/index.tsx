@@ -9,7 +9,10 @@ import { RootState } from "../../store.ts";
 import {
   setLoginPassword,
   setLoginEmail,
+  loginUser,
+  resetLoginForm,
 } from "../../modules/Api/Users/userslice.ts";
+import { LoginUser } from "../../modules/Interaction.ts";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +27,32 @@ const Login = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setLoginPassword(e.target.value));
+  };
+
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (emailValue === "" || passwordValue === "") {
+      alert("Both fields are required");
+      return;
+    }
+
+    try {
+      const result = await dispatch(
+        loginUser({ email: emailValue, password: passwordValue })
+      ).unwrap(); // ✅ this throws if rejected
+
+      dispatch(LoginUser());
+      dispatch(resetLoginForm());
+      dispatch(hideLoginForm());
+      console.log("Login success:", result);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("Login failed. Please try again.");
+      }
+    }
   };
 
   return (
@@ -42,7 +71,10 @@ const Login = () => {
               label="Enter your credentials to access your account."
               variant="secondary"
             />
-            <form className="flex flex-col text-white pt-10 justify-center pb-2">
+            <form
+              className="flex flex-col text-white pt-10 justify-center pb-2"
+              onSubmit={handleLoginSubmit}
+            >
               <input
                 type="email"
                 placeholder="E-mail address"
@@ -59,7 +91,7 @@ const Login = () => {
               />
               <Button
                 label="Login"
-                type="button"
+                type="submit"
                 onClick={() => {}}
                 className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4"
               />

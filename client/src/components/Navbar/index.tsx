@@ -73,7 +73,7 @@ const Navbar = () => {
           />
           <Button
             label="Profile"
-            onClick={() => nav("/profile")}
+            onClick={() => nav("/readonly-profile")}
             type="button"
             className="main-website-text-color text-lg w-full py-1 text-left cursor-pointer mb-4"
             icon={<User className="inline-block ml-2" />}

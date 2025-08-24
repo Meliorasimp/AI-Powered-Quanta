@@ -4,12 +4,14 @@ type InteractionState = {
   isPopupVisible: boolean;
   isRegisterFormVisible: boolean;
   isLoginFormVisible: boolean;
+  isUserLoggedIn: boolean;
 };
 
 const initialState: InteractionState = {
   isPopupVisible: false,
   isRegisterFormVisible: false,
   isLoginFormVisible: false,
+  isUserLoggedIn: false,
 };
 
 const interactionSlice = createSlice({
@@ -48,6 +50,18 @@ const interactionSlice = createSlice({
         isRegisterFormVisible: true,
       };
     },
+    LoginUser: (state) => {
+      return {
+        ...state,
+        isUserLoggedIn: true,
+      };
+    },
+    LogoutUser: (state) => {
+      return {
+        ...state,
+        isUserLoggedIn: false,
+      };
+    },
   },
 });
 
@@ -59,6 +73,8 @@ export const {
   showLoginForm,
   hideLoginForm,
   switchToLoginForm,
+  LoginUser,
+  LogoutUser,
 } = interactionSlice.actions;
 
 export default interactionSlice.reducer;
