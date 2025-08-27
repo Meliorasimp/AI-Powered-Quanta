@@ -14,7 +14,7 @@ function LinkedAccountData({
   status,
 }: LinkedAccountProps) {
   return (
-    <tr className="text-gray-300 text-sm hover:bg-gray-500 hover:cursor-pointer transition-all duration-200">
+    <tr className="text-sm hover:bg-gray-500 hover:cursor-pointer transition-all duration-200">
       <td className="text-left px-4 py-3">
         <span>{bankname}</span>
       </td>

@@ -22,6 +22,9 @@ const Readonlyprofile = () => {
   const isUserLoggedIn = useSelector(
     (state: RootState) => state.interaction.isUserLoggedIn
   );
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
 
   useEffect(() => {
     if (isUserLoggedIn) {
@@ -30,7 +33,17 @@ const Readonlyprofile = () => {
   }, [isUserLoggedIn, navigate]);
 
   return (
-    <div className="flex flex-row">
+    <div
+      className={`flex flex-row app ${
+        isThemePurple
+          ? "purple"
+          : isThemeLight
+          ? "light"
+          : isThemeDark
+          ? "dark"
+          : ""
+      }`}
+    >
       <Navbar />
       <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
         <div className="overflow-hiddenpb-2">
@@ -44,10 +57,10 @@ const Readonlyprofile = () => {
             variant="secondary"
           />
         </div>
-        <div className="border-t border-white text-white justify-center items-center flex flex-col text-xl pt-10 w-full">
+        <div className="border-t ustify-center items-center flex flex-col text-xl pt-10 w-full">
           <Heading
             label="You must be logged in to Change profile!"
-            className="text-white justify-center flex text-xl pt-10"
+            className="justify-center flex text-xl pt-10"
           />
           <Button
             label="Login"

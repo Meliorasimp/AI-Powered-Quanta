@@ -2,10 +2,25 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import LineChart from "../../components/Linechart";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const Analytics = () => {
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
   return (
-    <div className="flex flex-row">
+    <div
+      className={`flex flex-row app ${
+        isThemePurple
+          ? "purple"
+          : isThemeLight
+          ? "light"
+          : isThemeDark
+          ? "dark"
+          : ""
+      }`}
+    >
       <Navbar />
       <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
         <div className="overflow-hidden pb-2 flex flex-row">
@@ -20,7 +35,7 @@ const Analytics = () => {
               variant="secondary"
             />
           </div>
-          <div className="text-white flex gap-x-10 justify-center items-center">
+          <div className="flex gap-x-10 justify-center items-center">
             <Heading
               label="Financial Overview"
               className="hover:bg-gray-700 px-6 py-2 cursor-pointer rounded-lg"
@@ -34,15 +49,12 @@ const Analytics = () => {
         <div className="w-full">
           <Heading
             label="Net worth progression"
-            className="text-white text-xl font-bold"
+            className="text-xl font-bold"
           />
           <div className="w-full h-60">
             <LineChart />
           </div>
-          <Heading
-            label="Income vs Expenses"
-            className="text-white text-xl font-bold"
-          />
+          <Heading label="Income vs Expenses" className="text-xl font-bold" />
         </div>
       </div>
     </div>

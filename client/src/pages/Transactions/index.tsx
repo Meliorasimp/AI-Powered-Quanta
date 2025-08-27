@@ -2,10 +2,26 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import Tabledata from "../../components/Text/Tabledata";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const Transactions = () => {
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
+
   return (
-    <div className="flex flex-row">
+    <div
+      className={`flex flex-row app ${
+        isThemePurple
+          ? "purple"
+          : isThemeLight
+          ? "light"
+          : isThemeDark
+          ? "dark"
+          : ""
+      }`}
+    >
       <Navbar />
       <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-5">
         <div className="overflow-hidden border-b-2 border-gray-200 pb-2">

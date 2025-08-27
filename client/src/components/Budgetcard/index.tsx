@@ -1,4 +1,6 @@
 import "../../styles/index.css";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 type budgetcardprops = {
   title: string;
@@ -21,9 +23,21 @@ function Budgetcard({
   enddate,
   onClick,
 }: budgetcardprops) {
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
+
   return (
     <div
-      className={`budget-card flex flex-col justify-between p-2 shadow-xl cursor-pointer ${className}`}
+      className={`budget-card ${
+        isThemePurple
+          ? "purple"
+          : isThemeDark
+          ? "dark"
+          : isThemeLight
+          ? "light"
+          : ""
+      } flex flex-col justify-between p-2 shadow-xl cursor-pointer ${className}`}
       onClick={onClick}
     >
       <div className="flex flex-col">

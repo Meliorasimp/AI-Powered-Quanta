@@ -6,13 +6,27 @@ import "../../styles/index.css";
 import Button from "../../components/Button";
 import { Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { showPopup } from "../../modules/Interaction.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store.ts";
 
 const Budgets = () => {
   const dispatch = useDispatch();
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
 
   return (
-    <div className="flex flex-row">
+    <div
+      className={`flex flex-row app ${
+        isThemePurple
+          ? "purple"
+          : isThemeLight
+          ? "light"
+          : isThemeDark
+          ? "dark"
+          : ""
+      }`}
+    >
       <Navbar />
       <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
         <div className="flex flex-row gap-x-10">
@@ -72,7 +86,17 @@ const Budgets = () => {
             </div>
           </div>
           <div className="h-full w-1/4 flex flex-col gap-y-5">
-            <div className="h-3/7 text-lg font-semibold budget-card shadow-2xl p-2 hover:scale-101 transition-transform duration-200">
+            <div
+              className={`h-3/7 text-lg font-semibold budget-card ${
+                isThemePurple
+                  ? "purple"
+                  : isThemeDark
+                  ? "dark"
+                  : isThemeLight
+                  ? "light"
+                  : ""
+              } shadow-2xl p-2 hover:scale-101 transition-transform duration-200`}
+            >
               <Heading label="Total Budget Amount" />
               <Paragraph
                 label="$5,500"
@@ -80,7 +104,17 @@ const Budgets = () => {
                 variant="primary"
               />
             </div>
-            <div className="h-3/7 text-lg font-semibold budget-card shadow-2xl p-2 hover:scale-101 transition-transform duration-200">
+            <div
+              className={`h-3/7 text-lg font-semibold budget-card ${
+                isThemePurple
+                  ? "purple"
+                  : isThemeDark
+                  ? "dark"
+                  : isThemeLight
+                  ? "light"
+                  : ""
+              } shadow-2xl p-2 hover:scale-101 transition-transform duration-200`}
+            >
               <Heading label="Income After Budget" />
               <Paragraph
                 label="$94,500"

@@ -11,12 +11,27 @@ import {
   Settings,
   User,
 } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const Navbar = () => {
   const nav = useNavigate();
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
 
   return (
-    <div className="w-1/4 h-screen navbar">
+    <div
+      className={`w-1/4 h-screen navbar ${
+        isThemePurple
+          ? "purple"
+          : isThemeLight
+          ? "light"
+          : isThemeDark
+          ? "dark"
+          : ""
+      }`}
+    >
       <div className="flex flex-col items-start h-full gap-y-3">
         <h1 className="text-3xl font-bold mb-10 mt-4 text-purple-200">
           Quanta

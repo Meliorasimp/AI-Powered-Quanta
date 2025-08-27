@@ -3,7 +3,6 @@ import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import Statcard from "../../components/Statcard";
 import TableData from "../../components/Text/Tabledata";
-
 import {
   LineChart,
   Line,
@@ -14,15 +13,31 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const Dashboard = () => {
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
+
   const data = [
     { name: "meinard", age: 25 },
     { name: "john", age: 30 },
     { name: "jane", age: 28 },
   ];
   return (
-    <div className="flex flex-row">
+    <div
+      className={`flex flex-row app ${
+        isThemePurple
+          ? "purple"
+          : isThemeLight
+          ? "light"
+          : isThemeDark
+          ? "dark"
+          : ""
+      }`}
+    >
       <Navbar />
       <div className="w-screen h-screen flex flex-col py-5 px-5 gap-y-2">
         <div className="h-1/5 overflow-hidden">

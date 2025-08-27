@@ -7,8 +7,8 @@ type ParagraphProps = {
 
 const styles = {
   primary: "text-xl text-gray-100",
-  secondary: "text-base text-gray-300 font-light",
-  tertiary: "text-base text-gray-400 text-center",
+  secondary: "text-base font-light",
+  tertiary: "text-base text-center",
 };
 
 function Paragraph({ label, variant }: ParagraphProps) {

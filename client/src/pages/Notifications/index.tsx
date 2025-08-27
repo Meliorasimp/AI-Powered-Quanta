@@ -3,10 +3,26 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import NotificationBar from "../../components/Notificationbar";
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
 
 const Notifications = () => {
+  const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
+    (state: RootState) => state.interaction
+  );
+
   return (
-    <div className="flex flex-row">
+    <div
+      className={`flex flex-row app ${
+        isThemePurple
+          ? "purple"
+          : isThemeLight
+          ? "light"
+          : isThemeDark
+          ? "dark"
+          : ""
+      }`}
+    >
       <Navbar />
       <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
         <div className="overflow-hiddenpb-2">
@@ -24,7 +40,7 @@ const Notifications = () => {
           <div className="flex flex-row justify-start gap-x-20 border-t border-gray-600 border-b">
             <Button
               label="All"
-              className="text-base main-website-text-color border-b border-transparent hover:border-gray-400 px-2 py-2 cursor-pointer"
+              className="text-base border-b border-transparent hover:border-gray-400 px-2 py-2 cursor-pointer"
               onClick={() => console.log("Marked all as read")}
               type="button"
             />

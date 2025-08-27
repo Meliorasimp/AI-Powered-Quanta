@@ -5,6 +5,9 @@ type InteractionState = {
   isRegisterFormVisible: boolean;
   isLoginFormVisible: boolean;
   isUserLoggedIn: boolean;
+  isThemePurple: boolean;
+  isThemeDark: boolean;
+  isThemeLight: boolean;
 };
 
 const initialState: InteractionState = {
@@ -12,6 +15,9 @@ const initialState: InteractionState = {
   isRegisterFormVisible: false,
   isLoginFormVisible: false,
   isUserLoggedIn: false,
+  isThemePurple: true,
+  isThemeDark: false,
+  isThemeLight: false,
 };
 
 const interactionSlice = createSlice({
@@ -62,6 +68,30 @@ const interactionSlice = createSlice({
         isUserLoggedIn: false,
       };
     },
+    switchToDarkTheme: (state) => {
+      return {
+        ...state,
+        isThemePurple: false,
+        isThemeDark: true,
+        isThemeLight: false,
+      };
+    },
+    switchToLightTheme: (state) => {
+      return {
+        ...state,
+        isThemePurple: false,
+        isThemeDark: false,
+        isThemeLight: true,
+      };
+    },
+    switchToPurpleTheme: (state) => {
+      return {
+        ...state,
+        isThemePurple: true,
+        isThemeDark: false,
+        isThemeLight: false,
+      };
+    },
   },
 });
 
@@ -75,6 +105,9 @@ export const {
   switchToLoginForm,
   LoginUser,
   LogoutUser,
+  switchToDarkTheme,
+  switchToLightTheme,
+  switchToPurpleTheme,
 } = interactionSlice.actions;
 
 export default interactionSlice.reducer;
