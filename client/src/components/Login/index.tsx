@@ -40,7 +40,7 @@ const Login = () => {
     try {
       const result = await dispatch(
         loginUser({ email: emailValue, password: passwordValue })
-      ).unwrap(); // ✅ this throws if rejected
+      ).unwrap();
 
       dispatch(LoginUser());
       dispatch(resetLoginForm());

@@ -1,13 +1,20 @@
 import User, { IUser } from "../models/usermodel";
-
 import { Request, Response } from "express";
+import { Types } from "mongoose";
+import jwt from "jsonwebtoken";
+
+function generateToken(id: string | Types.ObjectId, email: string) {
+  return jwt.sign({ id: id.toString(), email }, process.env.JWT_SECRET!, {
+    expiresIn: "1h",
+  });
+}
 
 export const postUserData = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   const { username, email, password } = req.body;
-
+  const token = generateToken(new Types.ObjectId(), email);
   try {
     const newUser: IUser = new User({ username, email, password });
     await newUser.save();
@@ -19,6 +26,7 @@ export const postUserData = async (
         username: newUser.username,
         email: newUser.email,
       },
+      token,
     });
   } catch (error) {
     res.status(500).json({
@@ -30,6 +38,7 @@ export const postUserData = async (
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const token = generateToken(new Types.ObjectId(), email);
 
   try {
     const useremail = await User.findOne({ email });
@@ -55,6 +64,7 @@ export const loginUser = async (req: Request, res: Response) => {
         email: useremail.email,
         username: useremail.username,
       },
+      token,
     });
     console.log("User logged in:", useremail);
   } catch (error) {

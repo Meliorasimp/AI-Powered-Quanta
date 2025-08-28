@@ -6,7 +6,6 @@
     margin: 0;
     box-sizing: border-box;
   }
-
   :root {
     font-family: "Inter", sans-serif;
     --primary-background-color: #13013f;

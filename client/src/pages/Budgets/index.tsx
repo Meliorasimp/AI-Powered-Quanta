@@ -29,7 +29,7 @@ const Budgets = () => {
     >
       <Navbar />
       <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
-        <div className="flex flex-row gap-x-10">
+        <div className="flex flex-row gap-x-10 border-b">
           <div className="overflow-hidden pb-2">
             <Heading
               label="Budgets"
@@ -37,7 +37,6 @@ const Budgets = () => {
             />
             <Paragraph
               label="Curious where your money’s been going? Let’s take a look."
-              className="text-base main-website-text-color"
               variant="secondary"
             />
           </div>
@@ -47,7 +46,7 @@ const Budgets = () => {
               onClick={() => dispatch(showPopup())}
               type="button"
               icon={<Plus className="inline-block" />}
-              className="text-white text-base bg-gray-700 px-7 rounded-4xl hover:bg-gray-600 transition-colors duration-300 cursor-pointer"
+              className="text-white px-3 rounded-sm hover:bg-gray-600 transition-colors duration-300 cursor-pointer"
             />
           </div>
         </div>

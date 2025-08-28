@@ -67,27 +67,6 @@ const Settings = () => {
               className="border-2 py-2 px-10 h-full  rounded-lg w-1/6 hover:bg-gray-700 transition-colors duration-300 hover:cursor-pointer"
             />
           </div>
-          <Heading label="Font size" className="text-lg font-semibold " />
-          <div className="flex flex-row gap-x-10 ">
-            <Button
-              label="Small"
-              type="button"
-              onClick={() => {}}
-              className="border-2 py-2 px-10 rounded-lg w-1/6 hover:bg-gray-700 transition-colors duration-300 hover:cursor-pointer"
-            />
-            <Button
-              label="Medium"
-              type="button"
-              onClick={() => {}}
-              className="border-2 py-2 px-10 rounded-lg w-1/6 hover:bg-gray-700 transition-colors duration-300 hover:cursor-pointer"
-            />
-            <Button
-              label="Large"
-              type="button"
-              onClick={() => {}}
-              className="border-2 py-2 px-10 rounded-lg w-1/6 hover:bg-gray-700 transition-colors duration-300 hover:cursor-pointer"
-            />
-          </div>
           <Heading label="Notifications" className="text-xl font-semibold " />
           <div className="flex flex-row gap-x-10">
             <Button
