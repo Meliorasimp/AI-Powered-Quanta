@@ -26,7 +26,8 @@ type LoginPayload = {
   email: string;
   password: string;
 };
-// Define the initial states for login and Register
+
+// Define the initial states for the user informations
 const initialLoginState: LoginState = {
   email: "",
   password: "",
@@ -41,6 +42,7 @@ const initialRegisterState: RegisterState = {
   loading: false,
   error: null,
 };
+
 // Define the login slice
 const loginSlice = createSlice({
   name: "login",
@@ -82,7 +84,9 @@ const loginSlice = createSlice({
       });
   },
 });
+
 // Define the register slice
+
 const registerSlice = createSlice({
   name: "register",
   initialState: initialRegisterState,
@@ -128,6 +132,7 @@ const registerSlice = createSlice({
       });
   },
 });
+
 //function for the Extrareducers
 export const loginUser = createAsyncThunk(
   "user/loginUser",

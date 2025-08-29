@@ -9,11 +9,47 @@ import { FaPencilAlt, FaPlus, FaDoorClosed, FaTrash } from "react-icons/fa";
 import google from "../../assets/google.png";
 import brankas from "../../assets/brankas.jpg";
 import finverse from "../../assets/finverse.jpg";
+import {
+  setFirstName,
+  setLastName,
+  setEmail,
+  setCurrentPassword,
+  setNewPassword,
+  updateFullName,
+} from "../../modules/Api/Users/userprofile";
+import { useAppDispatch } from "../../hooks";
 
 const Profile = () => {
+  const dispatch = useAppDispatch();
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
+
+  const { firstname, lastname } = useSelector(
+    (state: RootState) => state.fullname
+  );
+  const { email } = useSelector((state: RootState) => state.email);
+  const { currentpassword, newpassword } = useSelector(
+    (state: RootState) => state.password
+  );
+
+  const handleFullNameSubmit = async () => {
+    if (firstname === "" || lastname === "") {
+      alert("Both fields are required");
+      return;
+    }
+
+    try {
+      const response = await dispatch(
+        updateFullName({ firstname, lastname })
+      ).unwrap();
+      console.log("successfully sent to the backend", response);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      }
+    }
+  };
   return (
     <div
       className={`flex flex-row app ${
@@ -90,16 +126,27 @@ const Profile = () => {
                 </div>
               </div>
               <div>
-                <form className="flex w-full gap-2">
+                <form
+                  className="flex w-full gap-2"
+                  onSubmit={handleFullNameSubmit}
+                >
                   <input
                     type="text"
                     placeholder="Meinard Legashki"
                     className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                    value={firstname}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      dispatch(setFirstName(e.target.value));
+                    }}
                   />
                   <input
                     type="text"
                     placeholder="Limlengco"
                     className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                    value={lastname}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      dispatch(setLastName(e.target.value))
+                    }
                   />
                   <Button
                     onClick={() => {}}
@@ -133,6 +180,10 @@ const Profile = () => {
                     type="text"
                     placeholder="limlengcomeinard@gmail.com"
                     className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                    value={email}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      dispatch(setEmail(e.target.value));
+                    }}
                   />
                   <Button
                     onClick={() => {}}
@@ -174,11 +225,19 @@ const Profile = () => {
                   type="text"
                   placeholder="Dummy Password"
                   className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                  value={currentpassword}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    dispatch(setCurrentPassword(e.target.value));
+                  }}
                 />
                 <input
                   type="text"
                   placeholder="New Dummy Password"
                   className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                  value={newpassword}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    dispatch(setNewPassword(e.target.value));
+                  }}
                 />
                 <Button
                   onClick={() => {}}

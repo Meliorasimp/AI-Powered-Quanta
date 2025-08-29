@@ -2,8 +2,9 @@ import Heading from "../Text/Heading";
 import Paragraph from "../Text/Paragraph";
 import { hideLoginForm } from "../../modules/Interaction.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/index.ts";
-import { FcGoogle } from "react-icons/fc";
-import { FaFacebook, FaGithub, FaTwitter, FaMicrosoft } from "react-icons/fa";
+import google from "../../assets/google.png";
+import loginimage from "../../assets/verifydata.svg";
+import github from "../../assets/github.png";
 import Button from "../Button";
 import { RootState } from "../../store.ts";
 import {
@@ -60,7 +61,7 @@ const Login = () => {
       className="fixed inset-0 flex items-center justify-center 
                 bg-black/50 backdrop-blur-xs z-50"
     >
-      <div className="bg-[rgba(10,1,63,0.9)] w-2/3 h-3/4 flex flex-row justify-center rounded-2xl">
+      <div className="bg-[rgba(10,1,63,0.9)] w-2/3 h-3/4 flex flex-row justify-center rounded-2xl items-center">
         <div className="w-full pt-8 pr-8 pl-8">
           <div className="text-white">
             <Heading
@@ -103,18 +104,37 @@ const Login = () => {
               />
             </form>
             <div>
-              <Paragraph label="Or login using" variant="tertiary" />
-              <div className="flex flex-row justify-center pt-2">
-                <FcGoogle className="text-3xl mx-2 cursor-pointer hover:scale-110 transition-transform duration-200" />
-                <FaFacebook className="text-3xl mx-2 cursor-pointer hover:scale-110 transition-transform duration-200" />
-                <FaGithub className="text-3xl mx-2 cursor-pointer hover:scale-110 transition-transform duration-200" />
-                <FaTwitter className="text-3xl mx-2 cursor-pointer hover:scale-110 transition-transform duration-200" />
-                <FaMicrosoft className="text-3xl mx-2 cursor-pointer hover:scale-110 transition-transform duration-200" />
+              <Paragraph
+                label="Or login using"
+                variant="tertiary"
+                className="text-center"
+              />
+              <div className="flex flex-row justify-center pt-2 gap-x-5">
+                <div className="w-12 h-12">
+                  <img
+                    src={google}
+                    alt="Google logo"
+                    className="h-full w-full object-cover hover:scale-105 transition-transform duration-200 cursor-pointer"
+                  />
+                </div>
+                <div className="w-12 h-12">
+                  <img
+                    src={github}
+                    alt="GitHub logo"
+                    className="h-full w-full object-cover hover:scale-105 transition-transform duration-200 cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="w-full h-full flex items-center justify-center"></div>
+        <div className="w-full h-full flex items-center justify-center">
+          <img
+            src={loginimage}
+            alt="Login illustration"
+            className="max-w-full h-auto"
+          />
+        </div>
       </div>
     </div>
   );
