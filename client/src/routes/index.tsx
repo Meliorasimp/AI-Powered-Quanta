@@ -12,7 +12,7 @@ import AuthRedirect from "../components/Redirect";
 
 const routes: RouteObject[] = [
   {
-    path: "/",
+    path: "/dashboard",
     element: <Dashboard />,
   },
   {
@@ -40,17 +40,8 @@ const routes: RouteObject[] = [
     element: <Settings />,
   },
   {
-    path: "/readonly-profile",
-    element: <Readonlyprofile />,
-  },
-  {
-    element: <AuthRedirect />,
-    children: [
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-    ],
+    path: "/profile",
+    element: <Profile />,
   },
 ];
 

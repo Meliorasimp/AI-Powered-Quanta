@@ -9,6 +9,7 @@ function generateToken(id: string | Types.ObjectId, email: string) {
   });
 }
 
+//if the user registers, do this function
 export const postUserData = async (
   req: Request,
   res: Response
@@ -36,6 +37,7 @@ export const postUserData = async (
   }
 };
 
+//if the user logged in, do this function
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const token = generateToken(new Types.ObjectId(), email);

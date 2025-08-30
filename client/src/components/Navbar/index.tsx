@@ -38,7 +38,7 @@ const Navbar = () => {
         </h1>
         <Button
           label="Dashboard"
-          onClick={() => nav("/")}
+          onClick={() => nav("/dashboard")}
           type="button"
           className="main-website-text-color text-lg hover:bg-gray-600 w-full py-1 text-left cursor-pointer rounded-lg transition-colors duration-200"
           icon={<LayoutDashboard className="inline-block ml-2" />}
@@ -88,7 +88,7 @@ const Navbar = () => {
           />
           <Button
             label="Profile"
-            onClick={() => nav("/readonly-profile")}
+            onClick={() => nav("/profile")}
             type="button"
             className="main-website-text-color text-lg w-full py-1 text-left cursor-pointer mb-4"
             icon={<User className="inline-block ml-2" />}

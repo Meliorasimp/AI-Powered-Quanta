@@ -17,10 +17,16 @@ import {
   setNewPassword,
   updateFullName,
 } from "../../modules/Api/Users/userprofile";
-import { useAppDispatch } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { showRegisterForm } from "../../modules/Interaction.ts";
+import Login from "../../components/Login/index.tsx";
+import RegisterForm from "../../components/Register/index.tsx";
 
 const Profile = () => {
   const dispatch = useAppDispatch();
+  const { isRegisterFormVisible, isLoginFormVisible } = useAppSelector(
+    (state: RootState) => state.interaction
+  );
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
@@ -28,7 +34,7 @@ const Profile = () => {
   const { firstname, lastname } = useSelector(
     (state: RootState) => state.fullname
   );
-  const { email } = useSelector((state: RootState) => state.email);
+  const { email } = useAppSelector((state: RootState) => state.email);
   const { currentpassword, newpassword } = useSelector(
     (state: RootState) => state.password
   );
@@ -93,7 +99,7 @@ const Profile = () => {
             </div>
             <div className="flex flex-row gap-x-5">
               <Button
-                onClick={() => {}}
+                onClick={() => dispatch(showRegisterForm())}
                 type="button"
                 label="Change Picture"
                 className="bg-gray-600 rounded-lg px-5 py-2 hover:bg-gray-700 cursor-pointer"
@@ -349,6 +355,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      {isRegisterFormVisible && <RegisterForm />}
+      {isLoginFormVisible && <Login />}
     </div>
   );
 };
