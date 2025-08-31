@@ -6,11 +6,14 @@ import LinkedAccounts from "../pages/LinkedAccounts";
 import Analytics from "../pages/Analytics";
 import Notifications from "../pages/Notifications";
 import Settings from "../pages/Settings";
-import Readonlyprofile from "../pages/Readonlyprofile";
 import Profile from "../pages/Profile";
-import AuthRedirect from "../components/Redirect";
+import LandingPage from "../pages/Landingpage";
 
 const routes: RouteObject[] = [
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
   {
     path: "/dashboard",
     element: <Dashboard />,

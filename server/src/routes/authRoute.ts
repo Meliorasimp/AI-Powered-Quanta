@@ -1,5 +1,8 @@
 import { Router } from "express";
 import passport from "passport";
+import { googleAuth } from "../authentication/googleAuth";
+import { githubAuth } from "../authentication/githubAuth";
+import { microsoftAuth } from "../authentication/microsoftAuth";
 
 const authRouter = Router();
 
@@ -8,23 +11,18 @@ authRouter.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-authRouter.get("/auth/google/callback", (req, res, next) => {
-  passport.authenticate(
-    "google",
-    { failureRedirect: "http://localhost:5173" },
-    (err: unknown, user: Express.User | null | false) => {
-      if (err) return next(err);
-      if (!user) return res.redirect("http://localhost:5173");
-      req.logIn(user, (err) => {
-        if (err) return next(err);
+authRouter.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["profile", "email"] })
+);
 
-        console.log("User authenticated successfully:", user);
+authRouter.get(
+  "/auth/microsoft",
+  passport.authenticate("microsoft", { scope: ["openid", "profile", "email"] })
+);
 
-        // Redirect to frontend
-        return res.redirect("http://localhost:5173/profile");
-      });
-    }
-  )(req, res, next);
-});
+authRouter.get("/auth/google/callback", googleAuth);
+authRouter.get("/auth/github/callback", githubAuth);
+authRouter.get("/auth/microsoft/callback", microsoftAuth);
 
 export default authRouter;

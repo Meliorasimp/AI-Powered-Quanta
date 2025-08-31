@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-
+import { Request, Response, NextFunction } from "express";
 dotenv.config();
 
 passport.use(
@@ -24,3 +24,19 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user: Express.User, done) => {
   done(null, user);
 });
+
+export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate(
+    "google",
+    { failureRedirect: "http://localhost:5173" },
+    (err: any, user: Express.User | false | null) => {
+      if (err) return next(err);
+      if (!user) return res.redirect("http://localhost:5173");
+
+      req.logIn(user, (err) => {
+        if (err) return next(err);
+        return res.redirect("http://localhost:5173/dashboard");
+      });
+    }
+  )(req, res, next);
+};
