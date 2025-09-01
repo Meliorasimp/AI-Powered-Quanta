@@ -13,7 +13,7 @@ const Notifications = () => {
 
   return (
     <div
-      className={`flex flex-row app ${
+      className={`flex flex-col app ${
         isThemePurple
           ? "purple"
           : isThemeLight

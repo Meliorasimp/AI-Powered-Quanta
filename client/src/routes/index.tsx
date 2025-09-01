@@ -8,6 +8,7 @@ import Notifications from "../pages/Notifications";
 import Settings from "../pages/Settings";
 import Profile from "../pages/Profile";
 import LandingPage from "../pages/Landingpage";
+import Navbar from "../components/Navbar";
 
 const routes: RouteObject[] = [
   {
@@ -45,6 +46,10 @@ const routes: RouteObject[] = [
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/settings/navbar",
+    element: <Navbar />,
   },
 ];
 

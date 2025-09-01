@@ -15,6 +15,7 @@ import {
   resetLoginForm,
 } from "../../modules/Api/Users/userslice.ts";
 import { LoginUser } from "../../modules/Interaction.ts";
+import "../../styles/index.css";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -74,7 +75,7 @@ const Login = () => {
       className="fixed inset-0 flex items-center justify-center 
                 bg-black/50 backdrop-blur-xs z-50"
     >
-      <div className="bg-[rgba(10,1,63,0.9)] w-2/3 h-3/4 flex flex-row justify-center rounded-2xl items-center">
+      <div className="bg-gray-900 w-2/3 h-3/4 flex flex-row justify-center rounded-2xl items-center">
         <div className="w-full pt-8 pr-8 pl-8">
           <div className="text-white">
             <Heading
@@ -94,34 +95,30 @@ const Login = () => {
                 placeholder="E-mail address"
                 value={emailValue}
                 onChange={handleEmailChange}
-                className="mb-4 p-2 rounded border"
+                className="mb-4 p-2 rounded border text-base"
               />
               <input
                 type="password"
                 placeholder="Password"
                 value={passwordValue}
                 onChange={handlePasswordChange}
-                className="mb-4 p-2 rounded bg-transparent border border-white"
+                className="mb-4 p-2 rounded bg-transparent border border-white text-base"
               />
               <Button
                 label="Login"
                 type="submit"
                 onClick={() => {}}
-                className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4"
+                className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4 text-lg"
               />
               <Button
                 label="Cancel"
                 type="button"
                 onClick={() => dispatch(hideLoginForm())}
-                className="bg-red-400 py-2 rounded-lg cursor-pointer hover:bg-red-500 transition-colors duration-200 mb-4"
+                className="bg-red-400 py-2 rounded-lg cursor-pointer hover:bg-red-500 transition-colors duration-200 mb-4 text-lg"
               />
             </form>
             <div>
-              <Paragraph
-                label="Or login using"
-                variant="tertiary"
-                className="text-center"
-              />
+              <p className="text-center text-lg">Or login using</p>
               <div className="flex flex-row justify-center pt-2 gap-x-5">
                 <div className="w-12 h-12">
                   <img

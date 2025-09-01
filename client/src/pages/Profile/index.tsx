@@ -58,7 +58,7 @@ const Profile = () => {
   };
   return (
     <div
-      className={`flex flex-row app ${
+      className={`flex flex-col app w-full ${
         isThemePurple
           ? "purple"
           : isThemeLight
@@ -69,8 +69,8 @@ const Profile = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto">
-        <div className="overflow-hidden pb-2 border-b">
+      <div className="w-full min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
+        <div className="pb-2 border-b">
           <Heading
             label="Profile"
             className="text-xl font-semibold main-website-text-color"

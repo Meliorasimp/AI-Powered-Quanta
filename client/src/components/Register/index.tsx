@@ -72,7 +72,7 @@ const RegisterForm = () => {
       className="fixed inset-0 flex items-center justify-center 
                 bg-black/50 backdrop-blur-xs z-50"
     >
-      <div className="bg-[rgba(10,1,63,0.9)] w-2/3 h-3/4 flex flex-row justify-center rounded-2xl">
+      <div className="bg-gray-900 w-2/3 h-3/4 flex flex-row justify-center rounded-2xl items-center">
         <div className="w-full h-full flex items-center justify-center">
           <img
             src={investment}
@@ -99,27 +99,27 @@ const RegisterForm = () => {
               placeholder="E-mail address"
               value={emailAddressValue}
               onChange={handleEmailChange}
-              className="mb-4 p-2 rounded border"
+              className="mb-4 p-2 rounded border text-base"
             />
             <input
               type="text"
               placeholder="Username"
               value={usernameValue}
               onChange={handleUsernameChange}
-              className="mb-4 p-2 rounded border"
+              className="mb-4 p-2 rounded border text-base"
             />
             <input
               type="password"
               placeholder="Password"
               value={passwordValue}
               onChange={handlePasswordChange}
-              className="mb-4 p-2 rounded border"
+              className="mb-4 p-2 rounded border text-base"
             />
             <Button
               label="Register"
               type="submit"
               onClick={() => {}}
-              className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4"
+              className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4 text-base"
             />
             <Button
               label="Cancel"
@@ -127,7 +127,7 @@ const RegisterForm = () => {
               onClick={() => {
                 dispatch(hideRegisterForm());
               }}
-              className="bg-red-400 py-2 rounded-lg cursor-pointer hover:bg-red-500 transition-colors duration-200 mb-4"
+              className="bg-red-400 py-2 rounded-lg cursor-pointer hover:bg-red-500 transition-colors duration-200 mb-4 text-base"
             />
             <div className="flex flex-row justify-center gap-x-2">
               <Paragraph label="Already have an account?" variant="tertiary" />
@@ -137,7 +137,7 @@ const RegisterForm = () => {
                   dispatch(switchToLoginForm());
                 }}
                 type="button"
-                className="text-gray-200 hover:underline cursor-pointer"
+                className="text-gray-200 hover:underline cursor-pointer text-sm font-semibold"
               />
             </div>
           </form>
