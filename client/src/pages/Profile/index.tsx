@@ -69,7 +69,7 @@ const Profile = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
+      <div className="w-10/11 min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
         <div className="pb-2 border-b">
           <Heading
             label="Profile"

@@ -22,7 +22,7 @@ const Analytics = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
+      <div className="w-10/11 h-screen flex flex-col py-5 px-5 gap-y-2 mx-auto">
         <div className="overflow-hidden pb-2 flex flex-row">
           <div className="pr-10">
             <Heading
@@ -51,7 +51,7 @@ const Analytics = () => {
             label="Net worth progression"
             className="text-xl font-bold"
           />
-          <div className="w-full h-60">
+          <div className="w-full h-[400px]">
             <LineChart />
           </div>
           <Heading label="Income vs Expenses" className="text-xl font-bold" />

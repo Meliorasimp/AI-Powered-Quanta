@@ -23,7 +23,7 @@ const Transactions = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-5">
+      <div className="w-10/11 h-screen flex flex-col py-5 px-5 gap-y-5 mx-auto">
         <div className="overflow-hidden border-b-2 border-gray-200 pb-2">
           <Heading
             label="Transactions"

@@ -1,10 +1,9 @@
 import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
-import Budgetcard from "../../components/Budgetcard";
 import "../../styles/index.css";
 import Button from "../../components/Button";
-import { Plus, ArrowLeft, ArrowRight } from "lucide-react";
+import { Plus } from "lucide-react";
 import { showPopup } from "../../modules/Interaction.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store.ts";
@@ -28,7 +27,7 @@ const Budgets = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
+      <div className="w-10/11 h-screen flex flex-col py-5 px-5 gap-y-2 mx-auto">
         <div className="flex flex-row gap-x-10 border-b">
           <div className="overflow-hidden pb-2">
             <Heading
@@ -50,75 +49,28 @@ const Budgets = () => {
             />
           </div>
         </div>
-        <div className="h-full w-full flex flex-row gap-x-5">
-          <div className="h-full w-3/4 flex flex-col gap-y-5">
-            <Budgetcard
-              title="Washing Machine"
-              amountallocated={500}
-              description="A budget for the new washing machine."
-              startdate={new Date("2023-01-01")}
-              enddate={new Date("2023-12-31")}
-              className="h-3/7 hover:scale-101 transition-transform duration-200"
-              onClick={() => console.log("Budget Card Clicked")}
-            />
-            <Budgetcard
-              title="Home Renovation"
-              amountallocated={5000}
-              description="A budget for the home renovation."
-              startdate={new Date("2023-01-01")}
-              enddate={new Date("2023-12-31")}
-              className="h-3/7 hover:scale-101 transition-transform duration-200"
-            />
-            <div className="flex flex-row justify-between">
-              <Button
-                onClick={() => console.log("Edit Clicked")}
-                type="button"
-                className="hover:cursor-pointer"
-                icon={<ArrowLeft color="white" />}
-              />
-              <Button
-                onClick={() => console.log("Edit Clicked")}
-                type="button"
-                className="hover:cursor-pointer "
-                icon={<ArrowRight color="white" />}
+        <div className="h-full w-full flex flex-col gap-y-5">
+          <div className="statcard-purple p-4 rounded-lg">
+            <h3 className="text-white font-semibold">Groceries</h3>
+            <p className="text-sm text-gray-400">
+              ₱3,000 budgeted • ₱2,450 spent
+            </p>
+            <div className="w-full bg-gray-700 h-2 rounded-full mt-2">
+              <div
+                className="bg-green-400 h-2 rounded-full"
+                style={{ width: "82%" }}
               />
             </div>
           </div>
-          <div className="h-full w-1/4 flex flex-col gap-y-5">
-            <div
-              className={`h-3/7 text-lg font-semibold budget-card ${
-                isThemePurple
-                  ? "purple"
-                  : isThemeDark
-                  ? "dark"
-                  : isThemeLight
-                  ? "light"
-                  : ""
-              } shadow-2xl p-2 hover:scale-101 transition-transform duration-200`}
-            >
-              <Heading label="Total Budget Amount" />
-              <Paragraph
-                label="$5,500"
-                className="text-green-500"
-                variant="primary"
-              />
-            </div>
-            <div
-              className={`h-3/7 text-lg font-semibold budget-card ${
-                isThemePurple
-                  ? "purple"
-                  : isThemeDark
-                  ? "dark"
-                  : isThemeLight
-                  ? "light"
-                  : ""
-              } shadow-2xl p-2 hover:scale-101 transition-transform duration-200`}
-            >
-              <Heading label="Income After Budget" />
-              <Paragraph
-                label="$94,500"
-                className="text-green-500"
-                variant="primary"
+          <div className="statcard-purple p-4 rounded-lg shadow-[0_4px_10px_rgba(255,255,255,0.1)]">
+            <h3 className="text-white font-semibold">Groceries</h3>
+            <p className="text-sm text-gray-400">
+              ₱3,000 budgeted • ₱2,450 spent
+            </p>
+            <div className="w-full bg-gray-700 h-2 rounded-full mt-2">
+              <div
+                className="bg-green-400 h-2 rounded-full"
+                style={{ width: "82%" }}
               />
             </div>
           </div>

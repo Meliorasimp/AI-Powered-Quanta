@@ -24,7 +24,12 @@ const Navbar = () => {
   return (
     <div className={`w-full ${themeClass}`}>
       <div className="relative flex items-center justify-between px-6 py-4">
-        <h1 className="text-3xl font-bold text-purple-200">Quanta</h1>
+        <h1
+          className="text-3xl font-bold text-purple-200"
+          onClick={() => nav("/")}
+        >
+          Quanta
+        </h1>
         <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-x-6">
           {/* Dashboard */}
           <Button
@@ -71,35 +76,35 @@ const Navbar = () => {
           </div>
         </div>
         <div className="w-32">
-          <div className="relative group">
+          <div className="relative group z-10">
             <Heading
               label="Profile"
               className="text-white text-lg px-4 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors duration-200"
             />
-            <div className="absolute left-0 mt-1 hidden group-hover:block bg-white shadow-lg rounded min-w-[160px] z-50">
+            <div className="absolute left-0 mt-1 hidden group-hover:block shadow-lg rounded min-w-[160px] z-50">
               <Button
                 label="Profile Settings"
                 onClick={() => nav("/profile")}
                 type="button"
-                className="text-left text-sm text-black hover:bg-gray-100 w-full px-4 py-2"
+                className="text-left text-sm hover:bg-gray-900 w-full px-4 py-2"
               />
               <Button
                 label="Linked Accounts"
                 onClick={() => nav("/linkedaccounts")}
                 type="button"
-                className="text-left text-sm text-black hover:bg-gray-100 w-full px-4 py-2"
+                className="text-left text-sm hover:bg-gray-900 w-full px-4 py-2"
               />
               <Button
                 label="Notifications"
                 onClick={() => nav("/notifications")}
                 type="button"
-                className="text-left text-sm text-black hover:bg-gray-100 w-full px-4 py-2"
+                className="text-left text-sm hover:bg-gray-900 w-full px-4 py-2"
               />
               <Button
                 label="Settings"
                 onClick={() => nav("/settings")}
                 type="button"
-                className="text-left text-sm text-black hover:bg-gray-100 w-full px-4 py-2"
+                className="text-left text-sm hover:bg-gray-900 w-full px-4 py-2"
               />
             </div>
           </div>

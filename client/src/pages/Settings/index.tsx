@@ -29,7 +29,7 @@ const Settings = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
+      <div className="w-10/11 h-screen flex flex-col py-5 px-5 gap-y-2 mx-auto">
         <div className="overflow-hidden pb-2 border-b border-white">
           <Heading
             label="Settings"
