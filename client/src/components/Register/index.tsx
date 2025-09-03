@@ -14,10 +14,12 @@ import {
   registerUser,
   resetRegisterForm,
 } from "../../modules/Api/Users/userslice.ts";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/index.ts";
 
 const RegisterForm = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const emailAddressValue = useAppSelector(
     (state: RootState) => state.register.email
   );
@@ -64,6 +66,7 @@ const RegisterForm = () => {
     );
     dispatch(resetRegisterForm());
     dispatch(hideRegisterForm());
+    navigate("/dashboard");
     console.log("Registration form submitted");
   };
 

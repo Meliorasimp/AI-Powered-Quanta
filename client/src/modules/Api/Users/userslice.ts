@@ -27,6 +27,12 @@ type LoginPayload = {
   password: string;
 };
 
+type userState = {
+  email: string;
+  username: string;
+  id: string;
+};
+
 // Define the initial states for the user informations
 const initialLoginState: LoginState = {
   email: "",
@@ -41,6 +47,12 @@ const initialRegisterState: RegisterState = {
   password: "",
   loading: false,
   error: null,
+};
+
+const initialUserState: userState = {
+  email: "",
+  username: "",
+  id: "",
 };
 
 // Define the login slice
@@ -133,6 +145,17 @@ const registerSlice = createSlice({
   },
 });
 
+//State to hold the user information after login, note that this is needed for some backend operations
+const userSlice = createSlice({
+  name: "user",
+  initialState: initialUserState,
+  reducers: {
+    setUser(state, action: PayloadAction<userState>) {
+      return { ...state, ...action.payload };
+    },
+  },
+});
+
 //function for the Extrareducers
 export const loginUser = createAsyncThunk(
   "user/loginUser",
@@ -173,5 +196,8 @@ export const {
   resetLoginForm,
 } = loginSlice.actions;
 
+export const { setUser } = userSlice.actions;
+
 export const registerReducer = registerSlice.reducer;
 export const loginReducer = loginSlice.reducer;
+export const userReducer = userSlice.reducer;

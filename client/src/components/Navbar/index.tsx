@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import Heading from "../Text/Heading";
 import { LayoutDashboardIcon } from "lucide-react";
+import gehlee from "../../assets/gehlee.jpg";
 import { PiggyBankIcon } from "lucide-react";
 
 const Navbar = () => {
@@ -77,10 +78,19 @@ const Navbar = () => {
         </div>
         <div className="w-32">
           <div className="relative group z-10">
-            <Heading
-              label="Profile"
-              className="text-white text-lg px-4 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors duration-200"
-            />
+            <div className="flex flex-row items-center">
+              <div className="w-10 h-10">
+                <img
+                  src={gehlee}
+                  alt="profile"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </div>
+              <Heading
+                label="Profile"
+                className="text-white text-lg px-4 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors duration-200"
+              />
+            </div>
             <div className="absolute left-0 mt-1 hidden group-hover:block shadow-lg rounded min-w-[160px] z-50">
               <Button
                 label="Profile Settings"

@@ -16,6 +16,8 @@ import {
   setCurrentPassword,
   setNewPassword,
   updateFullName,
+  updateEmail,
+  updatePassword,
 } from "../../modules/Api/Users/userprofile";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { showRegisterForm } from "../../modules/Interaction.ts";
@@ -30,30 +32,77 @@ const Profile = () => {
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
+  const userid = useSelector((state: RootState) => state.user.id);
 
   const { firstname, lastname } = useSelector(
     (state: RootState) => state.fullname
   );
   const { email } = useAppSelector((state: RootState) => state.email);
-  const { currentpassword, newpassword } = useSelector(
+  const { currentpasswordInput, newpasswordInput } = useSelector(
     (state: RootState) => state.password
   );
 
-  const handleFullNameSubmit = async () => {
-    if (firstname === "" || lastname === "") {
-      alert("Both fields are required");
+  const handleFullNameSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!firstname || !lastname) {
+      alert("All fields are required");
       return;
     }
 
     try {
       const response = await dispatch(
-        updateFullName({ firstname, lastname })
+        updateFullName({ firstname, lastname, id: userid })
       ).unwrap();
-      console.log("successfully sent to the backend", response);
+
+      console.log("Successfully sent to the backend:", response);
+      alert("Name updated successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message);
       }
+      console.log("Update error:", error);
+    }
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (email === "") {
+      alert("Email field is required");
+      return;
+    }
+    try {
+      const response = dispatch(updateEmail({ email, id: userid })).unwrap();
+      console.log("Email successfully updated", response);
+      alert("Email updated successfully!");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      }
+      console.log(err);
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (currentpasswordInput === "" || newpasswordInput === "") {
+      alert("Both fields are required");
+      return;
+    }
+    try {
+      const response = await dispatch(
+        updatePassword({
+          currentpassword: currentpasswordInput,
+          newpassword: newpasswordInput,
+          id: userid,
+        })
+      ).unwrap();
+      console.log("password successfully updated", response);
+      alert("Password updated successfully!");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      }
+      console.log(err);
     }
   };
   return (
@@ -105,7 +154,6 @@ const Profile = () => {
                 className="bg-gray-600 rounded-lg px-5 py-2 hover:bg-gray-700 cursor-pointer"
               />
               <Button
-                onClick={() => {}}
                 type="button"
                 label="Remove"
                 className="px-7 py-2 text-red-300 hover:text-red-400 cursor-pointer"
@@ -155,7 +203,6 @@ const Profile = () => {
                     }
                   />
                   <Button
-                    onClick={() => {}}
                     type="submit"
                     label="Save Information"
                     icon={<FaPencilAlt className="inline-block" />}
@@ -181,7 +228,10 @@ const Profile = () => {
                 />
               </div>
               <div>
-                <form className="w-full justify-between flex">
+                <form
+                  className="w-full justify-between flex"
+                  onSubmit={handleEmailSubmit}
+                >
                   <input
                     type="text"
                     placeholder="limlengcomeinard@gmail.com"
@@ -192,7 +242,6 @@ const Profile = () => {
                     }}
                   />
                   <Button
-                    onClick={() => {}}
                     type="submit"
                     label="Add Another Email"
                     icon={<FaPlus className="inline-block" />}
@@ -226,27 +275,27 @@ const Profile = () => {
                   />
                 </div>
               </div>
-              <form className="flex w-full gap-2">
+              <form
+                className="flex w-full gap-2"
+                onSubmit={handlePasswordSubmit}
+              >
                 <input
                   type="text"
-                  placeholder="Dummy Password"
                   className="border-2 border-gray-300 rounded-md p-2 w-1/3"
-                  value={currentpassword}
+                  value={currentpasswordInput}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     dispatch(setCurrentPassword(e.target.value));
                   }}
                 />
                 <input
                   type="text"
-                  placeholder="New Dummy Password"
                   className="border-2 border-gray-300 rounded-md p-2 w-1/3"
-                  value={newpassword}
+                  value={newpasswordInput}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     dispatch(setNewPassword(e.target.value));
                   }}
                 />
                 <Button
-                  onClick={() => {}}
                   type="submit"
                   label="Save Password"
                   icon={<FaPencilAlt className="inline-block" />}

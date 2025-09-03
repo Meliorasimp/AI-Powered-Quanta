@@ -24,7 +24,7 @@ const Notifications = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full h-screen flex flex-col py-5 px-5 gap-y-2">
+      <div className="w-10/11 h-screen flex flex-col py-5 px-5 gap-y-2 mx-auto">
         <div className="overflow-hiddenpb-2">
           <Heading
             label="Notifications"

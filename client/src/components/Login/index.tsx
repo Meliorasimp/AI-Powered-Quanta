@@ -12,13 +12,14 @@ import {
   setLoginPassword,
   setLoginEmail,
   loginUser,
-  resetLoginForm,
+  setUser,
 } from "../../modules/Api/Users/userslice.ts";
+import { useNavigate } from "react-router-dom";
 import { LoginUser } from "../../modules/Interaction.ts";
 import "../../styles/index.css";
-
 const Login = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const emailValue = useAppSelector((state: RootState) => state.login.email);
   const passwordValue = useAppSelector(
     (state: RootState) => state.login.password
@@ -58,8 +59,20 @@ const Login = () => {
       ).unwrap();
 
       dispatch(LoginUser());
-      dispatch(resetLoginForm());
+      console.log("Dispatching setUser with:", {
+        email: result.user.email,
+        id: result.user.id,
+        username: result.user.username,
+      });
+      dispatch(
+        setUser({
+          email: result.user.email,
+          id: result.user.id,
+          username: result.user.username,
+        })
+      );
       dispatch(hideLoginForm());
+      navigate("/dashboard");
       console.log("Login success:", result);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -69,7 +82,6 @@ const Login = () => {
       }
     }
   };
-
   return (
     <div
       className="fixed inset-0 flex items-center justify-center 

@@ -3,6 +3,7 @@ import interactionReducer from "./modules/Interaction.ts/index";
 import {
   loginReducer,
   registerReducer,
+  userReducer,
 } from "./modules/Api/Users/userslice.ts";
 import {
   emailReducer,
@@ -18,6 +19,7 @@ const store = configureStore({
     fullname: fullNameReducer,
     email: emailReducer,
     password: passwordReducer,
+    user: userReducer,
   },
 });
 

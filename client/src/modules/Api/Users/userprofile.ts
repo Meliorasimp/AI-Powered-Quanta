@@ -14,8 +14,8 @@ type EmailState = {
 };
 
 type PasswordState = {
-  currentpassword: string;
-  newpassword: string;
+  currentpasswordInput: string;
+  newpasswordInput: string;
   loading: boolean;
   error: string | null;
 };
@@ -23,15 +23,18 @@ type PasswordState = {
 type FullNamePayload = {
   firstname: string;
   lastname: string;
+  id: string;
 };
 
 type EmailPayload = {
   email: string;
+  id: string;
 };
 
 type PasswordPayload = {
   currentpassword: string;
   newpassword: string;
+  id: string;
 };
 
 const initialFullNameState: FullNameState = {
@@ -48,8 +51,8 @@ const initialEmailState: EmailState = {
 };
 
 const initialPasswordState: PasswordState = {
-  currentpassword: "",
-  newpassword: "",
+  currentpasswordInput: "",
+  newpasswordInput: "",
   loading: false,
   error: null,
 };
@@ -113,10 +116,10 @@ export const passwordSlice = createSlice({
   initialState: initialPasswordState,
   reducers: {
     setCurrentPassword(state, action: PayloadAction<string>) {
-      state.currentpassword = action.payload;
+      state.currentpasswordInput = action.payload;
     },
     setNewPassword(state, action: PayloadAction<string>) {
-      state.newpassword = action.payload;
+      state.newpasswordInput = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -127,8 +130,8 @@ export const passwordSlice = createSlice({
       })
       .addCase(updatePassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentpassword = action.payload.currentpassword;
-        state.newpassword = action.payload.newpassword;
+        state.currentpasswordInput = action.payload.currentpassword;
+        state.newpasswordInput = action.payload.newpassword;
         state.error = null;
       })
       .addCase(updatePassword.rejected, (state, action) => {
@@ -142,7 +145,7 @@ export const updateFullName = createAsyncThunk(
   "user/updateFullName",
   async (fullNameData: FullNamePayload) => {
     const response = await axios.put(
-      "http://localhost:5000/api/users/updateFullName",
+      `http://localhost:5000/api/users/updateFullName/${fullNameData.id}`,
       fullNameData
     );
     return response.data;
@@ -153,7 +156,7 @@ export const updateEmail = createAsyncThunk(
   "user/updateEmail",
   async (emailData: EmailPayload) => {
     const response = await axios.put(
-      "http://localhost:5000/api/users/updateEmail",
+      `http://localhost:5000/api/users/updateEmail/${emailData.id}`,
       emailData
     );
     return response.data;
@@ -164,7 +167,7 @@ export const updatePassword = createAsyncThunk(
   "user/updatePassword",
   async (passwordData: PasswordPayload) => {
     const response = await axios.put(
-      "http://localhost:5000/api/users/updatePassword",
+      `http://localhost:5000/api/users/updatePassword/${passwordData.id}`,
       passwordData
     );
     return response.data;

@@ -1,6 +1,7 @@
 import User, { IUser } from "../models/usermodel";
 import { Request, Response } from "express";
-import { Types } from "mongoose";
+import bcrypt from "bcrypt";
+import mongoose, { Types } from "mongoose";
 import jwt from "jsonwebtoken";
 
 function generateToken(id: string | Types.ObjectId, email: string) {
@@ -73,6 +74,101 @@ export const loginUser = async (req: Request, res: Response) => {
     res.status(500).json({
       message: "Error logging in",
       error,
+    });
+  }
+};
+
+//method to update the fullname in the profile page
+export const updateFullname = async (req: Request, res: Response) => {
+  const { firstname, lastname } = req.body;
+  const { id } = req.params;
+
+  try {
+    const updatedFullname = await User.findByIdAndUpdate(
+      id,
+      { firstname, lastname },
+      { new: true }
+    );
+
+    if (!updatedFullname) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Full name updated successfully",
+      user: {
+        id: updatedFullname._id,
+        firstname: updatedFullname.firstname,
+        lastname: updatedFullname.lastname,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+//method to update the email in the profile page
+export const updateEmail = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const { id } = req.params;
+
+  try {
+    const updatedEmail = await User.findByIdAndUpdate(
+      id,
+      { email },
+      { new: true }
+    );
+
+    if (!updatedEmail) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    res.status(200).json({
+      message: "Email updated successfully",
+      user: {
+        id: updatedEmail._id,
+        email: updatedEmail.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+//method to update the password in the profile page
+export const updatePassword = async (req: Request, res: Response) => {
+  console.log("Received user ID:", req.params.id);
+
+  const { currentpassword, newpassword } = req.body;
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("Current password from request:", currentpassword);
+    console.log("User.password from DB:", user.password);
+
+    const isMatch = await bcrypt.compare(currentpassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect current password" });
+    }
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid or missing user ID" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedNewPassword = await bcrypt.hash(newpassword, salt);
+
+    user.password = hashedNewPassword;
+    await user.save();
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error: any) {
+    console.error("Update password error:", error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      error: error.message || error.toString(),
     });
   }
 };
