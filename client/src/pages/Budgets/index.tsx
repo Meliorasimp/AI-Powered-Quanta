@@ -4,14 +4,19 @@ import Paragraph from "../../components/Text/Paragraph";
 import "../../styles/index.css";
 import Button from "../../components/Button";
 import { Plus } from "lucide-react";
-import { showPopup } from "../../modules/Interaction.ts";
+import { showBudgetPopup } from "../../modules/Interaction.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store.ts";
+import Budgetpopup from "../../components/Budgetpopup/index.tsx";
 
 const Budgets = () => {
   const dispatch = useDispatch();
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
+  );
+
+  const isBudgetPopupVisible = useSelector(
+    (state: RootState) => state.interaction.isBudgetPopupVisible
   );
 
   return (
@@ -39,13 +44,13 @@ const Budgets = () => {
               variant="secondary"
             />
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center ml-auto">
             <Button
               label="Add Budget"
-              onClick={() => dispatch(showPopup())}
+              onClick={() => dispatch(showBudgetPopup())}
               type="button"
               icon={<Plus className="inline-block" />}
-              className="text-white px-3 rounded-sm hover:bg-gray-600 transition-colors duration-300 cursor-pointer"
+              className="text-white px-3 rounded-sm cursor-pointer"
             />
           </div>
         </div>
@@ -75,6 +80,7 @@ const Budgets = () => {
             </div>
           </div>
         </div>
+        {isBudgetPopupVisible && <Budgetpopup />}
       </div>
     </div>
   );

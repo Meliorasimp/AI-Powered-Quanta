@@ -14,9 +14,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import "../../styles/index.css";
 import Button from "../../components/Button";
+import { useAppSelector } from "../../hooks";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const username = useAppSelector((state: RootState) => state.user.username);
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
@@ -41,7 +43,11 @@ const Dashboard = () => {
             className="text-lg font-semibold main-website-text-color"
           />
           <Paragraph
-            label="Here's an overview of your Financial Status."
+            label={
+              username
+                ? `Welcome back ${username}! Here is your Financial statistics`
+                : "Welcome back!"
+            }
             variant="secondary"
             className="text-base main-website-text-color"
           />

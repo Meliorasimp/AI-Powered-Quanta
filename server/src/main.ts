@@ -4,7 +4,7 @@ import "./authentication/microsoftAuth";
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import userRouter from "./routes/userRoute";
+import userRouter from "./routes/userroute";
 import cors from "cors";
 import session from "express-session";
 import passport = require("passport");

@@ -6,9 +6,6 @@ import { RootState } from "../../store";
 import Button from "../../components/Button";
 import gehlee from "../../assets/gehlee.jpg";
 import { FaPencilAlt, FaPlus, FaDoorClosed, FaTrash } from "react-icons/fa";
-import google from "../../assets/google.png";
-import brankas from "../../assets/brankas.jpg";
-import finverse from "../../assets/finverse.jpg";
 import {
   setFirstName,
   setLastName,
@@ -23,9 +20,13 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { showRegisterForm } from "../../modules/Interaction.ts";
 import Login from "../../components/Login/index.tsx";
 import RegisterForm from "../../components/Register/index.tsx";
+import { setUser } from "../../modules/Api/Users/userslice.ts";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Profile = () => {
   const dispatch = useAppDispatch();
+
   const { isRegisterFormVisible, isLoginFormVisible } = useAppSelector(
     (state: RootState) => state.interaction
   );
@@ -33,7 +34,9 @@ const Profile = () => {
     (state: RootState) => state.interaction
   );
   const userid = useSelector((state: RootState) => state.user.id);
-
+  const userfirstname = useSelector((state: RootState) => state.user.firstname);
+  const userLastName = useSelector((state: RootState) => state.user.lastname);
+  const useremail = useSelector((state: RootState) => state.user.email);
   const { firstname, lastname } = useSelector(
     (state: RootState) => state.fullname
   );
@@ -53,12 +56,19 @@ const Profile = () => {
       const response = await dispatch(
         updateFullName({ firstname, lastname, id: userid })
       ).unwrap();
-
-      console.log("Successfully sent to the backend:", response);
-      alert("Name updated successfully!");
+      dispatch(
+        setUser({
+          firstname: response.user.firstname,
+          lastname: response.user.lastname,
+          id: userid,
+        })
+      );
+      dispatch(setFirstName(""));
+      dispatch(setLastName(""));
+      toast.success("Full name updated successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
+        toast.error(error.message);
       }
       console.log("Update error:", error);
     }
@@ -71,36 +81,38 @@ const Profile = () => {
       return;
     }
     try {
-      const response = dispatch(updateEmail({ email, id: userid })).unwrap();
-      console.log("Email successfully updated", response);
-      alert("Email updated successfully!");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        alert(err.message);
+      const response = await dispatch(
+        updateEmail({ email, id: userid })
+      ).unwrap();
+      dispatch(setUser({ email: response.user.email, id: userid }));
+      dispatch(setEmail(""));
+      toast.success("Email updated successfully!");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
       }
-      console.log(err);
     }
   };
 
   const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (currentpasswordInput === "" || newpasswordInput === "") {
+    if (!currentpasswordInput || !newpasswordInput) {
       alert("Both fields are required");
       return;
     }
     try {
-      const response = await dispatch(
+      await dispatch(
         updatePassword({
           currentpassword: currentpasswordInput,
           newpassword: newpasswordInput,
           id: userid,
         })
       ).unwrap();
-      console.log("password successfully updated", response);
+      toast.success("Email updated successfully!");
       alert("Password updated successfully!");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        alert(err.message);
+        toast.error(err.message);
       }
       console.log(err);
     }
@@ -186,7 +198,7 @@ const Profile = () => {
                 >
                   <input
                     type="text"
-                    placeholder="Meinard Legashki"
+                    placeholder={userfirstname}
                     className="border-2 border-gray-300 rounded-md p-2 w-1/3"
                     value={firstname}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,7 +207,7 @@ const Profile = () => {
                   />
                   <input
                     type="text"
-                    placeholder="Limlengco"
+                    placeholder={userLastName}
                     className="border-2 border-gray-300 rounded-md p-2 w-1/3"
                     value={lastname}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -234,7 +246,7 @@ const Profile = () => {
                 >
                   <input
                     type="text"
-                    placeholder="limlengcomeinard@gmail.com"
+                    placeholder={useremail}
                     className="border-2 border-gray-300 rounded-md p-2 w-1/3"
                     value={email}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -302,80 +314,6 @@ const Profile = () => {
                   className="py-2 px-12 rounded-md hover:bg-gray-700 cursor-pointer ml-auto"
                 />
               </form>
-            </div>
-          </div>
-          <div className="w-full border-b py-5">
-            <Heading label="Integrated Account" className="font-bold text-lg" />
-            <Paragraph
-              label="Integrate your accounts for a seamless experience."
-              className="text-xs"
-              variant="tertiary"
-            />
-            <div className="flex w-3/4 pt-3">
-              <div className="w-17 p-3">
-                <img src={google} alt="" />
-              </div>
-              <div className="flex flex-col justify-center mr-auto">
-                <Heading label="Google Account" className="font-bold text-lg" />
-                <Paragraph
-                  label="Connect to your Gmail Account to enable email notifications from there."
-                  className="text-xs"
-                  variant="tertiary"
-                />
-              </div>
-              <Button
-                onClick={() => {}}
-                type="button"
-                label="Connect"
-                icon={<FaPlus className="inline-block" />}
-                className="px-10 rounded-md hover:bg-gray-700 cursor-pointer mt-3"
-              />
-            </div>
-            <div className="flex w-3/4 pt-3">
-              <div className="w-17 p-3">
-                <img src={brankas} alt="" />
-              </div>
-              <div className="flex flex-col justify-center mr-auto">
-                <Heading
-                  label="Brankas Account"
-                  className="font-bold text-lg"
-                />
-                <Paragraph
-                  label="Connect to your Brankas Account to enable financial data access."
-                  className="text-xs"
-                  variant="tertiary"
-                />
-              </div>
-              <Button
-                onClick={() => {}}
-                type="button"
-                label="Connect"
-                icon={<FaPlus className="inline-block" />}
-                className="px-10 rounded-md hover:bg-gray-700 cursor-pointer mt-3"
-              />
-            </div>
-            <div className="flex w-3/4 pt-3">
-              <div className="w-17 p-3">
-                <img src={finverse} alt="" />
-              </div>
-              <div className="flex flex-col justify-center mr-auto">
-                <Heading
-                  label="Finverse Account"
-                  className="font-bold text-lg"
-                />
-                <Paragraph
-                  label="Connect to your Finverse Account to enable financial data access."
-                  className="text-xs"
-                  variant="tertiary"
-                />
-              </div>
-              <Button
-                onClick={() => {}}
-                type="button"
-                label="Connect"
-                icon={<FaPlus className="inline-block" />}
-                className="px-10 rounded-md hover:bg-gray-700 cursor-pointer mt-3"
-              />
             </div>
           </div>
           <div className="w-full py-5">

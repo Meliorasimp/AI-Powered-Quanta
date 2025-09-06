@@ -10,6 +10,7 @@ import {
   fullNameReducer,
   passwordReducer,
 } from "./modules/Api/Users/userprofile.ts";
+import { budgetReducer } from "./modules/Api/Budgets/addbudget.ts";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     email: emailReducer,
     password: passwordReducer,
     user: userReducer,
+    budget: budgetReducer,
   },
 });
 

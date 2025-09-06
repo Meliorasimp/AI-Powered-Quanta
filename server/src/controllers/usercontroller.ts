@@ -18,6 +18,10 @@ export const postUserData = async (
   const { username, email, password } = req.body;
   const token = generateToken(new Types.ObjectId(), email);
   try {
+    if (!username || !email || !password) {
+      res.status(400).json({ message: "All fields are required" });
+      return;
+    }
     const newUser: IUser = new User({ username, email, password });
     await newUser.save();
 

@@ -28,8 +28,10 @@ type LoginPayload = {
 };
 
 type userState = {
-  email: string;
-  username: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  username?: string;
   id: string;
 };
 
@@ -50,6 +52,8 @@ const initialRegisterState: RegisterState = {
 };
 
 const initialUserState: userState = {
+  firstname: "",
+  lastname: "",
   email: "",
   username: "",
   id: "",

@@ -10,6 +10,7 @@ import Login from "../../components/Login";
 import { showRegisterForm } from "../../modules/Interaction.ts";
 const LandingPage = () => {
   const dispatch = useAppDispatch();
+
   const RegisterFormState = useAppSelector(
     (state: RootState) => state.interaction.isRegisterFormVisible
   );
