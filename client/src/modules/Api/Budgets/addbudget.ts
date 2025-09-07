@@ -4,6 +4,7 @@ import axios from "axios";
 type BudgetState = {
   description: string;
   amount: number;
+  dateCreated: string;
   id: string;
 };
 
@@ -55,7 +56,10 @@ export const addBudget = createAsyncThunk(
   "budget/addBudget",
   async (budgetData: BudgetState) => {
     try {
-      const response = await axios.post("/api/budgets", budgetData);
+      const response = await axios.post(
+        `http://localhost:5000/api/budgets/${budgetData.id}`,
+        budgetData
+      );
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

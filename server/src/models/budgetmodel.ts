@@ -11,7 +11,7 @@ const budgetSchema = new Schema<IBudget>({
   description: { type: String, required: true },
   amount: { type: Number, required: true },
   dateCreated: { type: Date, default: Date.now },
-  userId: { type: String, required: true },
+  userId: { type: String, required: true, ref: "User" },
 });
 
 export const Budget = model<IBudget>("Budget", budgetSchema);

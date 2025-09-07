@@ -1,5 +1,5 @@
 type ParagraphProps = {
-  label: string;
+  label: string | number;
   variant: "primary" | "secondary" | "tertiary";
   className?: string;
   id?: string;

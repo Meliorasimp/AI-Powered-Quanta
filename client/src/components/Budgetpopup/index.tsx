@@ -9,6 +9,7 @@ import {
   setAmount,
 } from "../../modules/Api/Budgets/addbudget.ts";
 import { addBudget } from "../../modules/Api/Budgets/addbudget.ts";
+import { addBudget as addBudgetFromStore } from "../../modules/Api/Budgets/displaybudget.ts";
 import { useAppDispatch } from "../../hooks/index.ts";
 import { toast } from "react-toastify";
 
@@ -32,8 +33,23 @@ const Budgetpopup = () => {
     }
 
     try {
-      await dispatch(addBudget({ description, amount, id: userId })).unwrap();
+      await dispatch(
+        addBudget({
+          description,
+          amount,
+          id: userId,
+          dateCreated: new Date().toISOString(),
+        })
+      ).unwrap();
       dispatch(hideBudgetPopup());
+      dispatch(
+        addBudgetFromStore({
+          description,
+          amount,
+          dateCreated: new Date().toISOString(),
+        })
+      );
+      toast.success("Budget added successfully!");
     } catch (error) {
       console.error("Failed to add budget:", error);
       toast.error("Failed to add budget. Please try again.");
@@ -68,6 +84,7 @@ const Budgetpopup = () => {
                   type="number"
                   value={amount}
                   className="w-full bg-gray-300 p-2 my-2 rounded-lg text-black"
+                  step={0.01}
                   placeholder="0.00"
                   onChange={(e) =>
                     dispatch(setAmount(parseFloat(e.target.value)))

@@ -9,6 +9,7 @@ import cors from "cors";
 import session from "express-session";
 import passport = require("passport");
 import authRouter from "./routes/authRoute";
+import budgetRouter from "./routes/budgetRoute";
 dotenv.config();
 
 const app = express();
@@ -34,6 +35,7 @@ const uri = process.env.MONGO_URI as string;
 
 app.use("/api", userRouter);
 app.use("/api", authRouter);
+app.use("/api", budgetRouter);
 
 mongoose
   .connect(uri)
