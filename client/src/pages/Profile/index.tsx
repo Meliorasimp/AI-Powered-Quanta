@@ -16,13 +16,14 @@ import {
   updateEmail,
   updatePassword,
 } from "../../modules/Api/Users/userprofile";
+import { uploadProfilePicture } from "../../modules/Api/Users/userprofile";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { showRegisterForm } from "../../modules/Interaction.ts";
 import Login from "../../components/Login/index.tsx";
 import RegisterForm from "../../components/Register/index.tsx";
 import { setUser } from "../../modules/Api/Users/userslice.ts";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRef } from "react";
 
 const Profile = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +38,7 @@ const Profile = () => {
   const userfirstname = useSelector((state: RootState) => state.user.firstname);
   const userLastName = useSelector((state: RootState) => state.user.lastname);
   const useremail = useSelector((state: RootState) => state.user.email);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { firstname, lastname } = useSelector(
     (state: RootState) => state.fullname
   );
@@ -44,6 +46,17 @@ const Profile = () => {
   const { currentpasswordInput, newpasswordInput } = useSelector(
     (state: RootState) => state.password
   );
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    console.log("Selected file:", file);
+    formData.append("profilePicture", file);
+
+    dispatch(uploadProfilePicture({ id: userid, formData }));
+  };
 
   const handleFullNameSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -130,7 +143,7 @@ const Profile = () => {
       }`}
     >
       <Navbar />
-      <div className="w-10/11 min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
+      <div className="w-full min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
         <div className="pb-2 border-b">
           <Heading
             label="Profile"
@@ -143,7 +156,10 @@ const Profile = () => {
           />
         </div>
         <div className="h-2/12">
-          <div className="flex flex-row items-center gap-x-5 w-3/4 py-3">
+          <form
+            className="flex flex-row items-center gap-x-5 w-3/4 py-3"
+            encType="multipart/form-data"
+          >
             <div className="bg-yellow-200 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center overflow-hidden">
               <img
                 src={gehlee}
@@ -158,20 +174,14 @@ const Profile = () => {
                 variant="tertiary"
               />
             </div>
-            <div className="flex flex-row gap-x-5">
-              <Button
-                onClick={() => dispatch(showRegisterForm())}
-                type="button"
-                label="Change Picture"
-                className="bg-gray-600 rounded-lg px-5 py-2 hover:bg-gray-700 cursor-pointer"
-              />
-              <Button
-                type="button"
-                label="Remove"
-                className="px-7 py-2 text-red-300 hover:text-red-400 cursor-pointer"
-              />
-            </div>
-          </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="mt-2 text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-100 file:text-yellow-700 hover:file:bg-yellow-200"
+            />
+          </form>
+
           <div className="w-full border-b py-5">
             <div className="w-3/4">
               <Heading label="Full Name" className="font-bold text-lg" />

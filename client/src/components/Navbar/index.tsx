@@ -59,19 +59,19 @@ const Navbar = () => {
                 label="Transactions"
                 onClick={() => nav("/transactions")}
                 type="button"
-                className="text-left text-lg text-white hover:bg-gray-600 w-full px-4 py-2"
+                className="text-left text-lg text-white hover:bg-gray-600 w-full px-4 py-2 rounded-lg"
               />
               <Button
                 label="Budgets"
                 onClick={() => nav("/budgets")}
                 type="button"
-                className="text-left text-lg text-white hover:bg-gray-600 w-full px-4 py-2"
+                className="text-left text-lg text-white hover:bg-gray-600 w-full px-4 py-2 rounded-lg"
               />
               <Button
                 label="Analytics"
                 onClick={() => nav("/analytics/financialoverview")}
                 type="button"
-                className="text-left text-lg text-white hover:bg-gray-600 w-full px-4 py-2"
+                className="text-left text-lg text-white hover:bg-gray-600 w-full px-4 py-2 rounded-lg"
               />
             </div>
           </div>

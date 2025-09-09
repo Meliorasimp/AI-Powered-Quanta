@@ -9,6 +9,7 @@ import {
   emailReducer,
   fullNameReducer,
   passwordReducer,
+  profilePictureReducer,
 } from "./modules/Api/Users/userprofile.ts";
 import { budgetReducer } from "./modules/Api/Budgets/addbudget.ts";
 import { userBudgetReducer } from "./modules/Api/Budgets/displaybudget.ts";
@@ -18,6 +19,7 @@ const store = configureStore({
     interaction: interactionReducer,
     register: registerReducer,
     login: loginReducer,
+    profile: profilePictureReducer,
     fullname: fullNameReducer,
     email: emailReducer,
     password: passwordReducer,

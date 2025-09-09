@@ -1,5 +1,12 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+
+type ProfilePictureState = {
+  profilepicture: string;
+  loading: boolean;
+  error: string | null;
+};
+
 type FullNameState = {
   firstname: string;
   lastname: string;
@@ -37,6 +44,12 @@ type PasswordPayload = {
   id: string;
 };
 
+const initialProfilePictureState: ProfilePictureState = {
+  profilepicture: "",
+  loading: false,
+  error: null,
+};
+
 const initialFullNameState: FullNameState = {
   firstname: "",
   lastname: "",
@@ -56,6 +69,16 @@ const initialPasswordState: PasswordState = {
   loading: false,
   error: null,
 };
+
+export const profilePictureSlice = createSlice({
+  name: "profilepicture",
+  initialState: initialProfilePictureState,
+  reducers: {
+    setProfilePicture(state, action: PayloadAction<string>) {
+      state.profilepicture = action.payload;
+    },
+  },
+});
 
 export const fullNameSlice = createSlice({
   name: "fullname",
@@ -141,6 +164,22 @@ export const passwordSlice = createSlice({
   },
 });
 
+export const uploadProfilePicture = createAsyncThunk(
+  "user/uploadProfilePicture",
+  async ({ id, formData }: { id: string; formData: FormData }) => {
+    const response = await axios.put(
+      `http://localhost:5000/api/users/uploadProfilePicture/${id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  }
+);
+
 export const updateFullName = createAsyncThunk(
   "user/updateFullName",
   async (fullNameData: FullNamePayload) => {
@@ -177,7 +216,9 @@ export const updatePassword = createAsyncThunk(
 export const { setFirstName, setLastName } = fullNameSlice.actions;
 export const { setEmail } = emailSlice.actions;
 export const { setCurrentPassword, setNewPassword } = passwordSlice.actions;
+export const { setProfilePicture } = profilePictureSlice.actions;
 
 export const fullNameReducer = fullNameSlice.reducer;
 export const emailReducer = emailSlice.reducer;
 export const passwordReducer = passwordSlice.reducer;
+export const profilePictureReducer = profilePictureSlice.reducer;

@@ -3,6 +3,13 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import mongoose, { Types } from "mongoose";
 import jwt from "jsonwebtoken";
+import s3 from "../utils/aws";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+//function to generate a token when the user registers or logs in
 
 function generateToken(id: string | Types.ObjectId, email: string) {
   return jwt.sign({ id: id.toString(), email }, process.env.JWT_SECRET!, {
@@ -173,6 +180,40 @@ export const updatePassword = async (req: Request, res: Response) => {
     return res.status(500).json({
       message: "Something went wrong",
       error: error.message || error.toString(),
+    });
+  }
+};
+
+//method to upload profile picture in the profile page
+export const uploadProfilePicture = async (req: Request, res: Response) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  console.log("Incoming upload request for user:", req.params.id);
+  console.log("File info:", req.file);
+
+  const { originalname, buffer, mimetype } = req.file;
+  const filename = `${Date.now()}_${originalname}`;
+  const key = `uploads/${filename}`;
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME!,
+    Key: key,
+    Body: buffer,
+    ContentType: mimetype,
+  });
+
+  try {
+    await s3.send(command);
+
+    const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    res.status(200).json({ url });
+  } catch (error: any) {
+    console.error("Upload error:", error.name, error.message, error.stack);
+    res.status(500).json({
+      message: "Upload failed",
+      error: error.message || "Unknown error",
     });
   }
 };
