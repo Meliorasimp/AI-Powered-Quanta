@@ -10,11 +10,14 @@ import session from "express-session";
 import passport = require("passport");
 import authRouter from "./routes/authRoute";
 import budgetRouter from "./routes/budgetRoute";
+import protectedRoute from "./routes/protectedroute";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -37,6 +40,9 @@ const uri = process.env.MONGO_URI as string;
 app.use("/api", userRouter);
 app.use("/api", authRouter);
 app.use("/api", budgetRouter);
+app.use("/user", protectedRoute);
+
+//connect to the database
 
 mongoose
   .connect(uri)

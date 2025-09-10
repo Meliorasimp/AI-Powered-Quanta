@@ -33,6 +33,7 @@ type userState = {
   email?: string;
   username?: string;
   id: string;
+  photo?: string;
 };
 
 // Define the initial states for the user informations
@@ -57,6 +58,7 @@ const initialUserState: userState = {
   email: "",
   username: "",
   id: "",
+  photo: "",
 };
 
 // Define the login slice

@@ -10,6 +10,7 @@ import { PiggyBankIcon } from "lucide-react";
 
 const Navbar = () => {
   const nav = useNavigate();
+  const profilePicture = useSelector((state: RootState) => state.user.photo);
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
@@ -81,7 +82,7 @@ const Navbar = () => {
             <div className="flex flex-row items-center">
               <div className="w-10 h-10">
                 <img
-                  src={gehlee}
+                  src={profilePicture || gehlee}
                   alt="profile"
                   className="w-full h-full object-cover rounded-full"
                 />

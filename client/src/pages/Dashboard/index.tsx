@@ -14,14 +14,34 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import "../../styles/index.css";
 import Button from "../../components/Button";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useEffect } from "react";
+import axios from "axios";
+import { setUser } from "../../modules/Api/Users/userslice";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const username = useAppSelector((state: RootState) => state.user.username);
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/user/protected",
+          { withCredentials: true }
+        );
+        console.log("Protected route response:", response.data);
+        dispatch(setUser(response.data.user));
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        navigate("/");
+      }
+    };
+    fetchUserData();
+  }, [navigate]);
 
   return (
     <div

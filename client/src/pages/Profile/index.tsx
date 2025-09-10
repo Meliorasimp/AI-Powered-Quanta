@@ -38,6 +38,8 @@ const Profile = () => {
   const userfirstname = useSelector((state: RootState) => state.user.firstname);
   const userLastName = useSelector((state: RootState) => state.user.lastname);
   const useremail = useSelector((state: RootState) => state.user.email);
+  const profilePicture = useSelector((state: RootState) => state.user.photo);
+  console.log("Profile Picture from Redux:", profilePicture);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { firstname, lastname } = useSelector(
     (state: RootState) => state.fullname
@@ -162,7 +164,7 @@ const Profile = () => {
           >
             <div className="bg-yellow-200 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center overflow-hidden">
               <img
-                src={gehlee}
+                src={profilePicture || gehlee}
                 alt="profile"
                 className="w-full h-full object-cover"
               />

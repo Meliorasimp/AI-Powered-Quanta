@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 export interface IUser extends Document {
   profilepicture?: string;
+  googleId?: string;
   firstname: string;
   lastname: string;
   username: string;
@@ -10,17 +11,23 @@ export interface IUser extends Document {
   password: string;
   createdAt: Date;
   comparePassword: (candidatePassword: string) => Promise<boolean>;
+  photo?: string;
 }
 
-const userSchema = new Schema<IUser>({
-  profilepicture: { type: String },
-  firstname: { type: String },
-  lastname: { type: String },
-  username: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
+const userSchema = new Schema<IUser>(
+  {
+    profilepicture: { type: String },
+    googleId: { type: String, unique: true, default: null },
+    firstname: { type: String },
+    lastname: { type: String },
+    username: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
+    photo: { type: String },
+  },
+  { timestamps: true }
+);
 
 userSchema.pre("save", async function (next) {
   const user = this as IUser;
