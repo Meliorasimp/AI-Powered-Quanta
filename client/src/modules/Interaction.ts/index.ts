@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 type InteractionState = {
   isBudgetPopupVisible: boolean;
+  isTransactionPopupVisible: boolean;
   isRegisterFormVisible: boolean;
   isLoginFormVisible: boolean;
   isUserLoggedIn: boolean;
@@ -12,6 +13,7 @@ type InteractionState = {
 
 const initialState: InteractionState = {
   isBudgetPopupVisible: false,
+  isTransactionPopupVisible: false,
   isRegisterFormVisible: false,
   isLoginFormVisible: false,
   isUserLoggedIn: false,
@@ -24,6 +26,12 @@ const interactionSlice = createSlice({
   name: "interaction",
   initialState,
   reducers: {
+    showTransactionPopup: (state) => {
+      return { ...state, isTransactionPopupVisible: true };
+    },
+    hideTransactionPopup: (state) => {
+      return { ...state, isTransactionPopupVisible: false };
+    },
     showBudgetPopup: (state) => {
       return { ...state, isBudgetPopupVisible: true };
     },
@@ -96,6 +104,8 @@ const interactionSlice = createSlice({
 });
 
 export const {
+  showTransactionPopup,
+  hideTransactionPopup,
   showBudgetPopup,
   hideBudgetPopup,
   showRegisterForm,

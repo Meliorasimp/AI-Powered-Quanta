@@ -145,7 +145,7 @@ const Profile = () => {
       }`}
     >
       <Navbar />
-      <div className="w-full min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
+      <div className="w-10/11 min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
         <div className="pb-2 border-b">
           <Heading
             label="Profile"
@@ -159,7 +159,7 @@ const Profile = () => {
         </div>
         <div className="h-2/12">
           <form
-            className="flex flex-row items-center gap-x-5 w-3/4 py-3"
+            className="flex flex-row items-center gap-x-5 w-full py-3"
             encType="multipart/form-data"
           >
             <div className="bg-yellow-200 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center overflow-hidden">
@@ -185,17 +185,17 @@ const Profile = () => {
           </form>
 
           <div className="w-full border-b py-5">
-            <div className="w-3/4">
+            <div className="w-full">
               <Heading label="Full Name" className="font-bold text-lg" />
               <div className="flex w-full pb-2">
-                <div className="w-1/3 pr-2">
+                <div className="w-2/7 pr-2">
                   <Paragraph
                     label="First Name"
                     className="text-xs"
                     variant="tertiary"
                   />
                 </div>
-                <div className="w-1/3 pl-2">
+                <div className="w-2/7 pl-2">
                   <Paragraph
                     label="Last Name"
                     className="text-xs"
@@ -211,7 +211,7 @@ const Profile = () => {
                   <input
                     type="text"
                     placeholder={userfirstname}
-                    className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                    className="border-2 border-gray-300 rounded-md p-2 w-2/7"
                     value={firstname}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       dispatch(setFirstName(e.target.value));
@@ -220,7 +220,7 @@ const Profile = () => {
                   <input
                     type="text"
                     placeholder={userLastName}
-                    className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                    className="border-2 border-gray-300 rounded-md p-2 w-2/7"
                     value={lastname}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       dispatch(setLastName(e.target.value))
@@ -243,8 +243,8 @@ const Profile = () => {
               className="text-xs"
               variant="tertiary"
             />
-            <div className="flex flex-col w-3/4 pt-3">
-              <div className="w-1/2 pr-2 pb-3">
+            <div className="flex flex-col w-full pt-3">
+              <div className="w-2/7 pr-2 pb-3">
                 <Paragraph
                   label="Email"
                   className="text-xs"
@@ -259,7 +259,7 @@ const Profile = () => {
                   <input
                     type="text"
                     placeholder={useremail}
-                    className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                    className="border-2 border-gray-300 rounded-md p-2 w-2/7"
                     value={email}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       dispatch(setEmail(e.target.value));
@@ -282,16 +282,16 @@ const Profile = () => {
               className="text-xs"
               variant="tertiary"
             />
-            <div className="flex flex-col w-3/4 pt-3">
+            <div className="flex flex-col w-full pt-3">
               <div className="flex w-full pb-2">
-                <div className="w-1/3 pr-2">
+                <div className="w-2/7 pr-2">
                   <Paragraph
                     label="Current Password"
                     className="text-xs"
                     variant="tertiary"
                   />
                 </div>
-                <div className="w-1/3 pl-2">
+                <div className="w-2/7 pl-2">
                   <Paragraph
                     label="New Password"
                     className="text-xs"
@@ -305,7 +305,7 @@ const Profile = () => {
               >
                 <input
                   type="text"
-                  className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                  className="border-2 border-gray-300 rounded-md p-2 w-2/7"
                   value={currentpasswordInput}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     dispatch(setCurrentPassword(e.target.value));
@@ -313,7 +313,7 @@ const Profile = () => {
                 />
                 <input
                   type="text"
-                  className="border-2 border-gray-300 rounded-md p-2 w-1/3"
+                  className="border-2 border-gray-300 rounded-md p-2 w-2/7"
                   value={newpasswordInput}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     dispatch(setNewPassword(e.target.value));

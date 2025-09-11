@@ -4,27 +4,35 @@ import bcrypt from "bcrypt";
 export interface IUser extends Document {
   profilepicture?: string;
   googleId?: string;
-  firstname: string;
+  githubId?: string;
+  microsoftId?: string;
+  firstname?: string;
   lastname: string;
   username: string;
   email: string;
   password: string;
   createdAt: Date;
   comparePassword: (candidatePassword: string) => Promise<boolean>;
-  photo?: string;
+  googlePhoto?: string;
+  githubPhoto?: string;
+  authProvider?: string;
 }
 
 const userSchema = new Schema<IUser>(
   {
     profilepicture: { type: String },
     googleId: { type: String, unique: true, default: null },
+    githubId: { type: String, unique: true, default: null },
+    microsoftId: { type: String, unique: true, default: null },
     firstname: { type: String },
     lastname: { type: String },
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    photo: { type: String },
+    googlePhoto: { type: String, default: null },
+    githubPhoto: { type: String, default: null },
+    authProvider: { type: String },
   },
   { timestamps: true }
 );

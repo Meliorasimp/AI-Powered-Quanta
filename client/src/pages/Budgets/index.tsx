@@ -87,7 +87,7 @@ const Budgets = () => {
               onClick={() => dispatch(showBudgetPopup())}
               type="button"
               icon={<Plus className="inline-block" />}
-              className="text-white px-3 rounded-sm cursor-pointer"
+              className="text-white px-3 rounded-sm cursor-pointer font-semibold"
             />
           </div>
         </div>
@@ -105,10 +105,6 @@ const Budgets = () => {
                 />
               </p>
             )}
-            {budget.error && (
-              <p style={{ color: "red" }}>Error: {budget.error}</p>
-            )}
-
             {!budget.loading && budget.budgets.length === 0 && (
               <p>No budgets found for this user.</p>
             )}

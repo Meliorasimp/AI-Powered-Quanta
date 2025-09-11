@@ -4,6 +4,8 @@ import Paragraph from "../../components/Text/Paragraph";
 import LinkedAccountData from "../../components/Linkedaccountdata";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
+import Button from "../../components/Button";
+import { Plus } from "lucide-react";
 
 const LinkedAccounts = () => {
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
@@ -24,16 +26,26 @@ const LinkedAccounts = () => {
     >
       <Navbar />
       <div className="w-10/11 h-screen flex flex-col py-5 px-5 gap-y-2 mx-auto">
-        <div className="overflow-hiddenpb-2">
-          <Heading
-            label="Linked Bank Accounts"
-            className="text-xl font-semibold main-website-text-color"
-          />
-          <Paragraph
-            label="Manage your Bank accounts and keep track of your finances. Add or Delete one."
-            className="text-base main-website-text-color"
-            variant="secondary"
-          />
+        <div className="flex flex-row gap-x-10 items-center justify-between">
+          <div className="overflow-hidden pb-2">
+            <Heading
+              label="Linked Bank Accounts"
+              className="text-xl font-semibold main-website-text-color"
+            />
+            <Paragraph
+              label="Manage your Bank accounts and keep track of your finances. Add or Delete one."
+              className="text-base main-website-text-color"
+              variant="secondary"
+            />
+          </div>
+          <div>
+            <Button
+              label="Add Account"
+              type="button"
+              icon={<Plus className="inline-block" />}
+              className="text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer "
+            />
+          </div>
         </div>
         <div className="h-full w-full">
           <div className="flex flex-col gap-y-5 w-full h-full">

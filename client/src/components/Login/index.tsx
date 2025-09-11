@@ -6,7 +6,7 @@ import google from "../../assets/google.png";
 import loginimage from "../../assets/verifydata.svg";
 import github from "../../assets/github.png";
 import Button from "../Button";
-import microsoft from "../../assets/microsoft.png";
+
 import { RootState } from "../../store.ts";
 import {
   setLoginPassword,
@@ -39,10 +39,6 @@ const Login = () => {
 
   const handleGithubLogin = () => {
     window.location.href = "http://localhost:5000/api/auth/github";
-  };
-
-  const handleMicrosoftLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/microsoft";
   };
 
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -146,14 +142,6 @@ const Login = () => {
                     alt="GitHub logo"
                     className="h-full w-full object-cover hover:scale-105 transition-transform duration-200 cursor-pointer"
                     onClick={handleGithubLogin}
-                  />
-                </div>
-                <div className="w-12 h-12">
-                  <img
-                    src={microsoft}
-                    alt="Google logo"
-                    className="h-full w-full object-cover hover:scale-105 transition-transform duration-200 cursor-pointer"
-                    onClick={handleMicrosoftLogin}
                   />
                 </div>
               </div>

@@ -121,7 +121,6 @@ const RegisterForm = () => {
             <Button
               label="Register"
               type="submit"
-              onClick={() => {}}
               className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4 text-base"
             />
             <Button

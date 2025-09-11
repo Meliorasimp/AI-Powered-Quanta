@@ -41,7 +41,7 @@ const Dashboard = () => {
       }
     };
     fetchUserData();
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   return (
     <div

@@ -17,7 +17,8 @@ passport.use(
       const email = profile.emails?.[0]?.value;
       console.log("Google profile photos:", profile.photos);
 
-      let user = await User.findOne({ googleId: profile.id });
+      let user = await User.findOne({ email });
+      console.log("Found user:", user);
       if (user) {
         return done(null, user);
       }
@@ -30,7 +31,7 @@ passport.use(
           password: "google_oauth_no_password",
           firstname: profile.name?.givenName,
           lastname: profile.name?.familyName,
-          photo: profile.photos?.[0]?.value,
+          googlePhoto: profile.photos?.[0]?.value,
         });
       }
 
@@ -63,7 +64,7 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
         {
           id: userObj.id,
           email: userObj.email,
-          photo: userObj.photo,
+          photo: userObj.googlePhoto,
           username: userObj.username,
         },
         process.env.JWT_SECRET as string,
@@ -80,7 +81,7 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 3600000,
+        maxAge: 3600000, // 1hour
       });
 
       req.logIn(user, (err) => {

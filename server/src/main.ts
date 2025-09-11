@@ -1,6 +1,5 @@
 import "./authentication/googleAuth";
 import "./authentication/githubAuth";
-import "./authentication/microsoftAuth";
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";

@@ -2,6 +2,9 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.884.0",
     "@aws-sdk/s3-request-presigner": "^3.884.0",
+    "@types/axios": "^0.9.36",
+    "@types/request": "^2.48.13",
+    "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -12,9 +15,11 @@
     "mongoose": "^8.17.0",
     "multer": "^2.0.2",
     "passport": "^0.7.0",
+    "passport-azure-ad-oauth2": "^0.0.4",
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
-    "passport-microsoft": "^2.1.0"
+    "passport-microsoft": "^2.1.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
