@@ -98,4 +98,27 @@
     background-color: var(--statcard-purple-bgcolor);
     color: var(--statcard-purple-textcolor);
   }
+
+  .cell-slide {
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+    transition: background-color 0.4s ease;
+  }
+
+  .cell-slide::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #f3f4f6; /* Tailwind's gray-100 */
+    transition: transform 0.4s ease;
+    z-index: 0;
+  }
+
+  .cell-slide:hover::before {
+    transform: translateX(100%);
+  }
 }

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type InteractionState = {
   isBudgetPopupVisible: boolean;
@@ -9,6 +9,7 @@ type InteractionState = {
   isThemePurple: boolean;
   isThemeDark: boolean;
   isThemeLight: boolean;
+  activeButtonId: string | null;
 };
 
 const initialState: InteractionState = {
@@ -20,12 +21,16 @@ const initialState: InteractionState = {
   isThemePurple: true,
   isThemeDark: false,
   isThemeLight: false,
+  activeButtonId: null,
 };
 
 const interactionSlice = createSlice({
   name: "interaction",
   initialState,
   reducers: {
+    setActiveButton: (state, action: PayloadAction<string>) => {
+      state.activeButtonId = action.payload;
+    },
     showTransactionPopup: (state) => {
       return { ...state, isTransactionPopupVisible: true };
     },
@@ -118,6 +123,7 @@ export const {
   switchToDarkTheme,
   switchToLightTheme,
   switchToPurpleTheme,
+  setActiveButton,
 } = interactionSlice.actions;
 
 export default interactionSlice.reducer;

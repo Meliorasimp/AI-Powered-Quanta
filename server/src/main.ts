@@ -10,6 +10,7 @@ import passport = require("passport");
 import authRouter from "./routes/authRoute";
 import budgetRouter from "./routes/budgetRoute";
 import protectedRoute from "./routes/protectedroute";
+import TransactionRouter from "./routes/transactionRoute";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.use("/api", userRouter);
 app.use("/api", authRouter);
 app.use("/api", budgetRouter);
 app.use("/user", protectedRoute);
+app.use("/api", TransactionRouter);
 
 //connect to the database
 

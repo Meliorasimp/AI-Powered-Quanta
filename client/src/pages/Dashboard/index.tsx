@@ -4,12 +4,7 @@ import Paragraph from "../../components/Text/Paragraph";
 import Statcard from "../../components/Statcard";
 import LineChart from "../../components/Linechart";
 import { useNavigate } from "react-router-dom";
-import {
-  DollarSign,
-  Banknote,
-  MoveDiagonalIcon,
-  PiggyBankIcon,
-} from "lucide-react";
+import { DollarSign, Banknote } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import "../../styles/index.css";
@@ -18,11 +13,21 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useEffect } from "react";
 import axios from "axios";
 import { setUser } from "../../modules/Api/Users/userslice";
+import { MoonLoader } from "react-spinners";
+import { CSSProperties } from "react";
 
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const username = useAppSelector((state: RootState) => state.user.username);
+  const userTransaction = useAppSelector(
+    (state: RootState) => state.usertransaction
+  );
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
@@ -71,7 +76,7 @@ const Dashboard = () => {
             variant="secondary"
             className="text-base main-website-text-color"
           />
-          <div className="flex flex-row pt-7 justify-between">
+          <div className="flex flex-row pt-7 justify-center gap-x-40">
             <Statcard
               icon={<DollarSign size={50} color="lightgray" />}
               label="Total Balance"
@@ -80,21 +85,15 @@ const Dashboard = () => {
             />
             <Statcard
               icon={<Banknote size={50} color="lightgray" />}
-              label="Remaining Income"
+              label="Total Expenses"
               value="100000"
               className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)]"
             />
             <Statcard
-              icon={<MoveDiagonalIcon size={50} color="lightgray" />}
-              label="Net Profit"
+              icon={<Banknote size={40} color="lightgray" />}
+              label="Total Budget Amount"
               value="100000"
               className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)]"
-            />
-            <Statcard
-              icon={<PiggyBankIcon size={50} color="lightgray" />}
-              label="Savings"
-              value="100000"
-              className=" statcard-purple p-5 shadow-[1px_4px_10px_rgba(255,255,255,0.4)]"
             />
           </div>
         </div>
@@ -122,50 +121,63 @@ const Dashboard = () => {
               />
             </div>
             <table className="w-full mt-4 border-blue-500">
-              <thead>
-                <tr className="text-gray-100">
-                  <td className="text-base px-4 py-2 font-semibold">
-                    Transaction ID
-                  </td>
-                  <td className="text-base px-4 py-2 font-semibold">Amount</td>
-                  <td className="text-base px-4 py-2 font-semibold">
-                    Merchant
-                  </td>
-                  <td className="text-base px-4 py-2 font-semibold">Date</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="text-base px-4 py-2">1312312</td>
-                  <td className="text-base px-4 py-2">$100</td>
-                  <td className="text-base px-4 py-2">Amazon</td>
-                  <td className="text-base px-4 py-2">2023-03-15</td>
-                </tr>
-                <tr>
-                  <td className="text-base px-4 py-2">31231</td>
-                  <td className="text-base px-4 py-2">$100</td>
-                  <td className="text-base px-4 py-2">Amazon</td>
-                  <td className="text-base px-4 py-2">2023-03-15</td>
-                </tr>
-                <tr>
-                  <td className="text-base px-4 py-2">431231</td>
-                  <td className="text-base px-4 py-2">$100</td>
-                  <td className="text-base px-4 py-2">Amazon</td>
-                  <td className="text-base px-4 py-2">2023-03-15</td>
-                </tr>
-                <tr>
-                  <td className="text-base px-4 py-2">4321</td>
-                  <td className="text-base px-4 py-2">$100</td>
-                  <td className="text-base px-4 py-2">Amazon</td>
-                  <td className="text-base px-4 py-2">2023-03-15</td>
-                </tr>
-                <tr>
-                  <td className="text-base px-4 py-2">14512</td>
-                  <td className="text-base px-4 py-2">$100</td>
-                  <td className="text-base px-4 py-2">Amazon</td>
-                  <td className="text-base px-4 py-2">2023-03-15</td>
-                </tr>
-              </tbody>
+              {userTransaction.loading && (
+                <p className="flex justify-center items-center">
+                  <MoonLoader
+                    color={"#36d7b7"}
+                    loading={userTransaction.loading}
+                    cssOverride={override}
+                    size={50}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </p>
+              )}
+              {!userTransaction.loading &&
+                userTransaction.transactions.length === 0 && (
+                  <p>No transactions found for this user.</p>
+                )}
+              {!userTransaction.loading &&
+                userTransaction.transactions.length > 0 && (
+                  <>
+                    <thead>
+                      <tr className="text-gray-100">
+                        <td className="text-base px-4 py-2 font-semibold">
+                          Transaction Name
+                        </td>
+                        <td className="text-base px-4 py-2 font-semibold">
+                          Amount
+                        </td>
+                        <td className="text-base px-4 py-2 font-semibold">
+                          Merchant
+                        </td>
+                        <td className="text-base px-4 py-2 font-semibold">
+                          Date
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userTransaction.transactions.map((transaction) => (
+                        <tr key={transaction._id}>
+                          <td className="text-base px-4 py-2">
+                            {transaction.transactionName}
+                          </td>
+                          <td className="text-base px-4 py-2">
+                            {transaction.amount}
+                          </td>
+                          <td className="text-base px-4 py-2">
+                            {transaction.merchant}
+                          </td>
+                          <td className="text-base px-4 py-2">
+                            {new Date(
+                              transaction.dateCreated
+                            ).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </>
+                )}
             </table>
           </div>
           <div className="w-3/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">

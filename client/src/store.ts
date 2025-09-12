@@ -13,6 +13,8 @@ import {
 } from "./modules/Api/Users/userprofile.ts";
 import { budgetReducer } from "./modules/Api/Budgets/addbudget.ts";
 import { userBudgetReducer } from "./modules/Api/Budgets/displaybudget.ts";
+import { transactionReducer } from "./modules/Api/transaction/addtransaction.ts";
+import { displayTransactionsReducer } from "./modules/Api/transaction/displaytransaction.ts";
 
 const store = configureStore({
   reducer: {
@@ -26,6 +28,8 @@ const store = configureStore({
     user: userReducer,
     budget: budgetReducer,
     userbudget: userBudgetReducer,
+    transaction: transactionReducer,
+    usertransaction: displayTransactionsReducer,
   },
 });
 

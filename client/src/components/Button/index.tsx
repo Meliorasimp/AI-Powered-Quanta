@@ -6,6 +6,7 @@ type ButtonProps = {
   id?: string;
   ariaLabel?: string;
   icon?: React.ReactNode;
+  isClicked?: boolean;
 };
 
 function Button({
@@ -16,12 +17,13 @@ function Button({
   id,
   ariaLabel,
   icon,
+  isClicked,
 }: ButtonProps) {
   return (
     <button
       onClick={onClick}
       type={type}
-      className={className}
+      className={`${className ?? ""} ${isClicked ? "clicked" : ""}`.trim()}
       id={id}
       aria-label={ariaLabel}
     >
