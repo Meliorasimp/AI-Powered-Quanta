@@ -1,1 +1,1 @@
-Being a Developer in 2025 sucks!
+A Personal Finance Tracker that is built using MERN Stack
