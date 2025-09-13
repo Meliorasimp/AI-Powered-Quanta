@@ -17,6 +17,7 @@ import { RootState } from "../../store.ts";
 import { useSelector } from "react-redux";
 import { submitTransaction } from "../../modules/Api/transaction/addtransaction.ts";
 import { toast } from "react-toastify";
+import { addTransaction } from "../../modules/Api/transaction/displaytransaction.ts";
 
 const TransactionCard = () => {
   const dispatch = useAppDispatch();
@@ -46,6 +47,7 @@ const TransactionCard = () => {
       ).unwrap();
       if (response) {
         toast.success("Transaction submitted successfully!");
+        dispatch(addTransaction(response));
         dispatch(hideTransactionPopup());
         dispatch(resetTransaction());
       }

@@ -69,32 +69,32 @@ const Budgets = () => {
       }`}
     >
       <Navbar />
-      <div className="w-10/11 h-screen flex flex-col py-5 px-5 gap-y-2 mx-auto">
-        <div className="flex flex-row gap-x-10 border-b">
+      <div className="w-10/11 min-h-screen flex flex-col py-5 px-5 gap-y-4 mx-auto">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 border-b items-start sm:items-center">
           <div className="overflow-hidden pb-2">
             <Heading
               label="Budgets"
-              className="text-xl font-semibold main-website-text-color"
+              className="text-lg sm:text-xl font-semibold main-website-text-color"
             />
             <Paragraph
               label="Curious where your money’s been going? Let’s take a look."
               variant="secondary"
             />
           </div>
-          <div className="flex justify-center ml-auto">
+          <div className="flex justify-start sm:ml-auto sm:justify-end w-full sm:w-auto">
             <Button
               label="Add Budget"
               onClick={() => dispatch(showBudgetPopup())}
               type="button"
               icon={<Plus className="inline-block" />}
-              className="text-white px-3 rounded-sm cursor-pointer font-semibold"
+              className="text-white px-3 py-1 rounded-sm cursor-pointer font-semibold"
             />
           </div>
         </div>
         <div className="h-full w-full flex flex-col gap-y-5">
           <div>
             {budget.loading && (
-              <p className="flex justify-center items-center">
+              <p className="flex justify-center items-center py-6">
                 <MoonLoader
                   color={"#36d7b7"}
                   loading={budget.loading}
@@ -106,7 +106,7 @@ const Budgets = () => {
               </p>
             )}
             {!budget.loading && budget.budgets.length === 0 && (
-              <p>No budgets found for this user.</p>
+              <p className="py-2">No budgets found for this user.</p>
             )}
 
             {!budget.loading && budget.budgets.length > 0 && (
@@ -131,7 +131,7 @@ const Budgets = () => {
                           />
                         </div>
                       </div>
-                      <div className="mt-2 w-1/3 flex flex-row justify-between">
+                      <div className="mt-2 w-full sm:w-2/3 flex flex-col sm:flex-row gap-2 sm:gap-4 sm:justify-between">
                         <Paragraph
                           label={`₱${b.amount.toFixed(2)} budgeted`}
                           variant="tertiary"

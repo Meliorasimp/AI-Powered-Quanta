@@ -25,12 +25,19 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const username = useAppSelector((state: RootState) => state.user.username);
+  const totalExpenses = useAppSelector(
+    (state: RootState) => state.dashboard.totalExpense
+  );
+  const remainingBalance = useAppSelector(
+    (state: RootState) => state.dashboard.remainingBalance
+  );
   const userTransaction = useAppSelector(
     (state: RootState) => state.usertransaction
   );
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -73,41 +80,46 @@ const Dashboard = () => {
                 ? `Welcome back ${username}! Here is your Financial statistics`
                 : "Welcome back!"
             }
-            variant="secondary"
-            className="text-base main-website-text-color"
+            variant="tertiary"
           />
-          <div className="flex flex-row pt-7 justify-center gap-x-40">
+          <div className="grid pt-7 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <Statcard
               icon={<DollarSign size={50} color="lightgray" />}
-              label="Total Balance"
-              value="100000"
-              className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)]"
+              label="Remaining Balance"
+              value={remainingBalance ? remainingBalance.toString() : "0"}
+              className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)] w-full"
             />
             <Statcard
               icon={<Banknote size={50} color="lightgray" />}
               label="Total Expenses"
-              value="100000"
-              className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)]"
+              value={totalExpenses ? totalExpenses.toString() : "0"}
+              className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)] w-full"
             />
             <Statcard
               icon={<Banknote size={40} color="lightgray" />}
               label="Total Budget Amount"
               value="100000"
-              className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)]"
+              className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)] w-full"
+            />
+            <Statcard
+              icon={<Banknote size={40} color="lightgray" />}
+              label="Total Transfers made"
+              value="100000"
+              className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)] w-full"
             />
           </div>
         </div>
-        <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700">
+        <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[70%] mx-auto">
           <Heading
             label="Income vs. Expenses Graph"
-            className="text-lg font-semibold main-website-text-color"
+            className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left"
           />
-          <div className="w-full h-[400px]">
+          <div className="w-full h-[300px] sm:h-[400px]">
             <LineChart />
           </div>
         </div>
-        <div className="flex flex-row gap-x-4">
-          <div className="w-8/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
+        <div className="flex flex-col gap-4 md:flex-row md:gap-4 md:justify-center">
+          <div className="w-full md:w-8/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
             <div className="flex flex-row">
               <Heading
                 label="Recent Transactions"
@@ -120,101 +132,109 @@ const Dashboard = () => {
                 onClick={() => navigate("/transactions")}
               />
             </div>
-            <table className="w-full mt-4 border-blue-500">
-              {userTransaction.loading && (
-                <p className="flex justify-center items-center">
-                  <MoonLoader
-                    color={"#36d7b7"}
-                    loading={userTransaction.loading}
-                    cssOverride={override}
-                    size={50}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                  />
-                </p>
-              )}
-              {!userTransaction.loading &&
-                userTransaction.transactions.length === 0 && (
-                  <p>No transactions found for this user.</p>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full min-w-[520px] mt-4 border-blue-500">
+                {userTransaction.loading && (
+                  <p className="flex justify-center items-center">
+                    <MoonLoader
+                      color={"#36d7b7"}
+                      loading={userTransaction.loading}
+                      cssOverride={override}
+                      size={50}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  </p>
                 )}
-              {!userTransaction.loading &&
-                userTransaction.transactions.length > 0 && (
-                  <>
-                    <thead>
-                      <tr className="text-gray-100">
-                        <td className="text-base px-4 py-2 font-semibold">
-                          Transaction Name
-                        </td>
-                        <td className="text-base px-4 py-2 font-semibold">
-                          Amount
-                        </td>
-                        <td className="text-base px-4 py-2 font-semibold">
-                          Merchant
-                        </td>
-                        <td className="text-base px-4 py-2 font-semibold">
-                          Date
-                        </td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {userTransaction.transactions.map((transaction) => (
-                        <tr key={transaction._id}>
-                          <td className="text-base px-4 py-2">
-                            {transaction.transactionName}
+                {!userTransaction.loading &&
+                  userTransaction.transactions.length === 0 && (
+                    <p>No transactions found for this user.</p>
+                  )}
+                {!userTransaction.loading &&
+                  userTransaction.transactions.length > 0 && (
+                    <>
+                      <thead>
+                        <tr className="text-gray-100">
+                          <td className="text-base px-4 py-2 font-semibold">
+                            Transaction Name
                           </td>
-                          <td className="text-base px-4 py-2">
-                            {transaction.amount}
+                          <td className="text-base px-4 py-2 font-semibold">
+                            Amount
                           </td>
-                          <td className="text-base px-4 py-2">
-                            {transaction.merchant}
+                          <td className="text-base px-4 py-2 font-semibold">
+                            Merchant
                           </td>
-                          <td className="text-base px-4 py-2">
-                            {new Date(
-                              transaction.dateCreated
-                            ).toLocaleDateString()}
+                          <td className="text-base px-4 py-2 font-semibold">
+                            Date
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </>
-                )}
-            </table>
+                      </thead>
+                      <tbody>
+                        {userTransaction.transactions
+                          .slice(0, 5)
+                          .map((transaction) => (
+                            <tr key={transaction._id}>
+                              <td className="text-base px-4 py-2">
+                                {transaction.transactionName}
+                              </td>
+                              <td className="text-base px-4 py-2">
+                                {transaction.amount}
+                              </td>
+                              <td className="text-base px-4 py-2">
+                                {transaction.merchant}
+                              </td>
+                              <td className="text-base px-4 py-2">
+                                {new Date(
+                                  transaction.dateCreated
+                                ).toLocaleDateString()}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </>
+                  )}
+              </table>
+            </div>
           </div>
-          <div className="w-3/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
+          <div className="w-full md:w-3/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
             <Heading
               label="Upcoming Bills"
               className="text-lg font-semibold main-website-text-color"
             />
-            <table className="w-full mt-4 border-blue-500">
-              <thead>
-                <tr className="text-gray-100">
-                  <td className="text-base px-4 py-2 font-semibold">
-                    Merchant
-                  </td>
-                  <td className="text-base px-4 py-2 font-semibold">Amount</td>
-                  <td className="text-base px-4 py-2 font-semibold">
-                    Due Date
-                  </td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="text-base px-4 py-2">Netflix</td>
-                  <td className="text-base px-4 py-2">$200</td>
-                  <td className="text-base px-4 py-2">2023-04-01</td>
-                </tr>
-                <tr>
-                  <td className="text-base px-4 py-2">Electric Bill</td>
-                  <td className="text-base px-4 py-2">$150</td>
-                  <td className="text-base px-4 py-2">2023-04-15</td>
-                </tr>
-                <tr>
-                  <td className="text-base px-4 py-2">PLDC</td>
-                  <td className="text-base px-4 py-2">$300</td>
-                  <td className="text-base px-4 py-2">2023-04-30</td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full min-w-[420px] mt-4 border-blue-500">
+                <thead>
+                  <tr className="text-gray-100">
+                    <td className="text-base px-4 py-2 font-semibold">
+                      Merchant
+                    </td>
+                    <td className="text-base px-4 py-2 font-semibold">
+                      Amount
+                    </td>
+                    <td className="text-base px-4 py-2 font-semibold">
+                      Due Date
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="text-base px-4 py-2">Netflix</td>
+                    <td className="text-base px-4 py-2">$200</td>
+                    <td className="text-base px-4 py-2">2023-04-01</td>
+                  </tr>
+                  <tr>
+                    <td className="text-base px-4 py-2">Electric Bill</td>
+                    <td className="text-base px-4 py-2">$150</td>
+                    <td className="text-base px-4 py-2">2023-04-15</td>
+                  </tr>
+                  <tr>
+                    <td className="text-base px-4 py-2">PLDC</td>
+                    <td className="text-base px-4 py-2">$300</td>
+                    <td className="text-base px-4 py-2">2023-04-30</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

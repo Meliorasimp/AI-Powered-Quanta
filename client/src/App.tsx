@@ -5,6 +5,7 @@ import { Bounce, ToastContainer } from "react-toastify";
 
 function App() {
   const route = useRoutes(routes);
+
   return (
     <>
       {route}

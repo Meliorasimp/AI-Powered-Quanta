@@ -15,6 +15,7 @@ import { budgetReducer } from "./modules/Api/Budgets/addbudget.ts";
 import { userBudgetReducer } from "./modules/Api/Budgets/displaybudget.ts";
 import { transactionReducer } from "./modules/Api/transaction/addtransaction.ts";
 import { displayTransactionsReducer } from "./modules/Api/transaction/displaytransaction.ts";
+import { dashboardReducer } from "./modules/Interaction.ts/dashboard/index.ts";
 
 const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ const store = configureStore({
     userbudget: userBudgetReducer,
     transaction: transactionReducer,
     usertransaction: displayTransactionsReducer,
+    dashboard: dashboardReducer,
   },
 });
 
