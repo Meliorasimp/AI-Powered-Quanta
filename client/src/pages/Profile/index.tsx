@@ -20,13 +20,18 @@ import { uploadProfilePicture } from "../../modules/Api/Users/userprofile";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import Login from "../../components/Login/index.tsx";
 import RegisterForm from "../../components/Register/index.tsx";
-import { setUser } from "../../modules/Api/Users/userslice.ts";
+import { setLoggedIn, setUser } from "../../modules/Api/Users/userslice.ts";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRef } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { clearTransactions } from "../../modules/Api/transaction/displaytransaction.ts";
+import { clearBudgets } from "../../modules/Api/Budgets/displaybudget.ts";
 
 const Profile = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const { isRegisterFormVisible, isLoginFormVisible } = useAppSelector(
     (state: RootState) => state.interaction
@@ -48,6 +53,38 @@ const Profile = () => {
   const { currentpasswordInput, newpasswordInput } = useSelector(
     (state: RootState) => state.password
   );
+
+  const handleUserLogout = async () => {
+    console.log("Logging out user with ID:", userid);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(
+        setUser({
+          id: "",
+          email: "",
+          username: "",
+          photo: "",
+          firstname: "",
+          lastname: "",
+        })
+      );
+      dispatch(setLoggedIn(false));
+      dispatch(setUser({ id: "", email: "", username: "" }));
+      dispatch(clearTransactions());
+      dispatch(clearBudgets());
+      console.log("Logout response:", response.data);
+      toast.success("Logged out successfully!");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -337,7 +374,7 @@ const Profile = () => {
             />
             <div className="flex gap-x-5">
               <Button
-                onClick={() => {}}
+                onClick={() => handleUserLogout()}
                 type="button"
                 label="Log out"
                 icon={<FaDoorClosed className="inline-block" />}

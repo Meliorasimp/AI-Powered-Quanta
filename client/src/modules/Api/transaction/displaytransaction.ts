@@ -32,6 +32,9 @@ export const displayTransactionsSlice = createSlice({
     addTransaction: (state, action) => {
       state.transactions.push(action.payload);
     },
+    clearTransactions: (state) => {
+      state.transactions = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserTransactions.pending, (state) => {
@@ -68,7 +71,7 @@ export const getUserTransactions = createAsyncThunk(
   }
 );
 
-export const { setTransactions, addTransaction } =
+export const { setTransactions, addTransaction, clearTransactions } =
   displayTransactionsSlice.actions;
 
 export const displayTransactionsReducer = displayTransactionsSlice.reducer;

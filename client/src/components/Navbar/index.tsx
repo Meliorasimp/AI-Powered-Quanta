@@ -6,13 +6,28 @@ import { RootState } from "../../store";
 import Heading from "../Text/Heading";
 import { LayoutDashboardIcon, PiggyBankIcon, Menu, X } from "lucide-react";
 import gehlee from "../../assets/gehlee.jpg";
-import { useState } from "react";
+import {
+  setMobileOpen,
+  setFinanceOpen,
+  setProfileOpen,
+} from "../../modules/Interaction.ts";
+import { useAppDispatch } from "../../hooks";
 
 const Navbar = () => {
   const nav = useNavigate();
+  const dispatch = useAppDispatch();
   const profilePicture = useSelector((state: RootState) => state.user.photo);
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
+  );
+  const mobileOpen = useSelector(
+    (state: RootState) => state.interaction.isMobileOpen
+  );
+  const financeOpen = useSelector(
+    (state: RootState) => state.interaction.isFinanceOpen
+  );
+  const profileOpen = useSelector(
+    (state: RootState) => state.interaction.isProfileOpen
   );
 
   const themeClass = isThemePurple
@@ -23,12 +38,8 @@ const Navbar = () => {
     ? "dark"
     : "";
 
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [financeOpen, setFinanceOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-
   const handleNavigate = (path: string) => {
-    setMobileOpen(false);
+    dispatch(setMobileOpen(false));
     nav(path);
   };
 
@@ -54,8 +65,8 @@ const Navbar = () => {
 
           <div
             className="relative group"
-            onMouseEnter={() => setFinanceOpen(true)}
-            onMouseLeave={() => setFinanceOpen(false)}
+            onMouseEnter={() => dispatch(setFinanceOpen(true))}
+            onMouseLeave={() => dispatch(setFinanceOpen(false))}
           >
             <Button
               label="Finance"
@@ -72,7 +83,7 @@ const Navbar = () => {
             <div
               className={`${
                 financeOpen ? "block" : "hidden"
-              } md:group-hover:block absolute left-0 top-full mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-lg min-w-[180px] z-50`}
+              } md:group-hover:block absolute left-0 top-full bg-gray-800 border border-gray-700 rounded-lg shadow-lg min-w-[180px] z-50`}
             >
               <Button
                 label="Transactions"
@@ -95,12 +106,11 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        {/* Right side: profile (desktop) and hamburger (mobile) */}
         <div className="w-32 hidden md:block">
           <div
             className="relative group z-10"
-            onMouseEnter={() => setProfileOpen(true)}
-            onMouseLeave={() => setProfileOpen(false)}
+            onMouseEnter={() => dispatch(setProfileOpen(true))}
+            onMouseLeave={() => dispatch(setProfileOpen(false))}
           >
             <div className="flex flex-row items-center">
               <div className="w-10 h-10">
@@ -118,7 +128,7 @@ const Navbar = () => {
             <div
               className={`${
                 profileOpen ? "block" : "hidden"
-              } md:group-hover:block absolute right-0 top-full mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-lg min-w-[180px] z-50`}
+              } md:group-hover:block absolute right-0 top-full bg-gray-800 border border-gray-700 rounded-lg shadow-lg min-w-[180px] z-50`}
             >
               <Button
                 label="Profile Settings"
@@ -147,7 +157,6 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        {/* Hamburger button (mobile only) */}
         <div className="md:hidden ml-auto">
           <button
             type="button"
@@ -155,7 +164,7 @@ const Navbar = () => {
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            onClick={() => setMobileOpen((o) => !o)}
+            onClick={() => dispatch(setMobileOpen(!mobileOpen))}
           >
             {mobileOpen ? (
               <X className="w-6 h-6 text-white" />

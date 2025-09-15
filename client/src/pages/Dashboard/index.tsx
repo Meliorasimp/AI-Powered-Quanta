@@ -10,11 +10,25 @@ import { RootState } from "../../store";
 import "../../styles/index.css";
 import Button from "../../components/Button";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { useEffect } from "react";
 import axios from "axios";
 import { setUser } from "../../modules/Api/Users/userslice";
 import { MoonLoader } from "react-spinners";
 import { CSSProperties } from "react";
+import {
+  getUserTransactions,
+  setTransactions,
+} from "../../modules/Api/transaction/displaytransaction.ts";
+import { useEffect } from "react";
+import {
+  calculateRemainingBalance,
+  calculateTotalExpenses,
+  calculateTotalTransfersMade,
+} from "../../utils/index.ts";
+import {
+  setRemainingBalance,
+  setTotalExpense,
+  setTotalTransfersMade,
+} from "../../modules/Interaction.ts/dashboard/index.ts";
 
 const override: CSSProperties = {
   display: "block",
@@ -30,6 +44,9 @@ const Dashboard = () => {
   );
   const remainingBalance = useAppSelector(
     (state: RootState) => state.dashboard.remainingBalance
+  );
+  const totalTransfersMade = useAppSelector(
+    (state: RootState) => state.dashboard.totalTransfersMade
   );
   const userTransaction = useAppSelector(
     (state: RootState) => state.usertransaction
@@ -47,6 +64,21 @@ const Dashboard = () => {
         );
         console.log("Protected route response:", response.data);
         dispatch(setUser(response.data.user));
+        if (response.data.user && response.data.user.id) {
+          const userTransactions = await dispatch(
+            getUserTransactions(response.data.user.id)
+          ).unwrap();
+          dispatch(setTransactions(userTransactions));
+
+          const totalExpenses = calculateTotalExpenses(userTransactions);
+          dispatch(setTotalExpense(totalExpenses));
+
+          const remainingBalance = calculateRemainingBalance(userTransactions);
+          dispatch(setRemainingBalance(remainingBalance));
+
+          const totalTransfers = calculateTotalTransfersMade(userTransactions);
+          dispatch(setTotalTransfersMade(totalTransfers));
+        }
       } catch (error) {
         console.error("Error fetching user data:", error);
         navigate("/");
@@ -104,7 +136,7 @@ const Dashboard = () => {
             <Statcard
               icon={<Banknote size={40} color="lightgray" />}
               label="Total Transfers made"
-              value="100000"
+              value={totalTransfersMade ? totalTransfersMade.toString() : "0"}
               className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)] w-full"
             />
           </div>
@@ -196,12 +228,12 @@ const Dashboard = () => {
               </table>
             </div>
           </div>
-          <div className="w-full md:w-3/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
+          <div className="w-full md:w-4/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
             <Heading
               label="Upcoming Bills"
               className="text-lg font-semibold main-website-text-color"
             />
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-x-auto h-full">
               <table className="w-full min-w-[420px] mt-4 border-blue-500">
                 <thead>
                   <tr className="text-gray-100">

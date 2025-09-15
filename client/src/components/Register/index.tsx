@@ -16,6 +16,7 @@ import {
 } from "../../modules/Api/Users/userslice.ts";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/index.ts";
+import { setLoggedIn } from "../../modules/Api/Users/userslice.ts";
 
 const RegisterForm = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +43,7 @@ const RegisterForm = () => {
     dispatch(setRegisterPassword(e.target.value));
   };
 
-  const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (
@@ -57,16 +58,25 @@ const RegisterForm = () => {
       alert("Password must be at least 6 characters long.");
       return;
     }
-    dispatch(
+    console.log("Registering user:", {
+      email: emailAddressValue,
+      username: usernameValue,
+      password: passwordValue,
+    });
+    const result = await dispatch(
       registerUser({
         email: emailAddressValue,
         username: usernameValue,
         password: passwordValue,
       })
     );
-    dispatch(resetRegisterForm());
-    dispatch(hideRegisterForm());
-    navigate("/dashboard");
+    console.log("Registration result:", result);
+    if (result.payload?.success) {
+      dispatch(setLoggedIn(true));
+      dispatch(resetRegisterForm());
+      dispatch(hideRegisterForm());
+      navigate("/dashboard");
+    }
     console.log("Registration form submitted");
   };
 

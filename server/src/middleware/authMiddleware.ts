@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
+import User from "../models/usermodel";
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ interface JWTPayload {
   photo?: string;
 }
 
-export function authMiddleWare(
+export async function authMiddleWare(
   req: Request,
   res: Response,
   next: NextFunction
@@ -23,11 +24,22 @@ export function authMiddleWare(
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
+
+    // Enrich user data from DB for consistent shape across local and OAuth logins
+    const dbUser = await User.findById(decoded.id).lean();
+    if (!dbUser) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
     req.user = {
       id: decoded.id,
-      email: decoded.email,
-      username: decoded.username,
-      photo: decoded.photo,
+      email: decoded.email ?? dbUser.email,
+      username: decoded.username ?? dbUser.username,
+      photo:
+        decoded.photo ??
+        dbUser.googlePhoto ??
+        dbUser.githubPhoto ??
+        dbUser.profilepicture,
     };
 
     next();

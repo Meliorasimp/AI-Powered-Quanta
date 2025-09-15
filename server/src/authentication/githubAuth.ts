@@ -53,7 +53,7 @@ passport.use(
         }
 
         // Check if user exists in the database
-        const user = await User.findOne({ email: primaryEmail });
+        const user = await User.findOne({ githubId: profile.id });
         // If user exists, proceed.
         if (user) {
           const updatedUser = await User.findOneAndUpdate(
@@ -129,6 +129,7 @@ export const githubAuth = async (
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
+        path: "/",
         maxAge: 3600000, // 1 hour
       });
 

@@ -5,10 +5,10 @@ import {
   updateEmail,
   updatePassword,
   uploadProfilePicture,
+  logoutUser,
 } from "../controllers/usercontroller";
 import upload from "../middleware/uploadMiddleware";
 import express from "express";
-
 const userRouter = express.Router();
 
 userRouter.post("/users/register", postUserData);
@@ -21,5 +21,6 @@ userRouter.put(
   upload.single("profilePicture"),
   uploadProfilePicture
 );
+userRouter.post("/logout", logoutUser);
 
 export default userRouter;

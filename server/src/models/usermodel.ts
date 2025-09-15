@@ -5,7 +5,6 @@ export interface IUser extends Document {
   profilepicture?: string;
   googleId?: string;
   githubId?: string;
-  microsoftId?: string;
   firstname?: string;
   lastname: string;
   username: string;
@@ -21,9 +20,8 @@ export interface IUser extends Document {
 const userSchema = new Schema<IUser>(
   {
     profilepicture: { type: String },
-    googleId: { type: String, unique: true, default: null },
-    githubId: { type: String, unique: true, default: null },
-    microsoftId: { type: String, unique: true, default: null },
+    googleId: { type: String, unique: true, sparse: true },
+    githubId: { type: String, unique: true, sparse: true },
     firstname: { type: String },
     lastname: { type: String },
     username: { type: String, required: true },

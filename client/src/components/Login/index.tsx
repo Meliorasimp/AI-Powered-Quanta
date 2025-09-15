@@ -67,6 +67,7 @@ const Login = () => {
           username: result.user.username,
         })
       );
+
       dispatch(hideLoginForm());
       navigate("/dashboard");
       console.log("Login success:", result);

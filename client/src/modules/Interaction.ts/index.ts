@@ -10,6 +10,9 @@ type InteractionState = {
   isThemeDark: boolean;
   isThemeLight: boolean;
   activeButtonId: string | null;
+  isMobileOpen: boolean;
+  isFinanceOpen: boolean;
+  isProfileOpen: boolean;
 };
 
 const initialState: InteractionState = {
@@ -22,12 +25,24 @@ const initialState: InteractionState = {
   isThemeDark: false,
   isThemeLight: false,
   activeButtonId: null,
+  isMobileOpen: false,
+  isFinanceOpen: false,
+  isProfileOpen: false,
 };
 
 const interactionSlice = createSlice({
   name: "interaction",
   initialState,
   reducers: {
+    setMobileOpen: (state, action: PayloadAction<boolean>) => {
+      state.isMobileOpen = action.payload;
+    },
+    setFinanceOpen: (state, action: PayloadAction<boolean>) => {
+      state.isFinanceOpen = action.payload;
+    },
+    setProfileOpen: (state, action: PayloadAction<boolean>) => {
+      state.isProfileOpen = action.payload;
+    },
     setActiveButton: (state, action: PayloadAction<string>) => {
       state.activeButtonId = action.payload;
     },
@@ -124,6 +139,9 @@ export const {
   switchToLightTheme,
   switchToPurpleTheme,
   setActiveButton,
+  setMobileOpen,
+  setFinanceOpen,
+  setProfileOpen,
 } = interactionSlice.actions;
 
 export default interactionSlice.reducer;

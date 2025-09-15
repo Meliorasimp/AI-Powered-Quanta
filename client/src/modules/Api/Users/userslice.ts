@@ -14,6 +14,7 @@ type RegisterState = {
   password: string;
   loading: boolean;
   error: string | null;
+  isLoggedIn: boolean;
 };
 
 type RegisterPayload = {
@@ -50,6 +51,7 @@ const initialRegisterState: RegisterState = {
   password: "",
   loading: false,
   error: null,
+  isLoggedIn: false,
 };
 
 const initialUserState: userState = {
@@ -131,6 +133,9 @@ const registerSlice = createSlice({
     setRegisterError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
     },
+    setLoggedIn(state, action: PayloadAction<boolean>) {
+      state.isLoggedIn = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -143,6 +148,7 @@ const registerSlice = createSlice({
         state.email = action.payload.email;
         state.username = action.payload.username;
         state.password = action.payload.password;
+        state.isLoggedIn = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -168,7 +174,8 @@ export const loginUser = createAsyncThunk(
   async (userData: LoginPayload) => {
     const response = await axios.post(
       "http://localhost:5000/api/users/login",
-      userData
+      userData,
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -179,7 +186,8 @@ export const registerUser = createAsyncThunk(
   async (userData: RegisterPayload) => {
     const response = await axios.post(
       "http://localhost:5000/api/users/register",
-      userData
+      userData,
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -192,6 +200,7 @@ export const {
   setRegisterLoading,
   setRegisterError,
   resetRegisterForm,
+  setLoggedIn,
 } = registerSlice.actions;
 
 export const {

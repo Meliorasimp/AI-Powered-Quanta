@@ -17,7 +17,7 @@ passport.use(
       const email = profile.emails?.[0]?.value;
       console.log("Google profile photos:", profile.photos);
 
-      let user = await User.findOne({ email });
+      let user = await User.findOne({ googleId: profile.id });
       console.log("Found user:", user);
       if (user) {
         return done(null, user);
@@ -81,6 +81,7 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
+        path: "/",
         maxAge: 3600000, // 1hour
       });
 

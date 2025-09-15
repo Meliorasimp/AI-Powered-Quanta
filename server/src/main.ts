@@ -12,6 +12,7 @@ import budgetRouter from "./routes/budgetRoute";
 import protectedRoute from "./routes/protectedroute";
 import TransactionRouter from "./routes/transactionRoute";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -33,6 +34,11 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 
 const port = process.env.PORT || 3000;
 const uri = process.env.MONGO_URI as string;

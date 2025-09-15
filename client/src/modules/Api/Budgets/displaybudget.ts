@@ -39,6 +39,9 @@ const userBudgetsSlice = createSlice({
         (budget) => budget._id !== action.payload
       );
     },
+    clearBudgets: (state) => {
+      state.budgets = [];
+    },
   },
   extraReducers: (builder) => {
     handleFetchBudgets(builder);
@@ -117,6 +120,7 @@ function handleDeleteBudget(builder: ActionReducerMapBuilder<userBudgetState>) {
   });
 }
 
-export const { setBudgets, addBudget, deleteBudget } = userBudgetsSlice.actions;
+export const { setBudgets, addBudget, deleteBudget, clearBudgets } =
+  userBudgetsSlice.actions;
 
 export const userBudgetReducer = userBudgetsSlice.reducer;
