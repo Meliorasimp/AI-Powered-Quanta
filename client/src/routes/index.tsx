@@ -9,6 +9,8 @@ import Settings from "../pages/Settings";
 import Profile from "../pages/Profile";
 import LandingPage from "../pages/Landingpage";
 import Navbar from "../components/Navbar";
+import About from "../pages/About";
+import Contacts from "../pages/Contacts";
 
 const routes: RouteObject[] = [
   {
@@ -50,6 +52,14 @@ const routes: RouteObject[] = [
   {
     path: "/settings/navbar",
     element: <Navbar />,
+  },
+  {
+    path: "/about",
+    element: <About />,
+  },
+  {
+    path: "/contact",
+    element: <Contacts />,
   },
 ];
 

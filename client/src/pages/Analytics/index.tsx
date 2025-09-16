@@ -1,7 +1,7 @@
 import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
-import LineChart from "../../components/Linechart";
+import LineChart from "../../components/Chartjs/Linechart/index.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 

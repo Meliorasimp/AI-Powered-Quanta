@@ -41,8 +41,6 @@ export const getBudgetsByUser = async (req: Request, res: Response) => {
 
 export const deleteBudgetById = async (req: Request, res: Response) => {
   const budgetId = req.params.id;
-  console.log("Deleting budget with ID:", budgetId);
-
   try {
     const deletedBudget = await Budget.findByIdAndDelete(budgetId);
     if (!deletedBudget) {

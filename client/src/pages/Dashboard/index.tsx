@@ -2,7 +2,8 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import Statcard from "../../components/Statcard";
-import LineChart from "../../components/Linechart";
+import LineChart from "../../components/Chartjs/Linechart/index.tsx";
+import Doughnut from "../../components/Chartjs/Doughnut/index.tsx";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, Banknote } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -141,13 +142,24 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[70%] mx-auto">
-          <Heading
-            label="Income vs. Expenses Graph"
-            className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left"
-          />
-          <div className="w-full h-[300px] sm:h-[400px]">
-            <LineChart />
+        <div className="flex gap-x-4 flex-col lg:flex-row lg:gap-x-4 lg:justify-center">
+          <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[70%] mx-auto">
+            <Heading
+              label="Income vs. Expenses Graph"
+              className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left"
+            />
+            <div className="w-full h-[300px] sm:h-[400px]">
+              <LineChart />
+            </div>
+          </div>
+          <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[30%] mx-auto">
+            <Heading
+              label="Transactions Graph"
+              className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left"
+            />
+            <div className="w-full h-[300px] sm:h-[400px] flex justify-center items-center">
+              <Doughnut />
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-4 md:flex-row md:gap-4 md:justify-center">

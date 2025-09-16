@@ -25,7 +25,6 @@ export async function authMiddleWare(
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
 
-    // Enrich user data from DB for consistent shape across local and OAuth logins
     const dbUser = await User.findById(decoded.id).lean();
     if (!dbUser) {
       return res.status(401).json({ message: "User not found" });

@@ -149,7 +149,7 @@ const RegisterForm = () => {
                   dispatch(switchToLoginForm());
                 }}
                 type="button"
-                className="text-gray-200 hover:underline cursor-pointer text-sm font-semibold"
+                className="text-gray-200 hover:underline cursor-pointer text-lg font-semibold"
               />
             </div>
           </form>

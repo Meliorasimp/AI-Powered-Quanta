@@ -23,13 +23,13 @@ export const postUserData = async (
   res: Response
 ): Promise<void> => {
   const { username, email, password } = req.body;
-  console.log("postUserData hit", req.body);
 
   try {
     if (!username || !email || !password) {
       res.status(400).json({ message: "All fields are required" });
       return;
     }
+
     const newUser: IUser = new User({ username, email, password });
     if (!newUser) {
       res.status(400).json({ message: "User creation failed" });

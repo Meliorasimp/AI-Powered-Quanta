@@ -82,7 +82,7 @@ const Login = () => {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center 
-                bg-black/50 backdrop-blur-xs z-50"
+                bg-black/50 backdrop-blur-xs z-50 "
     >
       <div className="bg-gray-900 w-2/3 h-3/4 flex flex-row justify-center rounded-2xl items-center">
         <div className="w-full pt-8 pr-8 pl-8">

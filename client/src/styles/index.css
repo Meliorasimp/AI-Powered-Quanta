@@ -121,4 +121,8 @@
   .cell-slide:hover::before {
     transform: translateX(100%);
   }
+
+  .text-glow-green {
+    filter: drop-shadow(0 0 1px lightgreen);
+  }
 }
