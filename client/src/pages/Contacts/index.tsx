@@ -63,6 +63,7 @@ const Contacts = () => {
                 name="message"
                 id="message"
                 className="mt-5 p-2 rounded-md border-2 outline-none w-full h-50"
+                placeholder="Your message..."
               ></textarea>
               <Button
                 label="Send Message"

@@ -13,6 +13,12 @@ type InteractionState = {
   isMobileOpen: boolean;
   isFinanceOpen: boolean;
   isProfileOpen: boolean;
+  SelectFilterByAll: boolean;
+  selectFilterByIncome: boolean;
+  selectFilterByExpense: boolean;
+  selectFilterByTransfer: boolean;
+  selectFilterByPending: boolean;
+  selectFilterByCleared: boolean;
 };
 
 const initialState: InteractionState = {
@@ -28,6 +34,12 @@ const initialState: InteractionState = {
   isMobileOpen: false,
   isFinanceOpen: false,
   isProfileOpen: false,
+  SelectFilterByAll: false,
+  selectFilterByIncome: false,
+  selectFilterByExpense: false,
+  selectFilterByTransfer: false,
+  selectFilterByPending: false,
+  selectFilterByCleared: false,
 };
 
 const interactionSlice = createSlice({
@@ -120,6 +132,72 @@ const interactionSlice = createSlice({
         isThemeLight: false,
       };
     },
+    setSelectFilterByAll: (state) => {
+      return {
+        ...state,
+        SelectFilterByAll: true,
+        selectFilterByIncome: false,
+        selectFilterByExpense: false,
+        selectFilterByTransfer: false,
+        selectFilterByPending: false,
+        selectFilterByCleared: false,
+      };
+    },
+    setSelectFilterByIncome: (state) => {
+      return {
+        ...state,
+        SelectFilterByAll: false,
+        selectFilterByIncome: true,
+        selectFilterByExpense: false,
+        selectFilterByTransfer: false,
+        selectFilterByPending: false,
+        selectFilterByCleared: false,
+      };
+    },
+    setSelectFilterByExpense: (state) => {
+      return {
+        ...state,
+        SelectFilterByAll: false,
+        selectFilterByIncome: false,
+        selectFilterByExpense: true,
+        selectFilterByTransfer: false,
+        selectFilterByPending: false,
+        selectFilterByCleared: false,
+      };
+    },
+    setSelectFilterByTransfer: (state) => {
+      return {
+        ...state,
+        SelectFilterByAll: false,
+        selectFilterByIncome: false,
+        selectFilterByExpense: false,
+        selectFilterByTransfer: true,
+        selectFilterByPending: false,
+        selectFilterByCleared: false,
+      };
+    },
+    setSelectFilterByPending: (state) => {
+      return {
+        ...state,
+        SelectFilterByAll: false,
+        selectFilterByIncome: false,
+        selectFilterByExpense: false,
+        selectFilterByTransfer: false,
+        selectFilterByPending: true,
+        selectFilterByCleared: false,
+      };
+    },
+    setSelectFilterByCleared: (state) => {
+      return {
+        ...state,
+        SelectFilterByAll: false,
+        selectFilterByIncome: false,
+        selectFilterByExpense: false,
+        selectFilterByTransfer: false,
+        selectFilterByPending: false,
+        selectFilterByCleared: true,
+      };
+    },
   },
 });
 
@@ -142,6 +220,12 @@ export const {
   setMobileOpen,
   setFinanceOpen,
   setProfileOpen,
+  setSelectFilterByAll,
+  setSelectFilterByIncome,
+  setSelectFilterByExpense,
+  setSelectFilterByTransfer,
+  setSelectFilterByPending,
+  setSelectFilterByCleared,
 } = interactionSlice.actions;
 
 export default interactionSlice.reducer;

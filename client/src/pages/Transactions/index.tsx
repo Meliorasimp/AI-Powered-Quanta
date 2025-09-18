@@ -5,15 +5,23 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import Button from "../../components/Button";
 import { Plus } from "lucide-react";
-import { ArrowBigDown } from "lucide-react";
-import { showTransactionPopup } from "../../modules/Interaction.ts";
+import {
+  setSelectFilterByIncome,
+  setSelectFilterByExpense,
+  setSelectFilterByTransfer,
+  setSelectFilterByPending,
+  setSelectFilterByCleared,
+  showTransactionPopup,
+} from "../../modules/Interaction.ts";
 import { useAppDispatch } from "../../hooks/index.ts";
 import TransactionCard from "../../components/transactionpopup";
 import {
+  getTransactionsByStatus,
+  getTransactionsByType,
   getUserTransactions,
   setTransactions,
 } from "../../modules/Api/transaction/displaytransaction.ts";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import MoonLoader from "react-spinners/MoonLoader";
 import { CSSProperties } from "react";
 import "../../styles/index.css";
@@ -22,11 +30,35 @@ import {
   setTotalExpense,
   setRemainingBalance,
 } from "../../modules/Interaction.ts/dashboard/index.ts";
+import { setSelectFilterByAll } from "../../modules/Interaction.ts";
 import { useNavigate } from "react-router-dom";
 
 const Transactions = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const sortAll = useSelector(
+    (state: RootState) => state.interaction.SelectFilterByAll
+  );
+  const sortIncome = useSelector(
+    (state: RootState) => state.interaction.selectFilterByIncome
+  );
+
+  const sortExpense = useSelector(
+    (state: RootState) => state.interaction.selectFilterByExpense
+  );
+
+  const sortTransfer = useSelector(
+    (state: RootState) => state.interaction.selectFilterByTransfer
+  );
+
+  const sortPending = useSelector(
+    (state: RootState) => state.interaction.selectFilterByPending
+  );
+
+  const sortCleared = useSelector(
+    (state: RootState) => state.interaction.selectFilterByCleared
+  );
+
   const id = useSelector((state: RootState) => state.user.id);
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
@@ -45,45 +77,81 @@ const Transactions = () => {
     borderColor: "red",
   };
 
-  useEffect(() => {
-    const getTransactions = async () => {
-      try {
-        const response = await dispatch(getUserTransactions(id)).unwrap();
-        const totalExpenses = response.reduce(
-          (sum: number, t: UserTransactionState["transactions"][number]) => {
-            return t.type?.toLowerCase() === "expense" ? sum + t.amount : sum;
-          },
-          0
-        );
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
 
-        const RemainingBalance = response.reduce(
-          (
-            balance: number,
-            t: UserTransactionState["transactions"][number]
-          ) => {
-            const type = t.type?.toLowerCase();
-            const amount = typeof t.amount === "number" ? t.amount : 0;
+    const actions: Record<string, () => void> = {
+      all: () => getTransactions(),
+      income: () => {
+        console.log("Income selected");
+        dispatch(setSelectFilterByIncome());
 
-            if (type === "income") {
-              return balance + amount;
-            }
-
-            if (type === "expense") {
-              return balance - amount;
-            }
-            return balance;
-          },
-          0
-        );
-
-        dispatch(setRemainingBalance(RemainingBalance));
-        dispatch(setTotalExpense(totalExpenses));
-        dispatch(setTransactions(response));
-      } catch (error) {
-        console.error(error);
-      }
+        dispatch(getTransactionsByType({ userId: id, type: "income" }));
+      },
+      expense: () => {
+        console.log("Expense selected");
+        dispatch(setSelectFilterByExpense());
+        dispatch(getTransactionsByType({ userId: id, type: "expense" }));
+      },
+      transfer: () => {
+        console.log("Transfer selected");
+        dispatch(setSelectFilterByTransfer());
+        dispatch(getTransactionsByType({ userId: id, type: "transfer" }));
+      },
+      pending: () => {
+        console.log("Pending selected");
+        dispatch(setSelectFilterByPending());
+        dispatch(getTransactionsByStatus({ userId: id, status: "pending" }));
+      },
+      cleared: () => {
+        console.log("Cleared selected");
+        dispatch(setSelectFilterByCleared());
+        dispatch(getTransactionsByStatus({ userId: id, status: "cleared" }));
+      },
     };
+    if (actions[value]) {
+      actions[value]();
+    }
+  };
+  const getTransactions = async () => {
+    dispatch(setSelectFilterByAll());
+    try {
+      const response = await dispatch(getUserTransactions(id)).unwrap();
+      const totalExpenses = response.reduce(
+        (sum: number, t: UserTransactionState["transactions"][number]) => {
+          return t.type?.toLowerCase() === "expense" ? sum + t.amount : sum;
+        },
+        0
+      );
+
+      const RemainingBalance = response.reduce(
+        (balance: number, t: UserTransactionState["transactions"][number]) => {
+          const type = t.type?.toLowerCase();
+          const amount = typeof t.amount === "number" ? t.amount : 0;
+
+          if (type === "income") {
+            return balance + amount;
+          }
+
+          if (type === "expense") {
+            return balance - amount;
+          }
+          return balance;
+        },
+        0
+      );
+
+      dispatch(setRemainingBalance(RemainingBalance));
+      dispatch(setTotalExpense(totalExpenses));
+      dispatch(setTransactions(response));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     getTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, id, navigate]);
 
   return (
@@ -120,12 +188,33 @@ const Transactions = () => {
               className="text-green-500 px-3 py-1 rounded-sm cursor-pointer font-semibold"
               onClick={() => dispatch(showTransactionPopup())}
             />
-            <Button
-              label="Filter by: All"
-              type="button"
-              icon={<ArrowBigDown className="inline-block" />}
-              className="text-white px-3 py-1 rounded-sm cursor-pointer font-semibold"
+            <Heading
+              label="Filter by:"
+              className="text-sm sm:text-base main-website-text-color flex items-center"
             />
+            <select
+              className="text-white outline-none rounded-sm px-2 py-1 sm:py-2 text-sm sm:text-base"
+              onChange={handleFilterChange}
+            >
+              <option value="all" className="text-black">
+                All
+              </option>
+              <option value="income" className="text-black">
+                Income
+              </option>
+              <option value="expense" className="text-black">
+                Expense
+              </option>
+              <option value="transfer" className="text-black">
+                Transfer
+              </option>
+              <option value="pending" className="text-black">
+                Pending
+              </option>
+              <option value="cleared" className="text-black">
+                Cleared
+              </option>
+            </select>
           </div>
         </div>
         <div className="w-full">
@@ -173,14 +262,8 @@ const Transactions = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {userTransaction.transactions
-                      .filter(
-                        (t) =>
-                          t &&
-                          t.dateCreated &&
-                          !isNaN(new Date(t.dateCreated).getTime())
-                      )
-                      .map((t) => (
+                    {sortAll &&
+                      [...userTransaction.transactions].reverse().map((t) => (
                         <tr
                           key={t._id || Math.random()}
                           className="hover:bg-white hover:text-black"
@@ -217,6 +300,178 @@ const Transactions = () => {
                             {t.status}
                           </td>
                           <td className="border-y border-r px-2 sm:px-4 py-2">
+                            {new Date(t.dateCreated).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    {sortIncome &&
+                      !userTransaction.loading &&
+                      userTransaction.transactionsByType &&
+                      userTransaction.transactionsByType.map((t) => (
+                        <tr
+                          key={t._id}
+                          className="hover:bg-white hover:text-black"
+                        >
+                          <td className="border-y border-l px-2 sm:px-4 py-2">
+                            {t.transactionName}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.amount}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.merchant}
+                          </td>
+                          <td className="border-y border-white px-2 sm:px-4 py-2 text-green-500">
+                            {t.type}
+                          </td>
+                          <td
+                            className={`border-y px-2 sm:px-4 border-white py-2 ${
+                              t.status === "pending"
+                                ? "text-yellow-200"
+                                : t.status === "cleared"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {t.status}
+                          </td>
+                          <td className="border-y border-r px-2 sm:px-4 py-2">
+                            {new Date(t.dateCreated).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    {sortExpense &&
+                      !userTransaction.loading &&
+                      userTransaction.transactionsByType &&
+                      userTransaction.transactionsByType.map((t) => (
+                        <tr
+                          key={t._id}
+                          className="hover:bg-white hover:text-black"
+                        >
+                          <td className="border-y border-l px-2 sm:px-4 py-2">
+                            {t.transactionName}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.amount}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.merchant}
+                          </td>
+                          <td className="border-y border-white px-2 sm:px-4 py-2 text-red-500">
+                            {t.type}
+                          </td>
+                          <td
+                            className={`border-y px-2 sm:px-4 border-white py-2 ${
+                              t.status === "pending"
+                                ? "text-yellow-200"
+                                : t.status === "cleared"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {t.status}
+                          </td>
+                          <td className="border-y border-r px-2 sm:px-4 py-2">
+                            {new Date(t.dateCreated).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    {sortTransfer &&
+                      !userTransaction.loading &&
+                      userTransaction.transactionsByType &&
+                      userTransaction.transactionsByType.map((t) => (
+                        <tr
+                          key={t._id}
+                          className="hover:bg-white hover:text-black"
+                        >
+                          <td className="border-y border-l px-2 sm:px-4 py-2">
+                            {t.transactionName}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.amount}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.merchant}
+                          </td>
+                          <td className="border-y border-white px-2 sm:px-4 py-2 text-blue-500">
+                            {t.type}
+                          </td>
+                          <td
+                            className={`border-y px-2 sm:px-4 border-white py-2 ${
+                              t.status === "pending"
+                                ? "text-yellow-200"
+                                : t.status === "cleared"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {t.status}
+                          </td>
+                          <td className="border-y border-r px-2 sm:px-4 py-2">
+                            {new Date(t.dateCreated).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    {sortPending &&
+                      !userTransaction.loading &&
+                      userTransaction.transactionsByStatus &&
+                      userTransaction.transactionsByStatus.map((t) => (
+                        <tr
+                          key={t._id}
+                          className="hover:bg-white hover:text-black"
+                        >
+                          <td className="border-y border-l px-2 sm:px-4 py-2">
+                            {t.transactionName}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.amount}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.merchant}
+                          </td>
+                          <td className={`border-y px-2 sm:px-4 py-2`}>
+                            {t.type}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2 ">
+                            <span className="text-yellow-200">{t.status}</span>
+                          </td>
+                          <td className="border-y border-r px-2 sm:px-4 py-2 ">
+                            {new Date(t.dateCreated).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    {sortCleared &&
+                      !userTransaction.loading &&
+                      userTransaction.transactionsByStatus &&
+                      userTransaction.transactionsByStatus.map((t) => (
+                        <tr
+                          key={t._id}
+                          className="hover:bg-white hover:text-black"
+                        >
+                          <td className="border-y border-l px-2 sm:px-4 py-2">
+                            {t.transactionName}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.amount}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2">
+                            {t.merchant}
+                          </td>
+                          <td
+                            className={`border-y px-2 sm:px-4 py-2 ${
+                              t.type === "income"
+                                ? "text-green-500"
+                                : t.type === "expense"
+                                ? "text-red-500"
+                                : "text-blue-500"
+                            }`}
+                          >
+                            {t.type}
+                          </td>
+                          <td className="border-y px-2 sm:px-4 py-2 ">
+                            <span className="text-green-500">{t.status}</span>
+                          </td>
+                          <td className="border-y border-r px-2 sm:px-4 py-2 ">
                             {new Date(t.dateCreated).toLocaleDateString()}
                           </td>
                         </tr>
