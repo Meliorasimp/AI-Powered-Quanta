@@ -12,6 +12,9 @@ export const calculateRemainingBalance = (
     if (type === "expense") {
       return balance - amount;
     }
+    if (type === "transfer") {
+      return balance - amount;
+    }
     return balance;
   }, 0);
 };
@@ -41,5 +44,14 @@ export const calculateTotalTransfersMade = (
       return sum + amount;
     }
     return sum;
+  }, 0);
+};
+export const calculateTotalIncome = (
+  transactions: UserTransactionState["transactions"]
+) => {
+  return transactions.reduce((sum, t) => {
+    const type = t.type?.toLowerCase();
+    const amount = typeof t.amount === "number" ? t.amount : 0;
+    return type === "income" ? sum + amount : sum;
   }, 0);
 };

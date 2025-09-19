@@ -472,7 +472,9 @@ const Transactions = () => {
                             <span className="text-green-500">{t.status}</span>
                           </td>
                           <td className="border-y border-r px-2 sm:px-4 py-2 ">
-                            {new Date(t.dateCreated).toLocaleDateString()}
+                            {new Date(t.dateCreated)
+                              .toLocaleDateString("en-PH", { month: "long" })
+                              .toLowerCase()}
                           </td>
                         </tr>
                       ))}

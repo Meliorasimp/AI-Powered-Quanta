@@ -2,7 +2,7 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import Statcard from "../../components/Statcard";
-import LineChart from "../../components/Chartjs/Linechart/index.tsx";
+
 import Doughnut from "../../components/Chartjs/Doughnut/index.tsx";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, Banknote } from "lucide-react";
@@ -24,12 +24,16 @@ import {
   calculateRemainingBalance,
   calculateTotalExpenses,
   calculateTotalTransfersMade,
+  calculateTotalIncome,
 } from "../../utils/index.ts";
 import {
   setRemainingBalance,
   setTotalExpense,
   setTotalTransfersMade,
+  setTotalIncome,
 } from "../../modules/Interaction.ts/dashboard/index.ts";
+import Barchart from "../../components/Chartjs/Barchart/index.tsx";
+import { setGraphMode } from "../..//modules/Interaction.ts/dashboard/index.ts";
 
 const override: CSSProperties = {
   display: "block",
@@ -39,6 +43,12 @@ const override: CSSProperties = {
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const graphMode = useSelector(
+    (state: RootState) => state.dashboard.graphMode
+  );
+  console.log("Current graph mode:", graphMode);
+
   const username = useAppSelector((state: RootState) => state.user.username);
   const totalExpenses = useAppSelector(
     (state: RootState) => state.dashboard.totalExpense
@@ -79,6 +89,9 @@ const Dashboard = () => {
 
           const totalTransfers = calculateTotalTransfersMade(userTransactions);
           dispatch(setTotalTransfersMade(totalTransfers));
+
+          const totalIncome = calculateTotalIncome(userTransactions);
+          dispatch(setTotalIncome(totalIncome));
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -144,12 +157,26 @@ const Dashboard = () => {
         </div>
         <div className="flex gap-x-4 flex-col lg:flex-row lg:gap-x-4 lg:justify-center">
           <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[70%] mx-auto">
-            <Heading
-              label="Income vs. Expenses Graph"
-              className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left"
-            />
-            <div className="w-full h-[300px] sm:h-[400px]">
-              <LineChart />
+            <div className="flex flex-row ">
+              <Heading
+                label="Income vs. Expenses Graph"
+                className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left mr-10"
+              />
+              <Button
+                label="Monthly"
+                type="button"
+                className="text-base text-gray-400 sm:text-lg font-semibold main-website-text-color text-center sm:text-left hover:bg-gray-700 rounded-lg cursor-pointer mr-10 px-3"
+                onClick={() => dispatch(setGraphMode("Monthly"))}
+              />
+              <Button
+                label="Daily"
+                type="button"
+                className="text-base text-gray-400 sm:text-lg font-semibold main-website-text-color text-center sm:text-left hover:bg-gray-700 rounded-lg cursor-pointer mr-10 px-3"
+                onClick={() => dispatch(setGraphMode("Daily"))}
+              />
+            </div>
+            <div className="w-full h-[300px] sm:h-[400px] flex justify-center items-center">
+              <Barchart />
             </div>
           </div>
           <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[30%] mx-auto">
@@ -242,7 +269,7 @@ const Dashboard = () => {
           </div>
           <div className="w-full md:w-4/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
             <Heading
-              label="Upcoming Bills"
+              label="AI Insight"
               className="text-lg font-semibold main-website-text-color"
             />
             <div className="w-full overflow-x-auto h-full">

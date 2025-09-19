@@ -1,14 +1,16 @@
 import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
-import LineChart from "../../components/Chartjs/Linechart/index.tsx";
+import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import Linechart from "../../components/Chartjs/Linechart/index.tsx";
 
 const Analytics = () => {
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
+
   return (
     <div
       className={`flex flex-col app ${
@@ -35,26 +37,30 @@ const Analytics = () => {
               variant="secondary"
             />
           </div>
-          <div className="flex gap-x-10 justify-center items-center">
-            <Heading
-              label="Financial Overview"
-              className="hover:bg-gray-700 px-6 py-2 cursor-pointer rounded-lg"
-            />
-            <Heading
-              label="Goals and Liabilities"
-              className="hover:bg-gray-700 px-6 py-2 cursor-pointer rounded-lg"
-            />
-          </div>
         </div>
-        <div className="w-full">
-          <Heading
-            label="Net worth progression"
-            className="text-xl font-bold"
-          />
-          <div className="w-full h-[400px]">
-            <LineChart />
+        <div className="flex flex-row gap-x-5">
+          <div className="w-1/2  flex flex-col gap-y-5 mt-5 border border-gray-600 p-5 rounded-lg">
+            <div>
+              <Heading
+                label="Income Vs. Expense"
+                className="text-xl font-bold"
+              />
+            </div>
+            <div className="w-full h-[400px] flex">
+              <Barchart />
+            </div>
           </div>
-          <Heading label="Income vs Expenses" className="text-xl font-bold" />
+          <div className="w-1/2 flex flex-col gap-y-5 mt-5 border border-gray-600 p-5 rounded-lg">
+            <div>
+              <Heading
+                label="This Months Net Progression"
+                className="text-xl font-bold"
+              />
+            </div>
+            <div className="w-full h-[400px] flex">
+              <Linechart containerClassName="w-full h-full" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

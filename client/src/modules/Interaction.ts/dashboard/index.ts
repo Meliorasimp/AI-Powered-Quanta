@@ -1,10 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction } from "@reduxjs/toolkit";
+import { ChartData } from "chart.js";
+
+const emptyChartData: ChartData<"bar", number[], string> = {
+  labels: [] as string[],
+  datasets: [
+    {
+      label: "",
+      data: [] as number[],
+      backgroundColor: "rgba(0,0,0,0.1)",
+      borderColor: "rgba(0,0,0,0.3)",
+      borderWidth: 1,
+    },
+  ],
+};
 
 type dashboardState = {
   remainingBalance: number;
   totalExpense: number;
   totalBudgetAmount: number;
   totalTransfersMade: number;
+  totalIncome: number;
+  graphMode: "Monthly" | "Daily";
+  monthlyDashboardData: ChartData<"bar", number[], string>;
+  dailyDashboardData: ChartData<"bar", number[], string>;
 };
 
 const initialDashboardState: dashboardState = {
@@ -12,6 +31,10 @@ const initialDashboardState: dashboardState = {
   totalExpense: 0,
   totalBudgetAmount: 0,
   totalTransfersMade: 0,
+  totalIncome: 0,
+  graphMode: "Monthly",
+  monthlyDashboardData: emptyChartData,
+  dailyDashboardData: emptyChartData,
 };
 
 const dashboardSlice = createSlice({
@@ -30,6 +53,24 @@ const dashboardSlice = createSlice({
     setTotalTransfersMade: (state, action) => {
       state.totalTransfersMade = action.payload;
     },
+    setTotalIncome: (state, action) => {
+      state.totalIncome = action.payload;
+    },
+    setGraphMode: (state, action: PayloadAction<"Monthly" | "Daily">) => {
+      state.graphMode = action.payload;
+    },
+    setMonthlyData: (
+      state,
+      action: PayloadAction<ChartData<"bar", number[], string>>
+    ) => {
+      return { ...state, monthlyDashboardData: action.payload };
+    },
+    setDailyData: (
+      state,
+      action: PayloadAction<ChartData<"bar", number[], string>>
+    ) => {
+      return { ...state, dailyDashboardData: action.payload };
+    },
   },
 });
 
@@ -38,6 +79,10 @@ export const {
   setTotalExpense,
   setTotalBudgetAmount,
   setTotalTransfersMade,
+  setTotalIncome,
+  setGraphMode,
+  setMonthlyData,
+  setDailyData,
 } = dashboardSlice.actions;
 
 export const dashboardReducer = dashboardSlice.reducer;
