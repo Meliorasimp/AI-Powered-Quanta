@@ -6,11 +6,18 @@ type HeadingProps = {
   level?: 1 | 2;
   className?: string;
   id?: string;
+  icon?: JSX.Element;
 };
 
-function Heading({ label, level, className }: HeadingProps) {
+function Heading({ label, level = 2, className = "", id, icon }: HeadingProps) {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
-  return <Tag className={className}>{label}</Tag>;
+
+  return (
+    <Tag id={id} className={`flex items-center ${className}`}>
+      {icon && <span className="mr-2 inline-flex items-center">{icon}</span>}
+      {label}
+    </Tag>
+  );
 }
 
 export default Heading;

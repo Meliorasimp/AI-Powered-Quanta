@@ -2,7 +2,7 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import Statcard from "../../components/Statcard";
-
+import ReactMarkdown from "react-markdown";
 import Doughnut from "../../components/Chartjs/Doughnut/index.tsx";
 import { useNavigate } from "react-router-dom";
 import { DollarSign, Banknote } from "lucide-react";
@@ -31,9 +31,12 @@ import {
   setTotalExpense,
   setTotalTransfersMade,
   setTotalIncome,
+  //getAiSummary,
+  //setSummarization,
 } from "../../modules/Interaction.ts/dashboard/index.ts";
 import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { setGraphMode } from "../..//modules/Interaction.ts/dashboard/index.ts";
+import Qwen from "../../assets/qwen.svg";
 
 const override: CSSProperties = {
   display: "block",
@@ -50,6 +53,10 @@ const Dashboard = () => {
   console.log("Current graph mode:", graphMode);
 
   const username = useAppSelector((state: RootState) => state.user.username);
+  const userId = useAppSelector((state: RootState) => state.user.id);
+  const summary = useAppSelector(
+    (state: RootState) => state.dashboard.summarization
+  );
   const totalExpenses = useAppSelector(
     (state: RootState) => state.dashboard.totalExpense
   );
@@ -98,8 +105,19 @@ const Dashboard = () => {
         navigate("/");
       }
     };
+
+    {
+      /*const getAiSummarization = async () => {
+      const response = await dispatch(getAiSummary(userId)).unwrap();
+      console.log("AI Summarization:", response);
+      dispatch(setSummarization(response.summary));
+      console.log("Updated summarization in state:", response.summary);
+    };*/
+    }
+
+    //getAiSummarization();
     fetchUserData();
-  }, [navigate, dispatch]);
+  }, [navigate, dispatch, userId]);
 
   return (
     <div
@@ -267,44 +285,31 @@ const Dashboard = () => {
               </table>
             </div>
           </div>
-          <div className="w-full md:w-4/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
-            <Heading
-              label="AI Insight"
-              className="text-lg font-semibold main-website-text-color"
-            />
-            <div className="w-full overflow-x-auto h-full">
-              <table className="w-full min-w-[420px] mt-4 border-blue-500">
-                <thead>
-                  <tr className="text-gray-100">
-                    <td className="text-base px-4 py-2 font-semibold">
-                      Merchant
-                    </td>
-                    <td className="text-base px-4 py-2 font-semibold">
-                      Amount
-                    </td>
-                    <td className="text-base px-4 py-2 font-semibold">
-                      Due Date
-                    </td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="text-base px-4 py-2">Netflix</td>
-                    <td className="text-base px-4 py-2">$200</td>
-                    <td className="text-base px-4 py-2">2023-04-01</td>
-                  </tr>
-                  <tr>
-                    <td className="text-base px-4 py-2">Electric Bill</td>
-                    <td className="text-base px-4 py-2">$150</td>
-                    <td className="text-base px-4 py-2">2023-04-15</td>
-                  </tr>
-                  <tr>
-                    <td className="text-base px-4 py-2">PLDC</td>
-                    <td className="text-base px-4 py-2">$300</td>
-                    <td className="text-base px-4 py-2">2023-04-30</td>
-                  </tr>
-                </tbody>
-              </table>
+          <div className="w-full md:w-4/11 h-96 overflow-y-auto py-5 px-5 border-2 mt-2 rounded-lg border-gray-700">
+            <div className="flex flex-row items-center">
+              <Heading
+                label="AI Insight"
+                className="text-lg font-semibold main-website-text-color"
+              />
+              <img src={Qwen} alt="Qwen Logo" className="h-8 w-20" />
+            </div>
+            <div className="w-full h-full mt-2">
+              {summary ? (
+                <div className="leading-loose">
+                  <ReactMarkdown>{summary}</ReactMarkdown>
+                </div>
+              ) : (
+                <p className="flex justify-center items-center mt-10">
+                  <MoonLoader
+                    color={"#36d7b7"}
+                    loading={true}
+                    cssOverride={override}
+                    size={50}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </p>
+              )}
             </div>
           </div>
         </div>

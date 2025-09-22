@@ -11,8 +11,11 @@ import authRouter from "./routes/authRoute";
 import budgetRouter from "./routes/budgetRoute";
 import protectedRoute from "./routes/protectedroute";
 import TransactionRouter from "./routes/transactionRoute";
+import HFRouter from "./routes/huggingFaceRoute";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import { InferenceClient } from "@huggingface/inference";
+import axios from "axios";
 
 dotenv.config();
 
@@ -43,14 +46,43 @@ app.use(
 const port = process.env.PORT || 3000;
 const uri = process.env.MONGO_URI as string;
 
+//routes
+
 app.use("/api", userRouter);
 app.use("/api", authRouter);
 app.use("/api", budgetRouter);
 app.use("/user", protectedRoute);
 app.use("/api", TransactionRouter);
+app.use("/hf", HFRouter);
 
 //connect to the database
 
+export const client = new InferenceClient(process.env.HF_API_KEY);
+
+// A lightweight ping request
+async function queryQwen() {
+  try {
+    const res = await axios.post(
+      "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-0.5B-Instruct",
+      {
+        inputs:
+          "Summarize: I spent 1200 on groceries, earned 50000 salary, and 150 on transport.",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.HF_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(res.data);
+  } catch (err: any) {
+    console.error("❌ Qwen error:", err.response?.data || err.message);
+  }
+}
+
+queryQwen();
 mongoose
   .connect(uri)
   .then(() => {

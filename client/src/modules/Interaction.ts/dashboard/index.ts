@@ -1,5 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 import { ChartData } from "chart.js";
 
 const emptyChartData: ChartData<"bar", number[], string> = {
@@ -24,6 +25,7 @@ type dashboardState = {
   graphMode: "Monthly" | "Daily";
   monthlyDashboardData: ChartData<"bar", number[], string>;
   dailyDashboardData: ChartData<"bar", number[], string>;
+  summarization: string;
 };
 
 const initialDashboardState: dashboardState = {
@@ -35,6 +37,7 @@ const initialDashboardState: dashboardState = {
   graphMode: "Monthly",
   monthlyDashboardData: emptyChartData,
   dailyDashboardData: emptyChartData,
+  summarization: "",
 };
 
 const dashboardSlice = createSlice({
@@ -71,8 +74,21 @@ const dashboardSlice = createSlice({
     ) => {
       return { ...state, dailyDashboardData: action.payload };
     },
+    setSummarization: (state, action: PayloadAction<string>) => {
+      state.summarization = action.payload;
+    },
   },
 });
+
+export const getAiSummary = createAsyncThunk(
+  "dashboard/fetchSummary",
+  async (userId: string) => {
+    const response = await axios.get(
+      `http://localhost:5000/hf/summarize/${userId}`
+    );
+    return response.data;
+  }
+);
 
 export const {
   setRemainingBalance,
@@ -83,6 +99,7 @@ export const {
   setGraphMode,
   setMonthlyData,
   setDailyData,
+  setSummarization,
 } = dashboardSlice.actions;
 
 export const dashboardReducer = dashboardSlice.reducer;
