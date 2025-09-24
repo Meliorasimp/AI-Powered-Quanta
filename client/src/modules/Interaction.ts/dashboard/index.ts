@@ -16,6 +16,12 @@ const emptyChartData: ChartData<"bar", number[], string> = {
   ],
 };
 
+export interface Message {
+  id: string;
+  role: "user" | "AI";
+  content: string;
+}
+
 type dashboardState = {
   remainingBalance: number;
   totalExpense: number;
@@ -26,6 +32,9 @@ type dashboardState = {
   monthlyDashboardData: ChartData<"bar", number[], string>;
   dailyDashboardData: ChartData<"bar", number[], string>;
   summarization: string;
+  greeting: string;
+  isAiPopupVisible?: boolean;
+  messages: Message[];
 };
 
 const initialDashboardState: dashboardState = {
@@ -38,6 +47,9 @@ const initialDashboardState: dashboardState = {
   monthlyDashboardData: emptyChartData,
   dailyDashboardData: emptyChartData,
   summarization: "",
+  greeting: "",
+  isAiPopupVisible: false,
+  messages: [],
 };
 
 const dashboardSlice = createSlice({
@@ -77,6 +89,29 @@ const dashboardSlice = createSlice({
     setSummarization: (state, action: PayloadAction<string>) => {
       state.summarization = action.payload;
     },
+    setGreeting: (state, action: PayloadAction<string>) => {
+      state.greeting = action.payload;
+    },
+    toggleAiPopup: (state) => {
+      state.isAiPopupVisible = !state.isAiPopupVisible;
+    },
+    setMessages: (state, action: PayloadAction<Message[]>) => {
+      state.messages = action.payload;
+    },
+    addMessages: (state, action: PayloadAction<Message>) => {
+      state.messages.push(action.payload);
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getAiSummary.pending, (state) => {
+      state.summarization = "Qwen 4b is thinking...";
+    });
+    builder.addCase(getAiSummary.fulfilled, (state, action) => {
+      state.summarization = action.payload.summary;
+    });
+    builder.addCase(getAiSummary.rejected, (state) => {
+      state.summarization = "Failed to load summary.";
+    });
   },
 });
 
@@ -84,7 +119,7 @@ export const getAiSummary = createAsyncThunk(
   "dashboard/fetchSummary",
   async (userId: string) => {
     const response = await axios.get(
-      `http://localhost:5000/hf/summarize/${userId}`
+      `http://localhost:5000/ai/summarize/${userId}`
     );
     return response.data;
   }
@@ -100,6 +135,10 @@ export const {
   setMonthlyData,
   setDailyData,
   setSummarization,
+  setGreeting,
+  toggleAiPopup,
+  addMessages,
+  setMessages,
 } = dashboardSlice.actions;
 
 export const dashboardReducer = dashboardSlice.reducer;

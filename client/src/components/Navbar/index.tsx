@@ -12,6 +12,8 @@ import {
   setProfileOpen,
 } from "../../modules/Interaction.ts";
 import { useAppDispatch } from "../../hooks";
+import Qwen from "../../assets/qwen.svg";
+import { toggleAiPopup } from "../../modules/Interaction.ts/dashboard/index.ts";
 
 const Navbar = () => {
   const nav = useNavigate();
@@ -55,6 +57,12 @@ const Navbar = () => {
         {/* Center nav (desktop only) */}
         <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center gap-x-6 z-20">
           {/* Dashboard */}
+          <div
+            className="w-8 h-8 hover:scale-105 transition-transform duration-200 cursor-pointer"
+            onClick={() => dispatch(toggleAiPopup())}
+          >
+            <img src={Qwen} alt="Qwen" />
+          </div>
           <Button
             label="Dashboard"
             onClick={() => handleNavigate("/dashboard")}

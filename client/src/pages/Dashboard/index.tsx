@@ -31,12 +31,13 @@ import {
   setTotalExpense,
   setTotalTransfersMade,
   setTotalIncome,
-  //getAiSummary,
-  //setSummarization,
+  getAiSummary,
+  setSummarization,
 } from "../../modules/Interaction.ts/dashboard/index.ts";
 import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { setGraphMode } from "../..//modules/Interaction.ts/dashboard/index.ts";
 import Qwen from "../../assets/qwen.svg";
+import AiModal from "../../components/AiModal/index.tsx";
 
 const override: CSSProperties = {
   display: "block",
@@ -46,17 +47,15 @@ const override: CSSProperties = {
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const graphMode = useSelector(
-    (state: RootState) => state.dashboard.graphMode
+  const aiPopup = useSelector(
+    (state: RootState) => state.dashboard.isAiPopupVisible
   );
-  console.log("Current graph mode:", graphMode);
-
   const username = useAppSelector((state: RootState) => state.user.username);
   const userId = useAppSelector((state: RootState) => state.user.id);
   const summary = useAppSelector(
     (state: RootState) => state.dashboard.summarization
   );
+  console.log("AI Summary from state:", summary);
   const totalExpenses = useAppSelector(
     (state: RootState) => state.dashboard.totalExpense
   );
@@ -106,16 +105,14 @@ const Dashboard = () => {
       }
     };
 
-    {
-      /*const getAiSummarization = async () => {
+    const getAiSummarization = async () => {
       const response = await dispatch(getAiSummary(userId)).unwrap();
       console.log("AI Summarization:", response);
       dispatch(setSummarization(response.summary));
       console.log("Updated summarization in state:", response.summary);
-    };*/
-    }
+    };
 
-    //getAiSummarization();
+    getAiSummarization();
     fetchUserData();
   }, [navigate, dispatch, userId]);
 
@@ -138,6 +135,7 @@ const Dashboard = () => {
             label="Dashboard"
             className="text-lg font-semibold main-website-text-color"
           />
+          {aiPopup && <AiModal />}
           <Paragraph
             label={
               username

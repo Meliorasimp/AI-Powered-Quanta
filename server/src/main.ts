@@ -11,15 +11,60 @@ import authRouter from "./routes/authRoute";
 import budgetRouter from "./routes/budgetRoute";
 import protectedRoute from "./routes/protectedroute";
 import TransactionRouter from "./routes/transactionRoute";
-import HFRouter from "./routes/huggingFaceRoute";
+import AiRouter from "./routes/aiRoute";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
-import { InferenceClient } from "@huggingface/inference";
+import http from "http";
+import { Server } from "socket.io";
 import axios from "axios";
+
+// Load environment variables from .env file
 
 dotenv.config();
 
 const app = express();
+const port = 5000;
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("A user connected", socket.id);
+
+  socket.on("UserMessage", async (message) => {
+    console.log("Received message from user:", message);
+
+    try {
+      const response = await axios.post("http://localhost:11434/api/generate", {
+        model: "qwen:4b",
+        prompt: message.content,
+        stream: false,
+        num_predict: 1000,
+        temperature: 0.7,
+        top_p: 0.9,
+      });
+
+      socket.emit("AIResponse", {
+        role: "AI",
+        content: response.data.response,
+      });
+    } catch (error) {
+      console.error("Error communicating with Qwen API:", error);
+      socket.emit("AIResponse", {
+        role: "AI",
+        content: "Sorry, there was an error processing your request.",
+      });
+    }
+  });
+  socket.on("disconnect", () => {
+    console.log("A user disconnected", socket.id);
+  });
+});
+
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -43,7 +88,6 @@ app.use(
   })
 );
 
-const port = process.env.PORT || 3000;
 const uri = process.env.MONGO_URI as string;
 
 //routes
@@ -53,36 +97,10 @@ app.use("/api", authRouter);
 app.use("/api", budgetRouter);
 app.use("/user", protectedRoute);
 app.use("/api", TransactionRouter);
-app.use("/hf", HFRouter);
+app.use("/ai", AiRouter);
 
 //connect to the database
 
-export const client = new InferenceClient(process.env.HF_API_KEY);
-
-// A lightweight ping request
-async function queryQwen() {
-  try {
-    const res = await axios.post(
-      "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-0.5B-Instruct",
-      {
-        inputs:
-          "Summarize: I spent 1200 on groceries, earned 50000 salary, and 150 on transport.",
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.HF_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    console.log(res.data);
-  } catch (err: any) {
-    console.error("❌ Qwen error:", err.response?.data || err.message);
-  }
-}
-
-queryQwen();
 mongoose
   .connect(uri)
   .then(() => {
@@ -92,7 +110,7 @@ mongoose
     console.error("❌ Error connecting to MongoDB:", error);
   });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   console.log(`Press Ctrl+C to stop the server`);
 });

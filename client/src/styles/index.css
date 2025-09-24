@@ -125,4 +125,12 @@
   .text-glow-green {
     filter: drop-shadow(0 0 1px lightgreen);
   }
+
+  .ai-modal-background {
+    background-color: #150752;
+  }
+
+  .ai-modal-header {
+    background-color: #0b0136;
+  }
 }
