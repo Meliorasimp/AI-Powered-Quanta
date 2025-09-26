@@ -26,16 +26,17 @@ import MoonLoader from "react-spinners/MoonLoader";
 import { CSSProperties } from "react";
 import "../../styles/index.css";
 import { UserTransactionState } from "../../modules/Api/transaction/displaytransaction.ts";
-import {
-  setTotalExpense,
-  setRemainingBalance,
-} from "../../modules/Interaction.ts/dashboard/index.ts";
+import { setTotalExpense } from "../../modules/Interaction.ts/dashboard/index.ts";
 import { setSelectFilterByAll } from "../../modules/Interaction.ts";
 import { useNavigate } from "react-router-dom";
+import AiModal from "../../components/AiModal";
 
 const Transactions = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const aiModal = useSelector(
+    (state: RootState) => state.dashboard.isAiPopupVisible
+  );
   const sortAll = useSelector(
     (state: RootState) => state.interaction.SelectFilterByAll
   );
@@ -124,24 +125,6 @@ const Transactions = () => {
         0
       );
 
-      const RemainingBalance = response.reduce(
-        (balance: number, t: UserTransactionState["transactions"][number]) => {
-          const type = t.type?.toLowerCase();
-          const amount = typeof t.amount === "number" ? t.amount : 0;
-
-          if (type === "income") {
-            return balance + amount;
-          }
-
-          if (type === "expense") {
-            return balance - amount;
-          }
-          return balance;
-        },
-        0
-      );
-
-      dispatch(setRemainingBalance(RemainingBalance));
       dispatch(setTotalExpense(totalExpenses));
       dispatch(setTransactions(response));
     } catch (error) {
@@ -484,6 +467,7 @@ const Transactions = () => {
           </div>
         </div>
         {transaction && <TransactionCard />}
+        {aiModal && <AiModal />}
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ import {
   deleteUserBudget,
   deleteBudget,
 } from "../../modules/Api/Budgets/displaybudget.ts";
+import AiModal from "../../components/AiModal/index.tsx";
 
 const override: CSSProperties = {
   display: "block",
@@ -31,6 +32,9 @@ const Budgets = () => {
   const sdispatch = useDispatch();
   const dispatch = useAppDispatch();
   const userId = useSelector((state: RootState) => state.user.id);
+  const aiModal = useSelector(
+    (state: RootState) => state.dashboard.isAiPopupVisible
+  );
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
@@ -159,6 +163,7 @@ const Budgets = () => {
           </div>
         </div>
         {isBudgetPopupVisible && <Budgetpopup />}
+        {aiModal && <AiModal />}
       </div>
     </div>
   );

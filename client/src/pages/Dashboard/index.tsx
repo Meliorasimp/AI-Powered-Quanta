@@ -38,6 +38,9 @@ import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { setGraphMode } from "../..//modules/Interaction.ts/dashboard/index.ts";
 import Qwen from "../../assets/qwen.svg";
 import AiModal from "../../components/AiModal/index.tsx";
+import { fetchUserBudgets } from "../../modules/Api/Budgets/displaybudget.ts";
+import { calculateTotalBudgetedAmount } from "../../utils/index.ts";
+import { setTotalBudgetedAmount } from "../../modules/Api/Budgets/displaybudget.ts";
 
 const override: CSSProperties = {
   display: "block",
@@ -52,6 +55,14 @@ const Dashboard = () => {
   );
   const username = useAppSelector((state: RootState) => state.user.username);
   const userId = useAppSelector((state: RootState) => state.user.id);
+  const userBudgets = useAppSelector(
+    (state: RootState) => state.userbudget.budgets
+  );
+  console.log("User Budgets from state:", userBudgets);
+  const budgetedAmount = useAppSelector(
+    (state: RootState) => state.userbudget.totalBudgetedAmount
+  );
+  console.log("Total Budgeted Amount from state:", budgetedAmount);
   const summary = useAppSelector(
     (state: RootState) => state.dashboard.summarization
   );
@@ -79,7 +90,6 @@ const Dashboard = () => {
           "http://localhost:5000/user/protected",
           { withCredentials: true }
         );
-        console.log("Protected route response:", response.data);
         dispatch(setUser(response.data.user));
         if (response.data.user && response.data.user.id) {
           const userTransactions = await dispatch(
@@ -98,6 +108,25 @@ const Dashboard = () => {
 
           const totalIncome = calculateTotalIncome(userTransactions);
           dispatch(setTotalIncome(totalIncome));
+
+          const userBudgets = await dispatch(
+            fetchUserBudgets(response.data.user.id)
+          ).unwrap();
+
+          const safeBudgets = Array.isArray(userBudgets) ? userBudgets : [];
+
+          if (safeBudgets.length > 0) {
+            const totalBudgetedAmount =
+              calculateTotalBudgetedAmount(safeBudgets);
+            dispatch(setTotalBudgetedAmount(totalBudgetedAmount));
+            console.log(
+              "Calculated Total Budgeted Amount:",
+              totalBudgetedAmount
+            );
+          } else {
+            dispatch(setTotalBudgetedAmount(0));
+            console.log("No budgets found, setting total budgeted amount to 0");
+          }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -159,8 +188,8 @@ const Dashboard = () => {
             />
             <Statcard
               icon={<Banknote size={40} color="lightgray" />}
-              label="Total Budget Amount"
-              value="100000"
+              label="Total Budgeted Amount"
+              value={budgetedAmount ? budgetedAmount.toString() : "0"}
               className="statcard-purple p-5 shadow-[0_4px_10px_rgba(255,255,255,0.2)] w-full"
             />
             <Statcard
@@ -258,7 +287,7 @@ const Dashboard = () => {
                       </thead>
                       <tbody>
                         {userTransaction.transactions
-                          .slice(0, 5)
+                          .slice(0, 6)
                           .map((transaction) => (
                             <tr key={transaction._id}>
                               <td className="text-base px-4 py-2">

@@ -16,12 +16,14 @@ export type userBudgetState = {
   }>;
   loading: boolean;
   error: string | null;
+  totalBudgetedAmount?: number;
 };
 
 const initialUserBudgetState: userBudgetState = {
   budgets: [],
   loading: false,
   error: null,
+  totalBudgetedAmount: 0,
 };
 
 const userBudgetsSlice = createSlice({
@@ -42,6 +44,9 @@ const userBudgetsSlice = createSlice({
     clearBudgets: (state) => {
       state.budgets = [];
     },
+    setTotalBudgetedAmount: (state, action) => {
+      state.totalBudgetedAmount = action.payload;
+    },
   },
   extraReducers: (builder) => {
     handleFetchBudgets(builder);
@@ -56,11 +61,17 @@ export const fetchUserBudgets = createAsyncThunk(
       const response = await fetch(
         `http://localhost:5000/api/userbudgets/${userId}`
       );
+      // If server returns 404 treat it as empty list (older server versions) – newer returns 200 []
+      if (response.status === 404) {
+        return [];
+      }
       if (!response.ok) {
-        throw new Error("Failed to fetch budgets");
+        const text = await response.text();
+        throw new Error(text || "Failed to fetch budgets");
       }
       const data = await response.json();
-      return data;
+      // Ensure array
+      return Array.isArray(data) ? data : [];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(error.message || "Failed to fetch budgets");
@@ -120,7 +131,12 @@ function handleDeleteBudget(builder: ActionReducerMapBuilder<userBudgetState>) {
   });
 }
 
-export const { setBudgets, addBudget, deleteBudget, clearBudgets } =
-  userBudgetsSlice.actions;
+export const {
+  setBudgets,
+  addBudget,
+  deleteBudget,
+  clearBudgets,
+  setTotalBudgetedAmount,
+} = userBudgetsSlice.actions;
 
 export const userBudgetReducer = userBudgetsSlice.reducer;

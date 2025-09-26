@@ -49,6 +49,23 @@ export default function Barchart() {
   );
 
   const chartData = graphMode === "Monthly" ? monthlyChart : dailyChart;
+  // Utility: get start of current week (Monday as day 0)
+  function getStartOfWeek(date = new Date()) {
+    const d = new Date(date);
+    const day = (d.getDay() + 6) % 7; // shift so Monday = 0
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - day);
+    return d;
+  }
+
+  function getEndOfWeek(startOfWeek: Date) {
+    const d = new Date(startOfWeek);
+    d.setDate(d.getDate() + 7);
+    return d;
+  }
+
+  const startOfWeek = getStartOfWeek();
+  const endOfWeek = getEndOfWeek(startOfWeek);
 
   const dailyIncome = Array(7).fill(0);
   const dailyExpense = Array(7).fill(0);
@@ -57,17 +74,19 @@ export default function Barchart() {
   transactions.forEach((t) => {
     const date = new Date(t.dateCreated);
 
-    if (t.type?.toLowerCase().trim() === "income") {
-      const day = (date.getDay() + 6) % 7;
-      dailyIncome[day] += Number(t.amount) || 0;
-    } else if (t.type?.toLowerCase().trim() === "expense") {
-      const day = (date.getDay() + 6) % 7;
-      dailyExpense[day] += Number(t.amount) || 0;
-    } else if (t.type?.toLowerCase().trim() === "transfer") {
-      const day = (date.getDay() + 6) % 7;
-      dailyTransfers[day] += Number(t.amount) || 0;
-    } else {
-      return;
+    // Only count transactions within this week
+    if (date < startOfWeek || date >= endOfWeek) return;
+
+    const day = (date.getDay() + 6) % 7; // Monday=0, Sunday=6
+    const amount = Number(t.amount) || 0;
+    const type = t.type?.toLowerCase().trim();
+
+    if (type === "income") {
+      dailyIncome[day] += amount;
+    } else if (type === "expense") {
+      dailyExpense[day] += amount;
+    } else if (type === "transfer") {
+      dailyTransfers[day] += amount;
     }
   });
 
@@ -176,7 +195,7 @@ export default function Barchart() {
       },
       title: {
         display: true,
-        text: "Monthly Income vs. Expenses",
+        text: "Income vs. Expenses",
       },
     },
     scales: {

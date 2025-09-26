@@ -25,13 +25,11 @@ export const getBudgetsByUser = async (req: Request, res: Response) => {
 
   try {
     const budgets = await Budget.find({ userId });
-
+    // Return an empty array with 200 status instead of 404 – a list endpoint
+    // should indicate 'no items yet' rather than a missing resource error.
     if (budgets.length === 0) {
-      return res.status(404).json({
-        message: "No budgets found for this user, Start creating some!",
-      });
+      return res.status(200).json([]);
     }
-
     return res.status(200).json(budgets);
   } catch (error) {
     console.error("Failed to get budgets:", error);

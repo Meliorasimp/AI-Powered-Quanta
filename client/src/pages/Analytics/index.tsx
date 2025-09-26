@@ -5,8 +5,12 @@ import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import Linechart from "../../components/Chartjs/Linechart/index.tsx";
+import AiModal from "../../components/AiModal/index.tsx";
 
 const Analytics = () => {
+  const aiModal = useSelector(
+    (state: RootState) => state.dashboard.isAiPopupVisible
+  );
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
@@ -63,6 +67,7 @@ const Analytics = () => {
           </div>
         </div>
       </div>
+      {aiModal && <AiModal />}
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import { UserTransactionState } from "../modules/Api/transaction/displaytransaction";
+import { userBudgetState } from "../modules/Api/Budgets/displaybudget";
+
 export const calculateRemainingBalance = (
   transactions: UserTransactionState["transactions"]
 ) => {
@@ -9,10 +11,7 @@ export const calculateRemainingBalance = (
     if (type === "income") {
       return balance + amount;
     }
-    if (type === "expense") {
-      return balance - amount;
-    }
-    if (type === "transfer") {
+    if (type === "expense" || type === "transfer") {
       return balance - amount;
     }
     return balance;
@@ -53,5 +52,14 @@ export const calculateTotalIncome = (
     const type = t.type?.toLowerCase();
     const amount = typeof t.amount === "number" ? t.amount : 0;
     return type === "income" ? sum + amount : sum;
+  }, 0);
+};
+
+export const calculateTotalBudgetedAmount = (
+  budgets: userBudgetState["budgets"]
+) => {
+  return budgets.reduce((sum, b) => {
+    const amount = typeof b.amount === "number" ? b.amount : 0;
+    return sum + amount;
   }, 0);
 };

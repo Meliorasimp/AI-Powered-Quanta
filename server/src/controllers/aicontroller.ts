@@ -16,6 +16,7 @@ export const summarizeTransactions = async (req: Request, res: Response) => {
       2. Notable Transaction Expenses or Incomes
       3. Suggestions for budgeting or saving tips
       
+      if the user has less than 5 transactions, just say "Not enough data to provide insights"
       
       Transactions:
       ${transactions

@@ -4,7 +4,7 @@ import Heading from "../../components/Text/Heading";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import Button from "../../components/Button";
-import gehlee from "../../assets/gehlee.jpg";
+import user from "../../assets/circle-user-round.svg";
 import { FaPencilAlt, FaPlus, FaDoorClosed, FaTrash } from "react-icons/fa";
 import {
   setFirstName,
@@ -199,9 +199,9 @@ const Profile = () => {
             className="flex flex-row items-center gap-x-5 w-full py-3"
             encType="multipart/form-data"
           >
-            <div className="bg-yellow-200 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center overflow-hidden">
+            <div className="bg-yellow-200 w-12 h-12 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center overflow-hidden">
               <img
-                src={profilePicture || gehlee}
+                src={profilePicture || user}
                 alt="profile"
                 className="w-full h-full object-cover"
               />
@@ -226,18 +226,10 @@ const Profile = () => {
               <Heading label="Full Name" className="font-bold text-lg" />
               <div className="flex w-full pb-2">
                 <div className="w-2/7 pr-2">
-                  <Paragraph
-                    label="First Name"
-                    className="text-xs"
-                    variant="tertiary"
-                  />
+                  <Heading label="First Name" className="text-md" />
                 </div>
                 <div className="w-2/7 pl-2">
-                  <Paragraph
-                    label="Last Name"
-                    className="text-xs"
-                    variant="tertiary"
-                  />
+                  <Heading label="Last Name" className="text-md" />
                 </div>
               </div>
               <div>
@@ -275,18 +267,13 @@ const Profile = () => {
           </div>
           <div className="w-full border-b py-5">
             <Heading label="Email Address" className="font-bold text-lg" />
-            <Paragraph
+            <Heading
               label="Manage your Email Address here."
-              className="text-xs"
-              variant="tertiary"
+              className="text-sm text-gray-300"
             />
             <div className="flex flex-col w-full pt-3">
               <div className="w-2/7 pr-2 pb-3">
-                <Paragraph
-                  label="Email"
-                  className="text-xs"
-                  variant="tertiary"
-                />
+                <Heading label="Email" className="text-md" />
               </div>
               <div>
                 <form
@@ -314,26 +301,17 @@ const Profile = () => {
           </div>
           <div className="w-full border-b py-5">
             <Heading label="Password" className="font-bold text-lg" />
-            <Paragraph
+            <Heading
               label="Change your password here"
-              className="text-xs"
-              variant="tertiary"
+              className="text-sm text-gray-300"
             />
             <div className="flex flex-col w-full pt-3">
               <div className="flex w-full pb-2">
                 <div className="w-2/7 pr-2">
-                  <Paragraph
-                    label="Current Password"
-                    className="text-xs"
-                    variant="tertiary"
-                  />
+                  <Heading label="Current Password" className="text-md" />
                 </div>
                 <div className="w-2/7 pl-2">
-                  <Paragraph
-                    label="New Password"
-                    className="text-xs"
-                    variant="tertiary"
-                  />
+                  <Heading label="New Password" className="text-md" />
                 </div>
               </div>
               <form
@@ -367,10 +345,9 @@ const Profile = () => {
           </div>
           <div className="w-full py-5">
             <Heading label="Account Security" className="font-bold text-lg" />
-            <Paragraph
-              label="Manage your account security settings."
-              className="text-xs"
-              variant="tertiary"
+            <Heading
+              label="Manage your account security here"
+              className="text-sm text-gray-300"
             />
             <div className="flex gap-x-5">
               <Button

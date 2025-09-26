@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import Heading from "../Text/Heading";
 import { LayoutDashboardIcon, PiggyBankIcon, Menu, X } from "lucide-react";
-import gehlee from "../../assets/gehlee.jpg";
+import user from "../../assets/circle-user-round.svg";
+
 import {
   setMobileOpen,
   setFinanceOpen,
@@ -123,7 +124,7 @@ const Navbar = () => {
             <div className="flex flex-row items-center">
               <div className="w-10 h-10">
                 <img
-                  src={profilePicture || gehlee}
+                  src={profilePicture || user}
                   alt="profile"
                   className="w-full h-full object-cover rounded-full"
                 />
@@ -222,7 +223,7 @@ const Navbar = () => {
             <Heading label="Profile" className="text-white text-sm mb-1" />
             <div className="flex items-center gap-3 mb-2">
               <img
-                src={profilePicture || gehlee}
+                src={profilePicture || user}
                 alt="profile"
                 className="w-8 h-8 object-cover rounded-full"
               />

@@ -85,11 +85,11 @@ const Login = () => {
                 bg-black/50 backdrop-blur-xs z-50 "
     >
       <div className="bg-gray-900 w-2/3 h-3/4 flex flex-row justify-center rounded-2xl items-center">
-        <div className="w-full pt-8 pr-8 pl-8">
+        <div className="w-full pr-8 pl-8">
           <div className="text-white">
             <Heading
               label="Log in to stay on top of your finances"
-              className="text-white text-2xl font-bold mb-10"
+              className="text-white text-2xl font-bold "
             />
             <Paragraph
               label="Enter your credentials to access your account."

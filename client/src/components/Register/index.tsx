@@ -93,10 +93,10 @@ const RegisterForm = () => {
             className="max-w-full h-auto"
           />
         </div>
-        <div className="w-full pt-8 pr-8 pl-8">
+        <div className="w-full pr-8 pl-8">
           <Heading
             label="Turn your spending into savings!"
-            className="text-white text-2xl font-bold mb-10"
+            className="text-white text-2xl font-bold"
           />
           <Paragraph
             label="Save more money by tracking your spending habits and finding areas to cut back."
