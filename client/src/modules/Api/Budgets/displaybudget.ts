@@ -16,7 +16,7 @@ export type userBudgetState = {
   }>;
   loading: boolean;
   error: string | null;
-  totalBudgetedAmount?: number;
+  totalBudgetedAmount: number;
 };
 
 const initialUserBudgetState: userBudgetState = {

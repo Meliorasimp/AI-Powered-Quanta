@@ -63,3 +63,42 @@ export const calculateTotalBudgetedAmount = (
     return sum + amount;
   }, 0);
 };
+
+export const calculateBudgetedAmount = (
+  budgets: userBudgetState["budgets"]
+) => {
+  return budgets.reduce((sum, b) => {
+    const amount = typeof b.amount === "number" ? b.amount : 0;
+    return sum + amount;
+  }, 0);
+};
+
+export const calculateExpensePercentage = (
+  totalIncome: number,
+  totalExpense: number
+): number => {
+  if (totalIncome <= 0) return 0;
+
+  const expensePercentage = (totalExpense / totalIncome) * 100;
+
+  return Math.min(100, +expensePercentage.toFixed(2));
+};
+
+export const calculateBudgetPercentage = (
+  budgetedAmount: number,
+  totalIncome: number
+): number => {
+  if (budgetedAmount <= 0) return 0;
+  const budgetPercentage = (budgetedAmount / totalIncome) * 100;
+
+  return Math.min(100, +budgetPercentage.toFixed(2));
+};
+
+export const calculateTransferPercentage = (
+  budgetedAmount: number,
+  totalIncome: number
+): number => {
+  if (budgetedAmount <= 0) return 0;
+  const transferPercentage = (budgetedAmount / totalIncome) * 100;
+  return Math.min(100, +transferPercentage.toFixed(2));
+};
