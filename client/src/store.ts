@@ -16,6 +16,8 @@ import { userBudgetReducer } from "./modules/Api/Budgets/displaybudget.ts";
 import { transactionReducer } from "./modules/Api/transaction/addtransaction.ts";
 import { displayTransactionsReducer } from "./modules/Api/transaction/displaytransaction.ts";
 import { dashboardReducer } from "./modules/Interaction.ts/dashboard/index.ts";
+import { goalsReducer } from "./modules/Api/Goals/goalSlice";
+import { displayGoalSlice } from "./modules/Api/Goals/displayGoal.ts";
 
 const store = configureStore({
   reducer: {
@@ -32,6 +34,8 @@ const store = configureStore({
     transaction: transactionReducer,
     usertransaction: displayTransactionsReducer,
     dashboard: dashboardReducer,
+    goals: goalsReducer,
+    displayGoal: displayGoalSlice.reducer,
   },
 });
 

@@ -1,7 +1,6 @@
 import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
-import ReactMarkdown from "react-markdown";
 import Doughnut from "../../components/Chartjs/Doughnut/index.tsx";
 import { useNavigate } from "react-router-dom";
 import { Info } from "lucide-react";
@@ -35,7 +34,7 @@ import {
 } from "../../modules/Interaction.ts/dashboard/index.ts";
 import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { setGraphMode } from "../..//modules/Interaction.ts/dashboard/index.ts";
-import Qwen from "../../assets/qwen.svg";
+import { Plus as PlusIcon } from "lucide-react";
 import AiModal from "../../components/AiModal/index.tsx";
 import { fetchUserBudgets } from "../../modules/Api/Budgets/displaybudget.ts";
 import { calculateTotalBudgetedAmount } from "../../utils/index.ts";
@@ -44,7 +43,18 @@ import {
   calculateExpensePercentage,
   calculateBudgetPercentage,
   calculateTransferPercentage,
+  formatDateByHour,
 } from "../../utils/index.ts";
+import {
+  showGoalPopup,
+  showTransactionPopup,
+} from "../../modules/Interaction.ts/index.ts";
+import TransactionCard from "../../components/transactionpopup/index.tsx";
+import GoalPopup from "../../components/GoalPopup/index.tsx";
+import {
+  fetchUserGoal,
+  setDisplayGoal,
+} from "../../modules/Api/Goals/displayGoal.ts";
 
 const override: CSSProperties = {
   display: "block",
@@ -59,7 +69,13 @@ const Dashboard = () => {
   );
   const username = useAppSelector((state: RootState) => state.user.username);
   const userId = useAppSelector((state: RootState) => state.user.id);
-
+  const transactionPopup = useAppSelector(
+    (state: RootState) => state.interaction.isTransactionPopupVisible
+  );
+  const goalPopup = useAppSelector(
+    (state: RootState) => state.interaction.isGoalPopupVisible
+  );
+  console.log("User ID from state:", userId);
   const userBudgets = useAppSelector(
     (state: RootState) => state.userbudget.budgets
   );
@@ -96,6 +112,8 @@ const Dashboard = () => {
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
+
+  const goals = useAppSelector((state: RootState) => state.displayGoal.goals);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -159,6 +177,23 @@ const Dashboard = () => {
     fetchUserData();
   }, [navigate, dispatch, userId]);
 
+  useEffect(() => {
+    const fetchUserGoals = async () => {
+      if (userId) {
+        try {
+          console.log("Fetching goals for User ID:", userId);
+          const userGoals = await dispatch(fetchUserGoal(userId)).unwrap();
+          console.log("User Goals:", userGoals);
+          dispatch(setDisplayGoal(userGoals));
+          console.log("userGoals dispatched to state:", goals);
+        } catch (error) {
+          console.error("Error fetching user goals:", error);
+        }
+      }
+    };
+    fetchUserGoals();
+  }, [userId, dispatch]);
+
   return (
     <div
       className={`flex flex-col app ${
@@ -188,11 +223,11 @@ const Dashboard = () => {
             variant="tertiary"
           />
           <div className="grid pt-7 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative">
+            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative shadow-[4px_4px_10px_rgba(255,255,255,0.1)]">
               <div className="flex flex-row items-center gap-x-2 justify-start">
                 <Heading
                   label="Remaining Balance"
-                  className="text-lg main-website-text-color"
+                  className="text-md main-website-text-color"
                 />
                 <Info className="cursor-pointer" />
               </div>
@@ -200,7 +235,7 @@ const Dashboard = () => {
                 label={`$${
                   remainingBalance ? remainingBalance.toString() : "0"
                 }`}
-                className="text-3xl font-semibold main-website-text-color mt-2"
+                className="text-2xl font-semibold main-website-text-color mt-2"
               />
               <div className="bar-container relative bottom-0 left-0 w-full h-2 mt-4 flex rounded-full overflow-hidden">
                 {/* Expense portion */}
@@ -237,17 +272,17 @@ const Dashboard = () => {
                 />
               </div>
             </div>
-            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative">
+            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative shadow-[4px_4px_10px_rgba(255,255,255,0.1)]">
               <div className="flex flex-row items-center gap-x-2 justify-start">
                 <Heading
                   label="Total Expenses"
-                  className="text-lg main-website-text-color"
+                  className="text-md main-website-text-color"
                 />
                 <Info className="cursor-pointer" />
               </div>
               <Heading
                 label={`$${totalExpenses ? totalExpenses.toString() : "0"}`}
-                className="text-3xl font-semibold main-website-text-color mt-2"
+                className="text-2xl font-semibold main-website-text-color mt-2"
               />
               <div className="bar-container rounded-full left-0 w-full h-2 mt-4">
                 <div
@@ -261,17 +296,17 @@ const Dashboard = () => {
                 />
               </div>
             </div>
-            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative">
+            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative shadow-[4px_4px_10px_rgba(255,255,255,0.1)]">
               <div className="flex flex-row items-center gap-x-2 justify-start">
                 <Heading
                   label="Total Budgeted Amount"
-                  className="text-lg main-website-text-color"
+                  className="text-md main-website-text-color"
                 />
                 <Info className="cursor-pointer" />
               </div>
               <Heading
                 label={`$${budgetedAmount ? budgetedAmount.toString() : "0"}`}
-                className="text-3xl font-semibold main-website-text-color mt-2"
+                className="text-2xl font-semibold main-website-text-color mt-2"
               />
               <div className="bar-container rounded-full left-0 w-full h-2 mt-4">
                 <div
@@ -285,11 +320,11 @@ const Dashboard = () => {
                 />
               </div>
             </div>
-            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative">
+            <div className="border-2 rounded-lg border-gray-700 p-5 flex flex-col justify-center items-left relative shadow-[4px_4px_10px_rgba(255,255,255,0.1)]">
               <div className="flex flex-row items-center gap-x-2 justify-start">
                 <Heading
                   label="Total Transfers Made"
-                  className="text-lg main-website-text-color"
+                  className="text-md main-website-text-color"
                 />
                 <Info className="cursor-pointer" />
               </div>
@@ -297,7 +332,7 @@ const Dashboard = () => {
                 label={`$${
                   totalTransfersMade ? totalTransfersMade.toString() : "0"
                 }`}
-                className="text-3xl font-semibold main-website-text-color mt-2"
+                className="text-2xl font-semibold main-website-text-color mt-2"
               />
               <div className="bar-container rounded-full left-0 w-full h-2 mt-4">
                 <div
@@ -314,11 +349,11 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="flex gap-x-4 flex-col lg:flex-row lg:gap-x-4 lg:justify-center w-full h-full">
-          <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 sm:w-[90%] lg:w-[70%] mx-auto">
+          <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 sm:w-[90%] lg:w-[70%] mx-auto shadow-[4px_4px_10px_rgba(255,255,255,0.1)]">
             <div className="flex flex-row">
               <Heading
                 label="Income vs. Expenses Graph"
-                className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left mr-10"
+                className="text-base sm:text-lg main-website-text-color text-center sm:text-left mr-10"
               />
               <Button
                 label="Monthly"
@@ -337,12 +372,77 @@ const Dashboard = () => {
               <Barchart />
             </div>
           </div>
-          <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[30%] mx-auto ">
-            <Heading
-              label="Recent Transactions"
-              className="text-base sm:text-lg font-semibold main-website-text-color text-center sm:text-left"
-            />
-            <div className="w-full h-[300px] sm:h-[400px] flex justify-center items-center"></div>
+          <div className="py-5 px-4 border-2 mt-4 rounded-lg border-gray-700 w-full sm:w-[90%] lg:w-[30%] mx-auto shadow-[4px_4px_10px_rgba(255,255,255,0.1)] overflow-auto">
+            <div className="flex flex-row justify-between items-center">
+              <Heading
+                label="Recent Transactions"
+                className="text-base sm:text-lg main-website-text-color text-center sm:text-left"
+              />
+              <Button
+                label="Add"
+                type="button"
+                icon={<PlusIcon className="inline-block" />}
+                className="cursor-pointer"
+                onClick={() => dispatch(showTransactionPopup())}
+              />
+            </div>
+            <div className="w-full h-[300px] sm:h-[400px] flex justify-center items-center ">
+              {userTransaction.loading && (
+                <MoonLoader
+                  color={"#36d7b7"}
+                  loading={userTransaction.loading}
+                  cssOverride={override}
+                  size={50}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+              )}{" "}
+              {!userTransaction.loading && userTransaction.error && (
+                <p className="text-red-500">
+                  Error:{" "}
+                  {userTransaction.error || "Failed to load transactions."}
+                </p>
+              )}{" "}
+              {!userTransaction.loading &&
+                userTransaction.transactions.length === 0 && (
+                  <p>No transactions found.</p>
+                )}{" "}
+              {!userTransaction.loading &&
+                userTransaction.transactions.length > 0 && (
+                  <div className="w-full h-full flex flex-col gap-y-4 mt-5">
+                    {[...userTransaction.transactions]
+                      .reverse()
+                      .slice(0, 7)
+                      .map((transactions) => (
+                        <div
+                          key={transactions._id}
+                          className="flex justify-between items-start"
+                        >
+                          <div>
+                            <div>{transactions.transactionName}</div>
+                            <div className="text-sm text-gray-500">
+                              {formatDateByHour(transactions.dateCreated)}
+                            </div>
+                          </div>
+                          <div className="text-lg min-w-[80px] text-right">
+                            <span
+                              className={
+                                transactions.type.toLowerCase() === "expense"
+                                  ? "text-red-500"
+                                  : "text-green-500"
+                              }
+                            >
+                              {transactions.type.toLowerCase() === "expense"
+                                ? "-"
+                                : "+"}
+                              ${transactions.amount}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-4 md:flex-row md:gap-4 md:justify-center">
@@ -361,35 +461,26 @@ const Dashboard = () => {
             </div>
             <div className="w-full overflow-x-auto"></div>
           </div>
-          <div className="w-full md:w-4/11 h-96 overflow-y-auto overflow-x-hidden py-5 px-5 border-2 mt-2 rounded-lg border-gray-700">
-            <div className="flex flex-row items-center">
+          <div className="w-full md:w-4/11 h-96 py-5 px-5 border-2 mt-2 rounded-lg border-gray-700">
+            <div className="flex flex-row items-center justify-between">
               <Heading
-                label="AI Insight"
+                label="Goals"
                 className="text-lg font-semibold main-website-text-color"
               />
-              <img src={Qwen} alt="Qwen Logo" className="h-8 w-20" />
+              <Button
+                label="Add Goal"
+                type="button"
+                className="cursor-pointer"
+                icon={<PlusIcon className="inline-block" />}
+                onClick={() => dispatch(showGoalPopup())}
+              />
             </div>
-            <div className="w-full h-full mt-2">
-              {summary ? (
-                <div className="leading-loose">
-                  <ReactMarkdown>{summary}</ReactMarkdown>
-                </div>
-              ) : (
-                <p className="flex justify-center items-center mt-10">
-                  <MoonLoader
-                    color={"#36d7b7"}
-                    loading={true}
-                    cssOverride={override}
-                    size={50}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                  />
-                </p>
-              )}
-            </div>
+            <div className="w-full h-full mt-2"></div>
           </div>
         </div>
       </div>
+      {transactionPopup && <TransactionCard />}
+      {goalPopup && <GoalPopup />}
     </div>
   );
 };

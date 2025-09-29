@@ -6,6 +6,7 @@
     margin: 0;
     box-sizing: border-box;
   }
+
   :root {
     font-family: "Inter", sans-serif;
     --primary-background-color: #13013f;
@@ -34,6 +35,7 @@
 
   .app {
     transition: background-color 0.2s linear;
+    min-height: 100vh;
   }
 
   .app.purple {
@@ -137,10 +139,10 @@
   .bar-container {
     width: 100%;
     height: 20px;
-    display: flex; /* line up children horizontally */
+    display: flex;
     overflow: hidden;
-    border-radius: 9999px; /* pill shape */
-    background-color: #30f100; /* light gray background */
+    border-radius: 9999px;
+    background-color: #00ff00;
   }
 
   .expense-bar-fill {

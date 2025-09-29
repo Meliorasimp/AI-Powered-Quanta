@@ -102,3 +102,16 @@ export const calculateTransferPercentage = (
   const transferPercentage = (budgetedAmount / totalIncome) * 100;
   return Math.min(100, +transferPercentage.toFixed(2));
 };
+
+export const formatDateByHour = (dateString: string): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+  return date.toLocaleDateString(undefined, options);
+};

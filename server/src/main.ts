@@ -11,6 +11,7 @@ import authRouter from "./routes/authRoute";
 import budgetRouter from "./routes/budgetRoute";
 import protectedRoute from "./routes/protectedroute";
 import TransactionRouter from "./routes/transactionRoute";
+import goalRouter from "./routes/goalRoute";
 import AiRouter from "./routes/aiRoute";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -98,6 +99,7 @@ app.use("/api", budgetRouter);
 app.use("/user", protectedRoute);
 app.use("/api", TransactionRouter);
 app.use("/ai", AiRouter);
+app.use("/goals", goalRouter);
 
 //connect to the database
 

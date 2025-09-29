@@ -134,7 +134,7 @@ export default function Barchart() {
         label: "Transfers Made",
         data: dailyTransfers,
         backgroundColor: "rgba(100, 255, 86, 0.2)",
-        borderColor: "rgba(100, 255, 86, 1)",
+        borderColor: "rgba(100, 255, 100, 1)",
         borderWidth: 1,
       },
     ],
