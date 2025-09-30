@@ -9,6 +9,7 @@ export type UserTransactionState = {
     amount: number;
     merchant: string;
     type: "income" | "expense" | "transfer";
+    expenseCategory?: string;
     status: "pending" | "cleared";
     dateCreated: string;
   }>;

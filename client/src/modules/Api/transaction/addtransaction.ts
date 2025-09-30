@@ -7,6 +7,13 @@ type TransactionType = {
   amount: number;
   merchant: string;
   type: "income" | "expense" | "transfer";
+  expenseCategory?:
+    | "Housing"
+    | "Utilities"
+    | "Groceries"
+    | "Entertainment"
+    | "Transportation"
+    | "Education";
   status: "pending" | "cleared";
   dateCreated?: string;
   loading?: boolean;
@@ -23,6 +30,7 @@ const initialTransactionState: TransactionType = {
   dateCreated: new Date().toISOString(),
   loading: false,
   error: null,
+  expenseCategory: undefined,
 };
 
 export const transactionSlice = createSlice({
@@ -43,6 +51,22 @@ export const transactionSlice = createSlice({
       action: PayloadAction<"income" | "expense" | "transfer">
     ) => {
       state.type = action.payload;
+    },
+    setExpenseCategory: (
+      state,
+      action: PayloadAction<
+        | "Housing"
+        | "Utilities"
+        | "Groceries"
+        | "Entertainment"
+        | "Transportation"
+        | "Education"
+      >
+    ) => {
+      state.expenseCategory = action.payload;
+    },
+    clearExpenseCategory: (state) => {
+      state.expenseCategory = undefined;
     },
     setStatus: (state, action: PayloadAction<"pending" | "cleared">) => {
       state.status = action.payload;
@@ -75,6 +99,8 @@ export const transactionSlice = createSlice({
         state.amount = amount;
         state.merchant = merchant;
         state.type = type;
+        state.expenseCategory =
+          type === "expense" ? state.expenseCategory : undefined;
         state.status = status;
         state.dateCreated = dateCreated;
       })
@@ -106,6 +132,8 @@ export const {
   setTransactionAmount,
   setMerchant,
   setType,
+  setExpenseCategory,
+  clearExpenseCategory,
   setStatus,
   resetTransaction,
 } = transactionSlice.actions;

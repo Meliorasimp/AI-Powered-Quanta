@@ -1,12 +1,15 @@
-@import "tailwindcss";
+/* Tailwind v4 core imports */
+@import "tailwindcss/preflight";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
 
+/* ================= Base Layer ================= */
 @layer base {
   * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
   }
-
   :root {
     font-family: "Inter", sans-serif;
     --primary-background-color: #13013f;
@@ -16,98 +19,75 @@
     --light-background-color: #f7f7f7;
     --second-light-background-color: #e9e9e9;
     --budget-card-color: #220077;
-
     --dark-budget-card-color: #3b3b3b;
     --light-text-color: #3b3b3b;
-
     --dark-text-color: #ffffff;
     --primary-landingpage-bgcolor: #23004b;
-
     --statcard-purple-bgcolor: #1d004b;
     --statcard-purple-textcolor: white;
-
     --statcard-dark-bgcolor: #3b3b3b;
     --statcard-dark-textcolor: white;
-
     --statcard-light-bgcolor: #f7f7f7;
     --statcard-light-textcolor: var(--light-text-color);
   }
-
   .app {
     transition: background-color 0.2s linear;
     min-height: 100vh;
   }
-
   .app.purple {
-    background-color: var(--second-primary-background-color);
+    background: var(--second-primary-background-color);
     color: var(--dark-text-color);
   }
-
   .app.dark {
-    background-color: var(--second-dark-background-color);
+    background: var(--second-dark-background-color);
     color: var(--dark-text-color);
   }
-
   .app.light {
-    background-color: var(--second-light-background-color);
-  }
-
-  .app.light {
+    background: var(--second-light-background-color);
     color: var(--light-text-color);
   }
-
   .navbar.purple {
-    background-color: var(--primary-background-color);
+    background: var(--primary-background-color);
   }
-
   .navbar.dark {
-    background-color: var(--dark-background-color);
+    background: var(--dark-background-color);
   }
-
   .navbar.light {
-    background-color: var(--light-background-color);
+    background: var(--light-background-color);
   }
-
   .budget-card.purple {
-    background-color: var(--budget-card-color);
+    background: var(--budget-card-color);
     color: #e2e2e2;
     border-radius: 10px;
   }
-
   .budget-card.dark {
-    background-color: var(--dark-budget-card-color);
+    background: var(--dark-budget-card-color);
     color: #e2e2e2;
     border-radius: 10px;
   }
-
   .budget-card.light {
-    background-color: var(--light-background-color);
+    background: var(--light-background-color);
     color: var(--light-text-color);
     border-radius: 10px;
   }
-
   .landing-page-background-color {
-    background-color: var(--primary-landingpage-bgcolor);
+    background: var(--primary-landingpage-bgcolor);
     color: var(--dark-text-color);
   }
-
   .glow-text-white {
-    color: white;
+    color: #fff;
     text-shadow: 0 0 5px #fff;
   }
-
   .statcard-purple {
-    background-color: var(--statcard-purple-bgcolor);
+    background: var(--statcard-purple-bgcolor);
     color: var(--statcard-purple-textcolor);
   }
-
   .cell-slide {
     position: relative;
     overflow: hidden;
-    background-color: white;
+    background: #fff;
     transition: background-color 0.4s ease;
   }
-
   .cell-slide::before {
     content: "";
     position: absolute;
@@ -115,48 +95,40 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background-color: #f3f4f6; /* Tailwind's gray-100 */
+    background: #f3f4f6;
     transition: transform 0.4s ease;
     z-index: 0;
   }
-
   .cell-slide:hover::before {
     transform: translateX(100%);
   }
-
   .text-glow-green {
     filter: drop-shadow(0 0 1px lightgreen);
   }
-
   .ai-modal-background {
-    background-color: #150752;
+    background: #150752;
   }
-
   .ai-modal-header {
-    background-color: #0b0136;
+    background: #0b0136;
   }
-
   .bar-container {
     width: 100%;
     height: 20px;
     display: flex;
     overflow: hidden;
     border-radius: 9999px;
-    background-color: #00ff00;
+    background: #00ff00;
   }
-
   .expense-bar-fill {
     height: 100%;
     background: linear-gradient(to right, #ff0000, #ff016b);
     transition: width 0.3s ease;
   }
-
   .budget-bar-fill {
     height: 100%;
     background: linear-gradient(to right, #9900ff, #4100f5);
     transition: width 0.3s ease;
   }
-
   .transfers-bar-fill {
     height: 100%;
     background: linear-gradient(to right, #00d2ff, #3a7bd5);
@@ -164,6 +136,23 @@
   }
 }
 
+/* ================= Utilities Layer ================= */
+@layer utilities {
+  .w-10\/11 {
+    width: 90.9090909%;
+  }
+  .w-3\/11 {
+    width: 27.2727273%;
+  }
+  .w-4\/11 {
+    width: 36.3636364%;
+  }
+  .w-2\/7 {
+    width: 28.5714286%;
+  }
+}
+
+/* ================= Components Layer ================= */
 @layer components {
   .badge {
     @apply inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium tracking-wide uppercase gap-1 shadow-sm;

@@ -28,6 +28,8 @@ import {
   setTotalExpense,
   setTotalTransfersMade,
   setTotalIncome,
+  getAiSummary,
+  setSummarization,
 } from "../../modules/Interaction.ts/dashboard/index.ts";
 import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { setGraphMode } from "../..//modules/Interaction.ts/dashboard/index.ts";
@@ -52,6 +54,7 @@ import {
   fetchUserGoal,
   setDisplayGoal,
 } from "../../modules/Api/Goals/displayGoal.ts";
+import Pie from "../../components/Chartjs/Pie/index.tsx";
 
 const override: CSSProperties = {
   display: "block",
@@ -124,6 +127,7 @@ const Dashboard = () => {
           const userTransactions = await dispatch(
             getUserTransactions(response.data.user.id)
           ).unwrap();
+          console.log("Fetched Transactions:", userTransactions);
           dispatch(setTransactions(userTransactions));
 
           const totalExpenses = calculateTotalExpenses(userTransactions);
@@ -163,7 +167,23 @@ const Dashboard = () => {
       }
     };
 
-    // (Optional) AI summarization disabled for now
+    const fetchAiSummary = async () => {
+      try {
+        if (!userId) {
+          console.warn("No user ID available for AI summary fetch.");
+          return;
+        }
+        const result = await dispatch(getAiSummary(userId)).unwrap();
+        console.log("AI Summary Result:", result);
+        if (result?.summary) {
+          dispatch(setSummarization(result.summary));
+        }
+      } catch (error) {
+        console.error("Error fetching AI summary:", error);
+      }
+    };
+
+    //fetchAiSummary();
     fetchUserData();
   }, [navigate, dispatch, userId]);
 
@@ -398,7 +418,9 @@ const Dashboard = () => {
               )}{" "}
               {!userTransaction.loading &&
                 userTransaction.transactions.length === 0 && (
-                  <p>No transactions found.</p>
+                  <p className="text-xl text-center w-5/6">
+                    No transactions found. Start Adding one!
+                  </p>
                 )}{" "}
               {!userTransaction.loading &&
                 userTransaction.transactions.length > 0 && (
@@ -438,27 +460,59 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-4 md:flex-row md:gap-4 md:justify-center">
-          <div className="w-full md:w-8/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
-            <div className="flex flex-row">
+        <div className="w-full flex flex-col gap-4 md:flex-row md:gap-4 md:justify-end">
+          <div className="md:w-3/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
+            <div className="flex items-center justify-between">
               <Heading
-                label="Recent Transactions"
-                className="text-lg font-semibold main-website-text-color"
+                label="AI Feedback & Summary"
+                className="text-lg main-website-text-color"
               />
               <Button
-                label="View all"
                 type="button"
-                className="ml-auto text-lg cursor-pointer"
-                onClick={() => navigate("/transactions")}
+                label="Refresh"
+                className="text-xs px-2 py-1 rounded-md cursor-pointer"
+                onClick={() => {
+                  if (!userId) return;
+                  dispatch(getAiSummary(userId))
+                    .unwrap()
+                    .then(
+                      (res) =>
+                        res?.summary && dispatch(setSummarization(res.summary))
+                    )
+                    .catch((e) =>
+                      console.error("Failed to refresh AI summary", e)
+                    );
+                }}
               />
             </div>
-            <div className="w-full overflow-x-auto"></div>
+            <div className="mt-4 h-[290px] overflow-auto">
+              {summary ? (
+                <p className="text-sm sm:text-base px-2 main-website-text-color text-gray-300 text-justify">
+                  {summary}
+                </p>
+              ) : (
+                <p className="text-sm sm:text-md main-website-text-color">
+                  No summary available yet. Click Refresh to generate insights.
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="md:w-4/11 py-5 px-4 border-2 mt-2 rounded-lg border-gray-700">
+            <div>
+              <Heading
+                label="Expense Category Breakdown"
+                className="text-lg main-website-text-color"
+              />
+              <div className="flex justify-center items-center mt-4 h-[290px]">
+                <Pie />
+              </div>
+            </div>
           </div>
           <div className="w-full md:w-4/11 h-96 py-5 px-5 border-2 mt-2 rounded-lg border-gray-700">
             <div className="flex flex-row items-center justify-between">
               <Heading
                 label="Goals"
-                className="text-lg font-semibold main-website-text-color"
+                className="text-lg main-website-text-color"
               />
               <div>
                 <Button

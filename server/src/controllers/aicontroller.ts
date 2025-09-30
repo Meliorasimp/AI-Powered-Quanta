@@ -11,14 +11,7 @@ export const summarizeTransactions = async (req: Request, res: Response) => {
       .limit(20);
 
     const prompt = `
-      You are a financial assistant. Analyze the following transactions below and provide your insights for this weeks transactions in this format:
-      1. Summary of spending habits
-      2. Notable Transaction Expenses or Incomes
-      3. Suggestions for budgeting or saving tips
-      
-      if the user has less than 5 transactions, just say "Not enough data to provide insights"
-      
-      Transactions:
+      You are a financial assistant. Analyze the following transactions below and provide what you think of the users spending habits, any patterns you notice, and suggestions for better financial management. Be concise and clear.
       ${transactions
         .map(
           (tx) =>

@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 
 export const createTransaction = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { transactionName, amount, merchant, type, status } = req.body;
+  const { transactionName, amount, merchant, type, expenseCategory, status } =
+    req.body;
 
   try {
     const newTransaction = new Transaction({
@@ -12,6 +13,7 @@ export const createTransaction = async (req: Request, res: Response) => {
       amount,
       merchant,
       type,
+      expenseCategory: type === "expense" ? expenseCategory : undefined,
       status,
     });
 

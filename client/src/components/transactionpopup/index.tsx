@@ -2,12 +2,26 @@ import Heading from "../Text/Heading";
 import { hideTransactionPopup } from "../../modules/Interaction.ts";
 import { useAppDispatch } from "../../hooks/index.ts";
 import { FaMoneyBillAlt } from "react-icons/fa";
-import { BanknoteArrowDown, Check, Ellipsis, Rotate3d, X } from "lucide-react";
+import {
+  Apple,
+  BanknoteArrowDown,
+  Car,
+  Check,
+  Ellipsis,
+  GraduationCap,
+  House,
+  Rotate3d,
+  TreePalm,
+  Wrench,
+  X,
+} from "lucide-react";
 import {
   setTransactionName,
   setTransactionAmount,
   setMerchant,
   setType,
+  setExpenseCategory,
+  clearExpenseCategory,
   setStatus,
   resetTransaction,
 } from "../../modules/Api/transaction/addtransaction.ts";
@@ -17,6 +31,19 @@ import { submitTransaction } from "../../modules/Api/transaction/addtransaction.
 import { toast } from "react-toastify";
 import { addTransaction } from "../../modules/Api/transaction/displaytransaction.ts";
 import { useEffect, useRef } from "react";
+import Button from "../Button/index.tsx";
+import { setTotalIncome } from "../../modules/Interaction.ts/dashboard/index.ts";
+import {
+  calculateTotalIncome,
+  calculateTotalExpenses,
+  calculateRemainingBalance,
+  calculateTotalTransfersMade,
+} from "../../utils/index.ts";
+import {
+  setTotalExpense,
+  setRemainingBalance,
+  setTotalTransfersMade,
+} from "../../modules/Interaction.ts/dashboard/index.ts";
 
 const TransactionCard = () => {
   const dispatch = useAppDispatch();
@@ -24,12 +51,18 @@ const TransactionCard = () => {
   const transactionName = useSelector(
     (state: RootState) => state.transaction.transactionName
   );
+  const userTransactions = useSelector(
+    (state: RootState) => state.usertransaction.transactions
+  );
   const amount = useSelector((state: RootState) => state.transaction.amount);
   const merchant = useSelector(
     (state: RootState) => state.transaction.merchant
   );
   const type = useSelector((state: RootState) => state.transaction.type);
   const status = useSelector((state: RootState) => state.transaction.status);
+  const expenseCategory = useSelector(
+    (state: RootState) => state.transaction.expenseCategory
+  );
 
   const firstInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -47,12 +80,25 @@ const TransactionCard = () => {
           amount,
           merchant,
           type,
+          expenseCategory,
           status,
         })
       ).unwrap();
       if (response) {
         toast.success("Transaction submitted successfully!");
         dispatch(addTransaction(response));
+        const updatedTransactions = [...userTransactions, response];
+        dispatch(setTotalExpense(calculateTotalExpenses(updatedTransactions)));
+        dispatch(
+          setRemainingBalance(calculateRemainingBalance(updatedTransactions))
+        );
+        dispatch(
+          setTotalTransfersMade(
+            calculateTotalTransfersMade(updatedTransactions)
+          )
+        );
+        dispatch(setTotalIncome(calculateTotalIncome(updatedTransactions)));
+
         dispatch(hideTransactionPopup());
         dispatch(resetTransaction());
       }
@@ -174,7 +220,10 @@ const TransactionCard = () => {
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
-                    onClick={() => dispatch(setType("income"))}
+                    onClick={() => {
+                      dispatch(setType("income"));
+                      dispatch(clearExpenseCategory());
+                    }}
                     className={`group flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all ${
                       type === "income"
                         ? "border-green-400/60 bg-green-600/20 text-green-200 shadow-inner"
@@ -196,7 +245,10 @@ const TransactionCard = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => dispatch(setType("transfer"))}
+                    onClick={() => {
+                      dispatch(setType("transfer"));
+                      dispatch(clearExpenseCategory());
+                    }}
                     className={`group flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all ${
                       type === "transfer"
                         ? "border-blue-400/60 bg-blue-600/20 text-blue-200 shadow-inner"
@@ -206,6 +258,69 @@ const TransactionCard = () => {
                     <Rotate3d className="text-blue-300" /> Transfer
                   </button>
                 </div>
+                {type === "expense" && (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-gray-300">
+                      Expense Category
+                    </span>
+                    <div className="flex flex-row gap-3">
+                      <Button
+                        type="button"
+                        label="Housing"
+                        className="group flex items-center justify-center rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all w-full bg-gray-800/70 border-gray-600"
+                        icon={<House className="w-5 h-5" size={18} />}
+                        onClick={() => dispatch(setExpenseCategory("Housing"))}
+                      />
+                      <Button
+                        type="button"
+                        label="Utilities"
+                        className="group flex items-center justify-center rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all w-full bg-gray-800/70 border-gray-600"
+                        icon={<Wrench className="w-5 h-5" size={18} />}
+                        onClick={() =>
+                          dispatch(setExpenseCategory("Utilities"))
+                        }
+                      />
+                      <Button
+                        type="button"
+                        label="Groceries"
+                        className="group flex items-center justify-center rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all w-full bg-gray-800/70 border-gray-600"
+                        icon={<Apple className="w-5 h-5" size={18} />}
+                        onClick={() =>
+                          dispatch(setExpenseCategory("Groceries"))
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-row gap-3">
+                      <Button
+                        type="button"
+                        label="Leisure"
+                        className="group flex items-center justify-center rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all w-full bg-gray-800/70 border-gray-600"
+                        icon={<TreePalm className="w-5 h-5" size={18} />}
+                        onClick={() =>
+                          dispatch(setExpenseCategory("Entertainment"))
+                        }
+                      />
+                      <Button
+                        type="button"
+                        label="Transpo"
+                        className="group flex items-center justify-center rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all w-full bg-gray-800/70 border-gray-600"
+                        icon={<Car className="w-5 h-5" size={18} />}
+                        onClick={() =>
+                          dispatch(setExpenseCategory("Transportation"))
+                        }
+                      />
+                      <Button
+                        type="button"
+                        label="Education"
+                        className="group flex items-center justify-center rounded-md border px-3 py-2 text-xs sm:text-sm font-medium transition-all w-full bg-gray-800/70 border-gray-600"
+                        icon={<GraduationCap className="w-5 h-5" size={18} />}
+                        onClick={() =>
+                          dispatch(setExpenseCategory("Education"))
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
               {/* Status Selection */}
               <div className="flex flex-col gap-2">
@@ -267,6 +382,12 @@ const TransactionCard = () => {
                   <span className="text-gray-400">Type:</span>
                   <span className="font-medium capitalize text-gray-200">
                     {type || "—"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Category:</span>
+                  <span className="font-medium capitalize text-gray-200">
+                    {expenseCategory || "—"}
                   </span>
                 </div>
                 <div className="flex justify-between">
