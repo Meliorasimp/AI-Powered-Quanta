@@ -163,3 +163,156 @@
     transition: width 0.3s ease;
   }
 }
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium tracking-wide uppercase gap-1 shadow-sm;
+    letter-spacing: 0.5px;
+  }
+  .badge-income {
+    background: linear-gradient(to right, #064e3b, #059669);
+    @apply text-white;
+  }
+  .badge-expense {
+    background: linear-gradient(to right, #7f1d1d, #dc2626);
+    @apply text-white;
+  }
+  .badge-transfer {
+    background: linear-gradient(to right, #1e3a8a, #2563eb);
+    @apply text-white;
+  }
+  .badge-pending {
+    background: linear-gradient(to right, #78350f, #f59e0b);
+    @apply text-white;
+  }
+  .badge-cleared {
+    background: linear-gradient(to right, #065f46, #10b981);
+    @apply text-white;
+  }
+  .table-container-card {
+    @apply rounded-xl border border-white/10 dark:border-white/10 backdrop-blur-sm shadow-md overflow-hidden;
+    background: linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0)
+    );
+  }
+  .table-header-gradient {
+    background: linear-gradient(90deg, #0f0445, #2d0a87);
+  }
+  .row-hover-surface {
+    position: relative;
+  }
+  .row-hover-surface::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0)
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .row-hover-surface:hover::after {
+    opacity: 1;
+  }
+  .card-surface {
+    @apply relative rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-5 sm:p-6 shadow-md overflow-hidden;
+  }
+  .card-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at 20% 15%,
+      rgba(255, 255, 255, 0.15),
+      transparent 60%
+    );
+  }
+  .card-header {
+    @apply flex items-start justify-between mb-4;
+  }
+  .section-title {
+    @apply text-sm font-semibold uppercase tracking-wide opacity-80 mb-1;
+  }
+  .input-grid {
+    @apply grid gap-4 sm:grid-cols-2;
+  }
+  .input-field {
+    @apply w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-400 transition;
+  }
+  .action-bar {
+    @apply flex gap-3 flex-wrap mt-4;
+  }
+  .gradient-btn-primary {
+    @apply bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-600 text-white font-medium px-5 py-2 rounded-md shadow hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-150 border border-white/10;
+  }
+  .danger-outline {
+    @apply border border-red-400/40 text-red-300 hover:bg-red-500/10 rounded-md px-5 py-2 font-medium transition;
+  }
+  .avatar-ring {
+    @apply relative rounded-full overflow-hidden shadow-inner ring-2 ring-white/20;
+  }
+  .avatar-ring img {
+    @apply w-full h-full object-cover;
+  }
+  .inline-badge {
+    @apply inline-block text-[11px] font-medium px-2 py-0.5 rounded-md bg-white/10 border border-white/10 backdrop-blur-sm;
+  }
+  .empty-state-box {
+    @apply border border-dashed border-white/20 rounded-lg p-8 text-center text-sm sm:text-base;
+    background: radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0)
+    );
+  }
+  .budget-card-shell {
+    @apply relative rounded-xl p-5 flex flex-col gap-4 shadow-md border border-white/10 overflow-hidden;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0.02)
+    );
+  }
+  .budget-card-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at 15% 20%,
+      rgba(255, 255, 255, 0.18),
+      transparent 60%
+    );
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .budget-card-shell:hover {
+    box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  }
+  .budget-card-header {
+    @apply flex flex-col gap-1;
+  }
+  .budget-meta {
+    @apply flex flex-wrap gap-x-6 gap-y-1 text-[11px] sm:text-xs opacity-80 font-medium;
+  }
+  .budget-progress {
+    @apply w-full h-3 rounded-full overflow-hidden relative bg-white/10;
+    backdrop-filter: blur(4px);
+  }
+  .budget-progress-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+    background: linear-gradient(90deg, #10b981, #059669, #047857);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+      0 2px 6px -1px rgba(0, 0, 0, 0.5);
+  }
+  .budget-progress-label {
+    @apply absolute inset-0 flex items-center justify-center text-[10px] sm:text-[11px] font-semibold tracking-wide text-white/90 drop-shadow;
+    mix-blend-mode: screen;
+  }
+}

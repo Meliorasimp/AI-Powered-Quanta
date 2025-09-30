@@ -182,191 +182,205 @@ const Profile = () => {
       }`}
     >
       <Navbar />
-      <div className="w-10/11 min-h-screen flex flex-col py-5 px-5 gap-y-2 overflow-auto mx-auto">
-        <div className="pb-2 border-b">
+      <div className="w-10/11 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8 gap-y-8 overflow-auto mx-auto">
+        <header className="flex flex-col gap-2">
           <Heading
             label="Profile"
-            className="text-xl font-semibold main-website-text-color"
+            className="text-2xl font-semibold tracking-tight"
           />
           <Paragraph
-            label="View and edit your profile information."
-            className="text-base main-website-text-color"
+            label="Manage your identity, security, and account preferences."
+            className="text-sm opacity-80"
             variant="secondary"
           />
-        </div>
-        <div className="h-2/12">
-          <form
-            className="flex flex-row items-center gap-x-5 w-full py-3"
-            encType="multipart/form-data"
-          >
-            <div className="bg-yellow-200 w-12 h-12 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center overflow-hidden">
-              <img
-                src={profilePicture || user}
-                alt="profile"
-                className="w-full h-full object-cover"
-              />
+        </header>
+
+        {/* Avatar + Upload */}
+        <section className="card-surface">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <div className="avatar-ring w-24 h-24 sm:w-28 sm:h-28">
+              <img src={profilePicture || user} alt="profile" />
             </div>
-            <div className="mr-auto">
-              <Heading label="Profile Picture" />
+            <div className="flex-1 space-y-2">
+              <Heading
+                label="Profile Picture"
+                className="text-lg font-semibold"
+              />
               <Paragraph
-                label="File size must be below 15Mb"
+                label="Upload a clear photo under 15MB."
                 variant="tertiary"
+                className="text-xs opacity-70"
+              />
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="mt-1 text-xs sm:text-sm file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:sm:text-sm file:font-medium file:bg-indigo-500/20 file:text-indigo-300 hover:file:bg-indigo-500/30 cursor-pointer"
               />
             </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="mt-2 text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-100 file:text-yellow-700 hover:file:bg-yellow-200"
+          </div>
+        </section>
+
+        {/* Full Name */}
+        <section className="card-surface">
+          <div className="card-header">
+            <div>
+              <p className="section-title">Identity</p>
+              <Heading label="Full Name" className="text-lg font-semibold" />
+            </div>
+          </div>
+          <form onSubmit={handleFullNameSubmit} className="input-grid">
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] uppercase tracking-wide opacity-70">
+                First Name
+              </label>
+              <input
+                type="text"
+                placeholder={userfirstname}
+                className="input-field"
+                value={firstname}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(setFirstName(e.target.value))
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] uppercase tracking-wide opacity-70">
+                Last Name
+              </label>
+              <input
+                type="text"
+                placeholder={userLastName}
+                className="input-field"
+                value={lastname}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(setLastName(e.target.value))
+                }
+              />
+            </div>
+            <div className="sm:col-span-2 flex justify-end mt-2">
+              <Button
+                type="submit"
+                label="Save Name"
+                icon={<FaPencilAlt className="inline-block" />}
+                className="gradient-btn-primary"
+              />
+            </div>
+          </form>
+        </section>
+
+        {/* Email */}
+        <section className="card-surface">
+          <div className="card-header">
+            <div>
+              <p className="section-title">Contact</p>
+              <Heading
+                label="Email Address"
+                className="text-lg font-semibold"
+              />
+            </div>
+          </div>
+          <form
+            onSubmit={handleEmailSubmit}
+            className="flex flex-col sm:flex-row gap-4 items-start sm:items-end"
+          >
+            <div className="flex-1 w-full flex flex-col gap-1">
+              <label className="text-[11px] uppercase tracking-wide opacity-70">
+                Primary Email
+              </label>
+              <input
+                type="email"
+                placeholder={useremail}
+                className="input-field"
+                value={email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(setEmail(e.target.value))
+                }
+              />
+            </div>
+            <Button
+              type="submit"
+              label="Update Email"
+              icon={<FaPlus className="inline-block" />}
+              className="gradient-btn-primary"
             />
           </form>
+        </section>
 
-          <div className="w-full border-b py-5">
-            <div className="w-full">
-              <Heading label="Full Name" className="font-bold text-lg" />
-              <div className="flex w-full pb-2">
-                <div className="w-2/7 pr-2">
-                  <Heading label="First Name" className="text-md" />
-                </div>
-                <div className="w-2/7 pl-2">
-                  <Heading label="Last Name" className="text-md" />
-                </div>
-              </div>
-              <div>
-                <form
-                  className="flex w-full gap-2"
-                  onSubmit={handleFullNameSubmit}
-                >
-                  <input
-                    type="text"
-                    placeholder={userfirstname}
-                    className="border-2 border-gray-300 rounded-md p-2 w-2/7"
-                    value={firstname}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      dispatch(setFirstName(e.target.value));
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder={userLastName}
-                    className="border-2 border-gray-300 rounded-md p-2 w-2/7"
-                    value={lastname}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      dispatch(setLastName(e.target.value))
-                    }
-                  />
-                  <Button
-                    type="submit"
-                    label="Save Information"
-                    icon={<FaPencilAlt className="inline-block" />}
-                    className="py-2 px-12 rounded-md hover:bg-gray-700 cursor-pointer ml-auto"
-                  />
-                </form>
-              </div>
+        {/* Password */}
+        <section className="card-surface">
+          <div className="card-header">
+            <div>
+              <p className="section-title">Security</p>
+              <Heading label="Password" className="text-lg font-semibold" />
             </div>
           </div>
-          <div className="w-full border-b py-5">
-            <Heading label="Email Address" className="font-bold text-lg" />
-            <Heading
-              label="Manage your Email Address here."
-              className="text-sm text-gray-300"
-            />
-            <div className="flex flex-col w-full pt-3">
-              <div className="w-2/7 pr-2 pb-3">
-                <Heading label="Email" className="text-md" />
-              </div>
-              <div>
-                <form
-                  className="w-full justify-between flex"
-                  onSubmit={handleEmailSubmit}
-                >
-                  <input
-                    type="text"
-                    placeholder={useremail}
-                    className="border-2 border-gray-300 rounded-md p-2 w-2/7"
-                    value={email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      dispatch(setEmail(e.target.value));
-                    }}
-                  />
-                  <Button
-                    type="submit"
-                    label="Add Another Email"
-                    icon={<FaPlus className="inline-block" />}
-                    className="py-2 px-10 rounded-md hover:bg-gray-700 cursor-pointer ml-auto"
-                  />
-                </form>
-              </div>
-            </div>
-          </div>
-          <div className="w-full border-b py-5">
-            <Heading label="Password" className="font-bold text-lg" />
-            <Heading
-              label="Change your password here"
-              className="text-sm text-gray-300"
-            />
-            <div className="flex flex-col w-full pt-3">
-              <div className="flex w-full pb-2">
-                <div className="w-2/7 pr-2">
-                  <Heading label="Current Password" className="text-md" />
-                </div>
-                <div className="w-2/7 pl-2">
-                  <Heading label="New Password" className="text-md" />
-                </div>
-              </div>
-              <form
-                className="flex w-full gap-2"
-                onSubmit={handlePasswordSubmit}
-              >
-                <input
-                  type="text"
-                  className="border-2 border-gray-300 rounded-md p-2 w-2/7"
-                  value={currentpasswordInput}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    dispatch(setCurrentPassword(e.target.value));
-                  }}
-                />
-                <input
-                  type="text"
-                  className="border-2 border-gray-300 rounded-md p-2 w-2/7"
-                  value={newpasswordInput}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    dispatch(setNewPassword(e.target.value));
-                  }}
-                />
-                <Button
-                  type="submit"
-                  label="Save Password"
-                  icon={<FaPencilAlt className="inline-block" />}
-                  className="py-2 px-12 rounded-md hover:bg-gray-700 cursor-pointer ml-auto"
-                />
-              </form>
-            </div>
-          </div>
-          <div className="w-full py-5">
-            <Heading label="Account Security" className="font-bold text-lg" />
-            <Heading
-              label="Manage your account security here"
-              className="text-sm text-gray-300"
-            />
-            <div className="flex gap-x-5">
-              <Button
-                onClick={() => handleUserLogout()}
-                type="button"
-                label="Log out"
-                icon={<FaDoorClosed className="inline-block" />}
-                className="rounded-lg px-5 py-2 hover:bg-gray-700 cursor-pointer mt-3"
+          <form onSubmit={handlePasswordSubmit} className="input-grid">
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] uppercase tracking-wide opacity-70">
+                Current Password
+              </label>
+              <input
+                type="password"
+                className="input-field"
+                value={currentpasswordInput}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(setCurrentPassword(e.target.value))
+                }
               />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] uppercase tracking-wide opacity-70">
+                New Password
+              </label>
+              <input
+                type="password"
+                className="input-field"
+                value={newpasswordInput}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(setNewPassword(e.target.value))
+                }
+              />
+            </div>
+            <div className="sm:col-span-2 flex justify-end mt-2">
               <Button
-                onClick={() => {}}
-                type="button"
-                label="Remove Account"
-                icon={<FaTrash className="inline-block" />}
-                className="rounded-lg px-5 py-2 hover:bg-gray-700 cursor-pointer mt-3 text-red-500"
+                type="submit"
+                label="Save Password"
+                icon={<FaPencilAlt className="inline-block" />}
+                className="gradient-btn-primary"
+              />
+            </div>
+          </form>
+        </section>
+
+        {/* Account Security */}
+        <section className="card-surface">
+          <div className="card-header">
+            <div>
+              <p className="section-title">Account</p>
+              <Heading
+                label="Account Security"
+                className="text-lg font-semibold"
               />
             </div>
           </div>
-        </div>
+          <div className="action-bar">
+            <Button
+              onClick={() => handleUserLogout()}
+              type="button"
+              label="Log Out"
+              icon={<FaDoorClosed className="inline-block" />}
+              className="gradient-btn-primary"
+            />
+            <Button
+              onClick={() => {}}
+              type="button"
+              label="Remove Account"
+              icon={<FaTrash className="inline-block" />}
+              className="danger-outline"
+            />
+          </div>
+        </section>
       </div>
       {isRegisterFormVisible && <RegisterForm />}
       {isLoginFormVisible && <Login />}

@@ -150,320 +150,379 @@ const Transactions = () => {
       }`}
     >
       <Navbar />
-      <div className="w-10/11 min-h-screen flex flex-col py-5 px-5 gap-y-5 mx-auto">
-        <div className="overflow-hidden border-b-2 border-gray-200 pb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <Heading
-              label="Transactions"
-              className="text-lg sm:text-xl font-semibold main-website-text-color"
-            />
-            <Paragraph
-              label="Take a look at what you've been purchasing lately!"
-              className="text-sm sm:text-base main-website-text-color"
-              variant="secondary"
-            />
+      <div className="w-10/11 min-h-screen flex flex-col py-6 px-4 sm:px-6 gap-y-6 mx-auto">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div className="space-y-1">
+              <Heading
+                label="Transactions"
+                className="text-xl sm:text-2xl font-semibold tracking-tight drop-shadow-sm"
+              />
+              <Paragraph
+                label="Monitor and analyze your financial activity in real-time."
+                className="text-xs sm:text-sm opacity-80"
+                variant="secondary"
+              />
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                label="Add Transaction"
+                icon={<Plus className="inline-block w-4 h-4" />}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-md cursor-pointer font-medium shadow hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-150 border border-white/10"
+                onClick={() => dispatch(showTransactionPopup())}
+              />
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
+                <span className="opacity-80">Filter:</span>
+                <select
+                  className="bg-white/5 border border-white/10 focus:border-white/30 transition-colors rounded-md px-2 py-2 text-xs sm:text-sm outline-none backdrop-blur-sm"
+                  onChange={handleFilterChange}
+                  defaultValue={sortAll ? "all" : undefined}
+                >
+                  <option value="all" className="text-black">
+                    All
+                  </option>
+                  <option value="income" className="text-black">
+                    Income
+                  </option>
+                  <option value="expense" className="text-black">
+                    Expense
+                  </option>
+                  <option value="transfer" className="text-black">
+                    Transfer
+                  </option>
+                  <option value="pending" className="text-black">
+                    Pending
+                  </option>
+                  <option value="cleared" className="text-black">
+                    Cleared
+                  </option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-row flex-wrap gap-2 sm:gap-3 sm:pt-0">
-            <Button
-              type="button"
-              label="Add"
-              icon={<Plus className="inline-block" />}
-              className="text-green-500 px-3 py-1 rounded-sm cursor-pointer font-semibold"
-              onClick={() => dispatch(showTransactionPopup())}
-            />
-            <Heading
-              label="Filter by:"
-              className="text-sm sm:text-base main-website-text-color flex items-center"
-            />
-            <select
-              className="text-white outline-none rounded-sm px-2 py-1 sm:py-2 text-sm sm:text-base"
-              onChange={handleFilterChange}
-            >
-              <option value="all" className="text-black">
-                All
-              </option>
-              <option value="income" className="text-black">
-                Income
-              </option>
-              <option value="expense" className="text-black">
-                Expense
-              </option>
-              <option value="transfer" className="text-black">
-                Transfer
-              </option>
-              <option value="pending" className="text-black">
-                Pending
-              </option>
-              <option value="cleared" className="text-black">
-                Cleared
-              </option>
-            </select>
-          </div>
-        </div>
-        <div className="w-full">
-          <div className="w-full overflow-x-auto">
-            {userTransaction.loading && (
-              <p className="flex justify-center items-center py-6">
-                <MoonLoader
-                  color={"#36d7b7"}
-                  loading={userTransaction.loading}
-                  cssOverride={override}
-                  size={50}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-              </p>
-            )}
-            {!userTransaction.loading &&
-              userTransaction.transactions.length === 0 && (
-                <p className="py-4">No transactions found for this user.</p>
+          <div className="table-container-card relative">
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-600 opacity-70" />
+            <div className="w-full overflow-x-auto rounded-b-xl">
+              {userTransaction.loading && (
+                <p className="flex justify-center items-center py-6">
+                  <MoonLoader
+                    color={"#36d7b7"}
+                    loading={userTransaction.loading}
+                    cssOverride={override}
+                    size={50}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </p>
               )}
+              {!userTransaction.loading &&
+                userTransaction.transactions.length === 0 && (
+                  <div className="empty-state-box">
+                    <p className="font-medium mb-1">No transactions found</p>
+                    <p className="text-xs opacity-70 mb-3">
+                      Start by adding your first transaction.
+                    </p>
+                    <Button
+                      type="button"
+                      label="Add Transaction"
+                      className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-md cursor-pointer font-medium shadow hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-150"
+                      onClick={() => dispatch(showTransactionPopup())}
+                    />
+                  </div>
+                )}
 
-            {!userTransaction.loading &&
-              userTransaction.transactions.length > 0 && (
-                <table className="w-full min-w-[720px] table-fixed text-sm sm:text-base">
-                  <thead>
-                    <tr className="bg-blue-900 text-gray-100 text-left border-1 border-gray-500">
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-normal align-top">
-                        Transaction Name
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-normal align-top">
-                        Amount
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-normal align-top">
-                        Merchant
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-normal align-top">
-                        Type
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-normal align-top">
-                        Status
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm font-normal align-top">
-                        Date Created
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortAll &&
-                      [...userTransaction.transactions].reverse().map((t) => (
-                        <tr
-                          key={t._id || Math.random()}
-                          className="hover:bg-white hover:text-black"
-                        >
-                          <td className="border-y border-l px-2 sm:px-4 py-2">
-                            {t.transactionName}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.amount}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.merchant}
-                          </td>
-                          <td
-                            className={`border-y border-white px-2 sm:px-4 py-2 ${
-                              t.type === "income"
-                                ? "text-green-500"
-                                : t.type === "expense"
-                                ? "text-red-500"
-                                : "text-blue-500"
-                            }`}
+              {!userTransaction.loading &&
+                userTransaction.transactions.length > 0 && (
+                  <table className="w-full min-w-[760px] text-sm sm:text-[15px]">
+                    <thead>
+                      <tr className="table-header-gradient text-gray-100 text-left">
+                        <th className="pl-4 pr-2 py-3 text-[11px] sm:text-xs font-medium uppercase tracking-wide">
+                          Name
+                        </th>
+                        <th className="px-2 py-3 text-[11px] sm:text-xs font-medium uppercase tracking-wide">
+                          Amount
+                        </th>
+                        <th className="px-2 py-3 text-[11px] sm:text-xs font-medium uppercase tracking-wide">
+                          Merchant
+                        </th>
+                        <th className="px-2 py-3 text-[11px] sm:text-xs font-medium uppercase tracking-wide">
+                          Type
+                        </th>
+                        <th className="px-2 py-3 text-[11px] sm:text-xs font-medium uppercase tracking-wide">
+                          Status
+                        </th>
+                        <th className="px-2 py-3 text-[11px] sm:text-xs font-medium uppercase tracking-wide">
+                          Created
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {sortAll &&
+                        [...userTransaction.transactions].reverse().map((t) => (
+                          <tr
+                            key={t._id || Math.random()}
+                            className="row-hover-surface group"
                           >
-                            {t.type}
-                          </td>
-                          <td
-                            className={`border-y px-2 sm:px-4 border-white py-2 ${
-                              t.status === "pending"
-                                ? "text-yellow-200"
-                                : t.status === "cleared"
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`}
-                          >
-                            {t.status}
-                          </td>
-                          <td className="border-y border-r px-2 sm:px-4 py-2">
-                            {new Date(t.dateCreated).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))}
-                    {sortIncome &&
-                      !userTransaction.loading &&
-                      userTransaction.transactionsByType &&
-                      userTransaction.transactionsByType.map((t) => (
-                        <tr
-                          key={t._id}
-                          className="hover:bg-white hover:text-black"
-                        >
-                          <td className="border-y border-l px-2 sm:px-4 py-2">
-                            {t.transactionName}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.amount}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.merchant}
-                          </td>
-                          <td className="border-y border-white px-2 sm:px-4 py-2 text-green-500">
-                            {t.type}
-                          </td>
-                          <td
-                            className={`border-y px-2 sm:px-4 border-white py-2 ${
-                              t.status === "pending"
-                                ? "text-yellow-200"
-                                : t.status === "cleared"
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`}
-                          >
-                            {t.status}
-                          </td>
-                          <td className="border-y border-r px-2 sm:px-4 py-2">
-                            {new Date(t.dateCreated).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))}
-                    {sortExpense &&
-                      !userTransaction.loading &&
-                      userTransaction.transactionsByType &&
-                      userTransaction.transactionsByType.map((t) => (
-                        <tr
-                          key={t._id}
-                          className="hover:bg-white hover:text-black"
-                        >
-                          <td className="border-y border-l px-2 sm:px-4 py-2">
-                            {t.transactionName}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.amount}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.merchant}
-                          </td>
-                          <td className="border-y border-white px-2 sm:px-4 py-2 text-red-500">
-                            {t.type}
-                          </td>
-                          <td
-                            className={`border-y px-2 sm:px-4 border-white py-2 ${
-                              t.status === "pending"
-                                ? "text-yellow-200"
-                                : t.status === "cleared"
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`}
-                          >
-                            {t.status}
-                          </td>
-                          <td className="border-y border-r px-2 sm:px-4 py-2">
-                            {new Date(t.dateCreated).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))}
-                    {sortTransfer &&
-                      !userTransaction.loading &&
-                      userTransaction.transactionsByType &&
-                      userTransaction.transactionsByType.map((t) => (
-                        <tr
-                          key={t._id}
-                          className="hover:bg-white hover:text-black"
-                        >
-                          <td className="border-y border-l px-2 sm:px-4 py-2">
-                            {t.transactionName}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.amount}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.merchant}
-                          </td>
-                          <td className="border-y border-white px-2 sm:px-4 py-2 text-blue-500">
-                            {t.type}
-                          </td>
-                          <td
-                            className={`border-y px-2 sm:px-4 border-white py-2 ${
-                              t.status === "pending"
-                                ? "text-yellow-200"
-                                : t.status === "cleared"
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`}
-                          >
-                            {t.status}
-                          </td>
-                          <td className="border-y border-r px-2 sm:px-4 py-2">
-                            {new Date(t.dateCreated).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))}
-                    {sortPending &&
-                      !userTransaction.loading &&
-                      userTransaction.transactionsByStatus &&
-                      userTransaction.transactionsByStatus.map((t) => (
-                        <tr
-                          key={t._id}
-                          className="hover:bg-white hover:text-black"
-                        >
-                          <td className="border-y border-l px-2 sm:px-4 py-2">
-                            {t.transactionName}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.amount}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.merchant}
-                          </td>
-                          <td className={`border-y px-2 sm:px-4 py-2`}>
-                            {t.type}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2 ">
-                            <span className="text-yellow-200">{t.status}</span>
-                          </td>
-                          <td className="border-y border-r px-2 sm:px-4 py-2 ">
-                            {new Date(t.dateCreated).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))}
-                    {sortCleared &&
-                      !userTransaction.loading &&
-                      userTransaction.transactionsByStatus &&
-                      userTransaction.transactionsByStatus.map((t) => (
-                        <tr
-                          key={t._id}
-                          className="hover:bg-white hover:text-black"
-                        >
-                          <td className="border-y border-l px-2 sm:px-4 py-2">
-                            {t.transactionName}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.amount}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2">
-                            {t.merchant}
-                          </td>
-                          <td
-                            className={`border-y px-2 sm:px-4 py-2 ${
-                              t.type === "income"
-                                ? "text-green-500"
-                                : t.type === "expense"
-                                ? "text-red-500"
-                                : "text-blue-500"
-                            }`}
-                          >
-                            {t.type}
-                          </td>
-                          <td className="border-y px-2 sm:px-4 py-2 ">
-                            <span className="text-green-500">{t.status}</span>
-                          </td>
-                          <td className="border-y border-r px-2 sm:px-4 py-2 ">
-                            {new Date(t.dateCreated)
-                              .toLocaleDateString("en-PH", { month: "long" })
-                              .toLowerCase()}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              )}
+                            <td className="pl-4 pr-2 py-3 whitespace-nowrap font-medium">
+                              {t.transactionName}
+                            </td>
+                            <td className="px-2 py-3 tabular-nums">
+                              <span className="font-semibold ${t.type === 'expense' ? 'text-red-400' : t.type === 'income' ? 'text-green-400' : 'text-blue-400'}">
+                                {t.amount}
+                              </span>
+                            </td>
+                            <td
+                              className="px-2 py-3 max-w-[160px] truncate"
+                              title={t.merchant}
+                            >
+                              {t.merchant}
+                            </td>
+                            <td className="px-2 py-3">
+                              <span
+                                className={`badge ${
+                                  t.type === "income"
+                                    ? "badge-income"
+                                    : t.type === "expense"
+                                    ? "badge-expense"
+                                    : "badge-transfer"
+                                }`}
+                              >
+                                {t.type}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3">
+                              <span
+                                className={`badge ${
+                                  t.status === "pending"
+                                    ? "badge-pending"
+                                    : t.status === "cleared"
+                                    ? "badge-cleared"
+                                    : "badge-expense"
+                                }`}
+                              >
+                                {t.status}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3 text-[11px] sm:text-xs opacity-80">
+                              {new Date(t.dateCreated).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      {sortIncome &&
+                        !userTransaction.loading &&
+                        userTransaction.transactionsByType &&
+                        userTransaction.transactionsByType.map((t) => (
+                          <tr key={t._id} className="row-hover-surface group">
+                            <td className="pl-4 pr-2 py-3 whitespace-nowrap font-medium">
+                              {t.transactionName}
+                            </td>
+                            <td className="px-2 py-3 tabular-nums">
+                              <span className="font-semibold text-green-400">
+                                {t.amount}
+                              </span>
+                            </td>
+                            <td
+                              className="px-2 py-3 max-w-[160px] truncate"
+                              title={t.merchant}
+                            >
+                              {t.merchant}
+                            </td>
+                            <td className="px-2 py-3">
+                              <span className="badge badge-income">
+                                {t.type}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3">
+                              <span
+                                className={`badge ${
+                                  t.status === "pending"
+                                    ? "badge-pending"
+                                    : t.status === "cleared"
+                                    ? "badge-cleared"
+                                    : "badge-expense"
+                                }`}
+                              >
+                                {t.status}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3 text-[11px] sm:text-xs opacity-80">
+                              {new Date(t.dateCreated).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      {sortExpense &&
+                        !userTransaction.loading &&
+                        userTransaction.transactionsByType &&
+                        userTransaction.transactionsByType.map((t) => (
+                          <tr key={t._id} className="row-hover-surface group">
+                            <td className="pl-4 pr-2 py-3 whitespace-nowrap font-medium">
+                              {t.transactionName}
+                            </td>
+                            <td className="px-2 py-3 tabular-nums">
+                              <span className="font-semibold text-red-400">
+                                {t.amount}
+                              </span>
+                            </td>
+                            <td
+                              className="px-2 py-3 max-w-[160px] truncate"
+                              title={t.merchant}
+                            >
+                              {t.merchant}
+                            </td>
+                            <td className="px-2 py-3">
+                              <span className="badge badge-expense">
+                                {t.type}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3">
+                              <span
+                                className={`badge ${
+                                  t.status === "pending"
+                                    ? "badge-pending"
+                                    : t.status === "cleared"
+                                    ? "badge-cleared"
+                                    : "badge-expense"
+                                }`}
+                              >
+                                {t.status}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3 text-[11px] sm:text-xs opacity-80">
+                              {new Date(t.dateCreated).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      {sortTransfer &&
+                        !userTransaction.loading &&
+                        userTransaction.transactionsByType &&
+                        userTransaction.transactionsByType.map((t) => (
+                          <tr key={t._id} className="row-hover-surface group">
+                            <td className="pl-4 pr-2 py-3 whitespace-nowrap font-medium">
+                              {t.transactionName}
+                            </td>
+                            <td className="px-2 py-3 tabular-nums">
+                              <span className="font-semibold text-blue-400">
+                                {t.amount}
+                              </span>
+                            </td>
+                            <td
+                              className="px-2 py-3 max-w-[160px] truncate"
+                              title={t.merchant}
+                            >
+                              {t.merchant}
+                            </td>
+                            <td className="px-2 py-3">
+                              <span className="badge badge-transfer">
+                                {t.type}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3">
+                              <span
+                                className={`badge ${
+                                  t.status === "pending"
+                                    ? "badge-pending"
+                                    : t.status === "cleared"
+                                    ? "badge-cleared"
+                                    : "badge-expense"
+                                }`}
+                              >
+                                {t.status}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3 text-[11px] sm:text-xs opacity-80">
+                              {new Date(t.dateCreated).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      {sortPending &&
+                        !userTransaction.loading &&
+                        userTransaction.transactionsByStatus &&
+                        userTransaction.transactionsByStatus.map((t) => (
+                          <tr key={t._id} className="row-hover-surface group">
+                            <td className="pl-4 pr-2 py-3 whitespace-nowrap font-medium">
+                              {t.transactionName}
+                            </td>
+                            <td className="px-2 py-3 tabular-nums">
+                              <span className="font-semibold">{t.amount}</span>
+                            </td>
+                            <td
+                              className="px-2 py-3 max-w-[160px] truncate"
+                              title={t.merchant}
+                            >
+                              {t.merchant}
+                            </td>
+                            <td className="px-2 py-3">
+                              <span className="badge badge-transfer">
+                                {t.type}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3">
+                              <span className="badge badge-pending">
+                                {t.status}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3 text-[11px] sm:text-xs opacity-80">
+                              {new Date(t.dateCreated).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      {sortCleared &&
+                        !userTransaction.loading &&
+                        userTransaction.transactionsByStatus &&
+                        userTransaction.transactionsByStatus.map((t) => (
+                          <tr key={t._id} className="row-hover-surface group">
+                            <td className="pl-4 pr-2 py-3 whitespace-nowrap font-medium">
+                              {t.transactionName}
+                            </td>
+                            <td className="px-2 py-3 tabular-nums">
+                              <span
+                                className={`${
+                                  t.type === "expense"
+                                    ? "text-red-400"
+                                    : t.type === "income"
+                                    ? "text-green-400"
+                                    : "text-blue-400"
+                                } font-semibold`}
+                              >
+                                {t.amount}
+                              </span>
+                            </td>
+                            <td
+                              className="px-2 py-3 max-w-[160px] truncate"
+                              title={t.merchant}
+                            >
+                              {t.merchant}
+                            </td>
+                            <td className="px-2 py-3">
+                              <span
+                                className={`badge ${
+                                  t.type === "income"
+                                    ? "badge-income"
+                                    : t.type === "expense"
+                                    ? "badge-expense"
+                                    : "badge-transfer"
+                                }`}
+                              >
+                                {t.type}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3">
+                              <span className="badge badge-cleared">
+                                {t.status}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3 text-[11px] sm:text-xs opacity-80">
+                              {new Date(t.dateCreated)
+                                .toLocaleDateString("en-PH", { month: "long" })
+                                .toLowerCase()}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                )}
+            </div>
           </div>
         </div>
         {transaction && <TransactionCard />}

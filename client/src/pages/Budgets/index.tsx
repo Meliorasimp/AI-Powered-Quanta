@@ -3,7 +3,7 @@ import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import "../../styles/index.css";
 import Button from "../../components/Button";
-import { Plus } from "lucide-react";
+import { Plus, Trash2Icon } from "lucide-react";
 import { showBudgetPopup } from "../../modules/Interaction.ts";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store.ts";
@@ -15,7 +15,6 @@ import {
 import { useEffect, CSSProperties } from "react";
 import { useAppDispatch } from "../../hooks/index.ts";
 import { MoonLoader } from "react-spinners";
-import { Trash2Icon } from "lucide-react";
 import {
   deleteUserBudget,
   deleteBudget,
@@ -73,93 +72,118 @@ const Budgets = () => {
       }`}
     >
       <Navbar />
-      <div className="w-10/11 min-h-screen flex flex-col py-5 px-5 gap-y-4 mx-auto">
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 border-b items-start sm:items-center">
-          <div className="overflow-hidden pb-2">
-            <Heading
-              label="Budgets"
-              className="text-lg sm:text-xl font-semibold main-website-text-color"
-            />
-            <Paragraph
-              label="Curious where your money’s been going? Let’s take a look."
-              variant="secondary"
-            />
+      <div className="w-10/11 min-h-screen flex flex-col py-6 px-4 sm:px-6 gap-y-8 mx-auto">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+            <div className="space-y-1">
+              <Heading
+                label="Budgets"
+                className="text-xl sm:text-2xl font-semibold tracking-tight drop-shadow-sm"
+              />
+              <Paragraph
+                label="Plan, track, and optimize where your money goes."
+                variant="secondary"
+                className="text-xs sm:text-sm opacity-80"
+              />
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                label="Add Budget"
+                onClick={() => dispatch(showBudgetPopup())}
+                type="button"
+                icon={<Plus className="inline-block w-4 h-4" />}
+                className="bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-600 text-white px-5 py-2 rounded-md cursor-pointer font-medium shadow hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-150 border border-white/10"
+              />
+            </div>
           </div>
-          <div className="flex justify-start sm:ml-auto sm:justify-end w-full sm:w-auto">
-            <Button
-              label="Add Budget"
-              onClick={() => dispatch(showBudgetPopup())}
-              type="button"
-              icon={<Plus className="inline-block" />}
-              className="text-white px-3 py-1 rounded-sm cursor-pointer font-semibold"
-            />
-          </div>
-        </div>
-        <div className="h-full w-full flex flex-col gap-y-5">
-          <div>
-            {budget.loading && (
-              <p className="flex justify-center items-center py-6">
-                <MoonLoader
-                  color={"#36d7b7"}
-                  loading={budget.loading}
-                  cssOverride={override}
-                  size={50}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-              </p>
-            )}
-            {!budget.loading && budget.budgets.length === 0 && (
-              <p className="py-2">No budgets found for this user.</p>
-            )}
 
-            {!budget.loading && budget.budgets.length > 0 && (
-              <ul className="w-full flex flex-col gap-y-5">
-                {budget.budgets.map((b) => (
-                  <div
-                    key={b._id}
-                    className="statcard-purple p-4 rounded-lg w-full"
-                  >
-                    <div>
-                      <div className="flex flex-row justify-between">
-                        <Heading label={b.description} />
-                        <div className="flex gap-x-6">
-                          <Trash2Icon
-                            className="inline-block cursor-pointer"
-                            size={22}
-                            color="red"
+          <div className="relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-600 opacity-70 rounded-full" />
+            <div className="pt-3">
+              {budget.loading && (
+                <p className="flex justify-center items-center py-10">
+                  <MoonLoader
+                    color={"#36d7b7"}
+                    loading={budget.loading}
+                    cssOverride={override}
+                    size={52}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </p>
+              )}
+              {!budget.loading && budget.budgets.length === 0 && (
+                <div className="empty-state-box">
+                  <p className="font-medium mb-1">No budgets yet</p>
+                  <p className="text-xs opacity-70 mb-3">
+                    Start organizing your finances by creating your first
+                    budget.
+                  </p>
+                  <Button
+                    label="Create Budget"
+                    type="button"
+                    onClick={() => dispatch(showBudgetPopup())}
+                    className="bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-600 text-white px-4 py-2 rounded-md cursor-pointer font-medium shadow hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-150"
+                  />
+                </div>
+              )}
+
+              {!budget.loading && budget.budgets.length > 0 && (
+                <ul className="grid gap-5 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                  {budget.budgets.map((b) => {
+                    const used = 0; // Placeholder: replace with real used tracking if available
+                    const pct = Math.min(
+                      b.amount > 0 ? (used / b.amount) * 100 : 0,
+                      100
+                    );
+                    return (
+                      <li key={b._id} className="budget-card-shell group">
+                        <div className="flex items-start justify-between">
+                          <div className="budget-card-header">
+                            <Heading
+                              label={b.description}
+                              className="text-base sm:text-lg font-semibold"
+                            />
+                            <div className="budget-meta">
+                              <span>
+                                Created:{" "}
+                                {new Date(b.dateCreated).toLocaleDateString()}
+                              </span>
+                              <span>Budgeted: ₱{b.amount.toFixed(2)}</span>
+                            </div>
+                          </div>
+                          <button
+                            aria-label="Delete budget"
+                            className="p-2 rounded-md bg-white/5 hover:bg-white/10 transition-colors border border-white/10 hover:border-white/20"
                             onClick={() => {
                               dispatch(deleteUserBudget(b._id));
                               sdispatch(deleteBudget(b._id));
                             }}
-                          />
+                          >
+                            <Trash2Icon size={16} className="text-red-400" />
+                          </button>
                         </div>
-                      </div>
-                      <div className="mt-2 w-full sm:w-2/3 flex flex-col sm:flex-row gap-2 sm:gap-4 sm:justify-between">
-                        <Paragraph
-                          label={`₱${b.amount.toFixed(2)} budgeted`}
-                          variant="tertiary"
-                          className="text-black"
-                        />
-                        <Paragraph
-                          label={`Date created: ${new Date(
-                            b.dateCreated
-                          ).toLocaleDateString()}`}
-                          variant="tertiary"
-                          className="text-black"
-                        />
-                      </div>
-                      <div className="w-full bg-gray-700 h-2 rounded-full mt-2">
-                        <div
-                          className="bg-green-400 h-2 rounded-full"
-                          style={{ width: "82%" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </ul>
-            )}
+                        <div className="space-y-2">
+                          <div className="budget-progress">
+                            <div
+                              className="budget-progress-fill"
+                              style={{ width: `${pct}%` }}
+                            />
+                            <div className="budget-progress-label">
+                              <span>{pct.toFixed(0)}%</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between text-[11px] sm:text-xs opacity-80 font-medium">
+                            <span>₱{used.toFixed(2)} used</span>
+                            <span>₱{(b.amount - used).toFixed(2)} left</span>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
         {isBudgetPopupVisible && <Budgetpopup />}

@@ -1,7 +1,6 @@
 import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
-import Doughnut from "../../components/Chartjs/Doughnut/index.tsx";
 import { useNavigate } from "react-router-dom";
 import { Info } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -29,8 +28,6 @@ import {
   setTotalExpense,
   setTotalTransfersMade,
   setTotalIncome,
-  getAiSummary,
-  setSummarization,
 } from "../../modules/Interaction.ts/dashboard/index.ts";
 import Barchart from "../../components/Chartjs/Barchart/index.tsx";
 import { setGraphMode } from "../..//modules/Interaction.ts/dashboard/index.ts";
@@ -166,33 +163,25 @@ const Dashboard = () => {
       }
     };
 
-    const getAiSummarization = async () => {
-      const response = await dispatch(getAiSummary(userId)).unwrap();
-      console.log("AI Summarization:", response);
-      dispatch(setSummarization(response.summary));
-      console.log("Updated summarization in state:", response.summary);
-    };
-
-    //getAiSummarization();
+    // (Optional) AI summarization disabled for now
     fetchUserData();
   }, [navigate, dispatch, userId]);
 
   useEffect(() => {
-    const fetchUserGoals = async () => {
-      if (userId) {
-        try {
-          console.log("Fetching goals for User ID:", userId);
-          const userGoals = await dispatch(fetchUserGoal(userId)).unwrap();
-          console.log("User Goals:", userGoals);
-          dispatch(setDisplayGoal(userGoals));
-          console.log("userGoals dispatched to state:", goals);
-        } catch (error) {
-          console.error("Error fetching user goals:", error);
-        }
+    // Fetch goals only once per user (or when user changes) if none loaded yet
+    if (!userId) return;
+    if (goals.length > 0) return; // prevent loop / re-fetches
+    (async () => {
+      try {
+        console.log("Fetching goals for User ID:", userId);
+        const payload = await dispatch(fetchUserGoal(userId)).unwrap();
+        dispatch(setDisplayGoal(payload));
+        console.log("Goals in state after fetch:", payload);
+      } catch (e) {
+        console.error("Error fetching user goals:", e);
       }
-    };
-    fetchUserGoals();
-  }, [userId, dispatch]);
+    })();
+  }, [userId, dispatch, goals.length]);
 
   return (
     <div
@@ -233,7 +222,7 @@ const Dashboard = () => {
               </div>
               <Heading
                 label={`$${
-                  remainingBalance ? remainingBalance.toString() : "0"
+                  remainingBalance ? remainingBalance.toLocaleString() : "0"
                 }`}
                 className="text-2xl font-semibold main-website-text-color mt-2"
               />
@@ -281,7 +270,9 @@ const Dashboard = () => {
                 <Info className="cursor-pointer" />
               </div>
               <Heading
-                label={`$${totalExpenses ? totalExpenses.toString() : "0"}`}
+                label={`$${
+                  totalExpenses ? totalExpenses.toLocaleString() : "0"
+                }`}
                 className="text-2xl font-semibold main-website-text-color mt-2"
               />
               <div className="bar-container rounded-full left-0 w-full h-2 mt-4">
@@ -305,7 +296,9 @@ const Dashboard = () => {
                 <Info className="cursor-pointer" />
               </div>
               <Heading
-                label={`$${budgetedAmount ? budgetedAmount.toString() : "0"}`}
+                label={`$${
+                  budgetedAmount ? budgetedAmount.toLocaleString() : "0"
+                }`}
                 className="text-2xl font-semibold main-website-text-color mt-2"
               />
               <div className="bar-container rounded-full left-0 w-full h-2 mt-4">
@@ -330,7 +323,7 @@ const Dashboard = () => {
               </div>
               <Heading
                 label={`$${
-                  totalTransfersMade ? totalTransfersMade.toString() : "0"
+                  totalTransfersMade ? totalTransfersMade.toLocaleString() : "0"
                 }`}
                 className="text-2xl font-semibold main-website-text-color mt-2"
               />
@@ -467,15 +460,63 @@ const Dashboard = () => {
                 label="Goals"
                 className="text-lg font-semibold main-website-text-color"
               />
-              <Button
-                label="Add Goal"
-                type="button"
-                className="cursor-pointer"
-                icon={<PlusIcon className="inline-block" />}
-                onClick={() => dispatch(showGoalPopup())}
-              />
+              <div>
+                <Button
+                  label="Allocate"
+                  type="button"
+                  className="cursor-pointer mr-4"
+                  icon={<PlusIcon className="inline-block" />}
+                  onClick={() => dispatch(showGoalPopup())}
+                />
+                <Button
+                  label="Add"
+                  type="button"
+                  className="cursor-pointer"
+                  icon={<PlusIcon className="inline-block" />}
+                  onClick={() => dispatch(showGoalPopup())}
+                />
+              </div>
             </div>
-            <div className="w-full h-full mt-2"></div>
+            <div className="w-full h-full mt-2">
+              {goals.length === 0 && (
+                <p className="text-gray-500">No goals set. Add a new goal!</p>
+              )}
+              {goals.length > 0 && (
+                <ul>
+                  {goals.map((g) => (
+                    <li key={g._id} className="mt-2">
+                      <div className="flex flex-row justify-between items-center relative">
+                        <div>
+                          <p>{g.name}</p>
+                          <p className="text-sm text-gray-500">
+                            Need ${g.target}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-lg">${g.current}</p>
+                        </div>
+                      </div>
+                      <div className="h-2 bg-gray-600 rounded-full">
+                        {(() => {
+                          const currentVal = parseFloat(g.current || "0");
+                          const targetVal = parseFloat(g.target || "0");
+                          const pct =
+                            targetVal > 0
+                              ? Math.min((currentVal / targetVal) * 100, 100)
+                              : 0;
+                          return (
+                            <div
+                              className="h-full bg-green-500 rounded-full"
+                              style={{ width: `${pct}%` }}
+                            />
+                          );
+                        })()}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </div>
