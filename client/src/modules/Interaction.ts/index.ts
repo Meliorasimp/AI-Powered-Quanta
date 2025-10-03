@@ -20,6 +20,7 @@ type InteractionState = {
   selectFilterByPending: boolean;
   selectFilterByCleared: boolean;
   isGoalPopupVisible: boolean;
+  isAllocatePopupVisible?: boolean;
 };
 
 const initialState: InteractionState = {
@@ -42,6 +43,7 @@ const initialState: InteractionState = {
   selectFilterByPending: false,
   selectFilterByCleared: false,
   isGoalPopupVisible: false,
+  isAllocatePopupVisible: false,
 };
 
 const interactionSlice = createSlice({
@@ -206,6 +208,9 @@ const interactionSlice = createSlice({
     hideGoalPopup: (state) => {
       return { ...state, isGoalPopupVisible: false };
     },
+    setIsAllocatePopupVisible: (state, action: PayloadAction<boolean>) => {
+      state.isAllocatePopupVisible = action.payload;
+    },
   },
 });
 
@@ -236,6 +241,7 @@ export const {
   setSelectFilterByCleared,
   showGoalPopup,
   hideGoalPopup,
+  setIsAllocatePopupVisible,
 } = interactionSlice.actions;
 
 export default interactionSlice.reducer;

@@ -47,6 +47,7 @@ import {
 import {
   showGoalPopup,
   showTransactionPopup,
+  setIsAllocatePopupVisible,
 } from "../../modules/Interaction.ts/index.ts";
 import TransactionCard from "../../components/transactionpopup/index.tsx";
 import GoalPopup from "../../components/GoalPopup/index.tsx";
@@ -55,6 +56,7 @@ import {
   setDisplayGoal,
 } from "../../modules/Api/Goals/displayGoal.ts";
 import Pie from "../../components/Chartjs/Pie/index.tsx";
+import Allocate from "../../components/Allocate/index.tsx";
 
 const override: CSSProperties = {
   display: "block",
@@ -102,9 +104,10 @@ const Dashboard = () => {
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
-
   const goals = useAppSelector((state: RootState) => state.displayGoal.goals);
-
+  const isAllocatePopupVisible = useAppSelector(
+    (state: RootState) => state.interaction.isAllocatePopupVisible
+  );
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -510,7 +513,9 @@ const Dashboard = () => {
                   type="button"
                   className="cursor-pointer mr-4"
                   icon={<PlusIcon className="inline-block" />}
-                  onClick={() => dispatch(showGoalPopup())}
+                  onClick={() =>
+                    dispatch(setIsAllocatePopupVisible(!isAllocatePopupVisible))
+                  }
                 />
                 <Button
                   label="Add"
@@ -529,11 +534,14 @@ const Dashboard = () => {
                 <ul>
                   {goals.map((g) => (
                     <li key={g._id} className="mt-2">
-                      <div className="flex flex-row justify-between items-center relative">
+                      <div
+                        className="flex flex-row justify-between items-center relative"
+                        onClick={() => console.log("Clicked goal", g._id)}
+                      >
                         <div>
                           <p>{g.name}</p>
-                          <p className="text-sm text-gray-500">
-                            Need ${g.target}
+                          <p className="text-md text-gray-500 mb-1">
+                            ${g.target}
                           </p>
                         </div>
                         <div>
@@ -552,6 +560,7 @@ const Dashboard = () => {
                             <div
                               className="h-full bg-green-500 rounded-full"
                               style={{ width: `${pct}%` }}
+                              title={pct.toFixed(2) + "% of goal reached"}
                             />
                           );
                         })()}
@@ -566,6 +575,7 @@ const Dashboard = () => {
       </div>
       {transactionPopup && <TransactionCard />}
       {goalPopup && <GoalPopup />}
+      {isAllocatePopupVisible && <Allocate />}
     </div>
   );
 };

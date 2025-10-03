@@ -4,8 +4,8 @@ import axios from "axios";
 export interface DisplayGoal {
   userId: string;
   name: string;
-  target: string; // keep as string to mirror backend model
-  current: string;
+  target: number; // keep as string to mirror backend model
+  current: number;
   deadline: string;
   category?: string;
   priority?: string;
