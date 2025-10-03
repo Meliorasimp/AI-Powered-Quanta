@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { LoginUser } from "../../modules/Interaction.ts";
 import "../../styles/index.css";
+import { useState } from "react";
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -41,25 +42,22 @@ const Login = () => {
     window.location.href = "http://localhost:5000/api/auth/github";
   };
 
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (emailValue === "" || passwordValue === "") {
-      alert("Both fields are required");
+    if (!emailValue || !passwordValue) {
+      setFormError("Both fields are required.");
       return;
     }
-
+    setFormError(null);
+    setSubmitting(true);
     try {
       const result = await dispatch(
         loginUser({ email: emailValue, password: passwordValue })
       ).unwrap();
-
       dispatch(LoginUser());
-      console.log("Dispatching setUser with:", {
-        email: result.user.email,
-        id: result.user.id,
-        username: result.user.username,
-      });
       dispatch(
         setUser({
           email: result.user.email,
@@ -67,93 +65,143 @@ const Login = () => {
           username: result.user.username,
         })
       );
-
       dispatch(hideLoginForm());
       navigate("/dashboard");
-      console.log("Login success:", result);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        alert(error.message);
-      } else {
-        alert("Login failed. Please try again.");
-      }
+      if (error instanceof Error) setFormError(error.message);
+      else setFormError("Login failed. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center 
-                bg-black/50 backdrop-blur-xs z-50 "
-    >
-      <div className="bg-gray-900 w-2/3 h-3/4 flex flex-row justify-center rounded-2xl items-center">
-        <div className="w-full pr-8 pl-8">
-          <div className="text-white">
+    <div className="fixed inset-0 z-[999] flex items-center justify-center px-4 py-6 bg-black/80 backdrop-blur-xl">
+      {/* Outer container */}
+      <div className="relative w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-slate-800/70 backdrop-blur-xl">
+        {/* Decorative gradient accent */}
+        <div className="pointer-events-none absolute inset-0 opacity-[0.15] mix-blend-overlay bg-[radial-gradient(circle_at_20%_25%,#10b981,transparent_60%),radial-gradient(circle_at_85%_70%,#6366f1,transparent_55%)]" />
+        {/* Left / Form Section */}
+        <div className="relative flex flex-col gap-6 p-8 sm:p-10 lg:p-12">
+          <button
+            onClick={() => dispatch(hideLoginForm())}
+            aria-label="Close login modal"
+            className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors text-sm font-medium"
+          >
+            ✕
+          </button>
+          <div className="space-y-3">
             <Heading
-              label="Log in to stay on top of your finances"
-              className="text-white text-2xl font-bold "
+              label="Welcome back to Quanta"
+              className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-500"
             />
             <Paragraph
-              label="Enter your credentials to access your account."
+              label="Log in to access your dashboard, budgets, goals and personalized insights."
               variant="secondary"
             />
-            <form
-              className="flex flex-col text-white pt-10 justify-center pb-2"
-              onSubmit={handleLoginSubmit}
-            >
+          </div>
+          <form
+            onSubmit={handleLoginSubmit}
+            className="flex flex-col gap-5 mt-2"
+          >
+            {formError && (
+              <div className="text-[13px] rounded-md border border-red-500/40 bg-red-500/10 text-red-300 px-3 py-2">
+                {formError}
+              </div>
+            )}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="email"
+                className="text-xs font-medium tracking-wide uppercase text-white/60"
+              >
+                Email
+              </label>
               <input
+                id="email"
                 type="email"
-                placeholder="E-mail address"
+                placeholder="you@example.com"
                 value={emailValue}
                 onChange={handleEmailChange}
-                className="mb-4 p-2 rounded border text-base"
+                className="rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/60 transition"
+                autoComplete="email"
               />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="password"
+                className="text-xs font-medium tracking-wide uppercase text-white/60"
+              >
+                Password
+              </label>
               <input
+                id="password"
                 type="password"
-                placeholder="Password"
+                placeholder="••••••••"
                 value={passwordValue}
                 onChange={handlePasswordChange}
-                className="mb-4 p-2 rounded bg-transparent border border-white text-base"
+                className="rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/60 transition"
+                autoComplete="current-password"
               />
-              <Button
-                label="Login"
-                type="submit"
-                onClick={() => {}}
-                className="bg-blue-400 py-2 rounded-lg cursor-pointer hover:bg-blue-500 transition-colors duration-200 mb-4 text-lg"
-              />
-              <Button
-                label="Cancel"
-                type="button"
-                onClick={() => dispatch(hideLoginForm())}
-                className="bg-red-400 py-2 rounded-lg cursor-pointer hover:bg-red-500 transition-colors duration-200 mb-4 text-lg"
-              />
-            </form>
-            <div>
-              <p className="text-center text-lg">Or login using</p>
-              <div className="flex flex-row justify-center pt-2 gap-x-5">
-                <div className="w-12 h-12">
-                  <img
-                    src={google}
-                    alt="Google logo"
-                    className="h-full w-full object-cover hover:scale-105 transition-transform duration-200 cursor-pointer"
-                    onClick={handleGoogleLogin}
-                  />
-                </div>
-                <div className="w-12 h-12">
-                  <img
-                    src={github}
-                    alt="GitHub logo"
-                    className="h-full w-full object-cover hover:scale-105 transition-transform duration-200 cursor-pointer"
-                    onClick={handleGithubLogin}
-                  />
-                </div>
-              </div>
             </div>
-          </div>
+            <div className="flex items-center justify-between text-[11px] text-white/50">
+              <span>Secure sign‑in</span>
+              <button
+                type="button"
+                className="text-emerald-300 hover:text-emerald-200 transition-colors font-medium"
+              >
+                Forgot password?
+              </button>
+            </div>
+            <Button
+              label={submitting ? "Signing In..." : "Sign In"}
+              type="submit"
+              onClick={() => {}}
+              className="w-full py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-sm font-semibold tracking-wide shadow-lg shadow-emerald-600/30 hover:shadow-emerald-500/40 focus:ring-4 focus:ring-emerald-300/40 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            />
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <span className="text-[10px] tracking-wider uppercase text-white/40">
+                Or continue with
+              </span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="group flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 px-3 py-2.5 text-sm font-medium text-white transition"
+              >
+                <img src={google} alt="Google" className="w-5 h-5" />
+                <span>Google</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleGithubLogin}
+                className="group flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 px-3 py-2.5 text-sm font-medium text-white transition"
+              >
+                <img src={github} alt="GitHub" className="w-5 h-5" />
+                <span>GitHub</span>
+              </button>
+            </div>
+            <Button
+              label="Cancel"
+              type="button"
+              onClick={() => dispatch(hideLoginForm())}
+              className="w-full py-2.5 rounded-lg bg-red-500/80 hover:bg-red-500 text-sm font-medium tracking-wide transition shadow focus:ring-2 focus:ring-red-400/40"
+            />
+            <p className="text-[10px] text-white/40 text-center leading-relaxed pt-2">
+              By signing in you agree to the processing of data in accordance
+              with our placeholder Terms & Privacy. This interface is in
+              preview.
+            </p>
+          </form>
         </div>
-        <div className="w-full h-full flex items-center justify-center">
+        {/* Right / Illustration Section */}
+        <div className="relative hidden lg:flex items-center justify-center p-10 bg-gradient-to-br from-emerald-500/10 via-green-400/5 to-transparent">
+          <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay bg-[radial-gradient(circle_at_30%_35%,#10b981,transparent_60%),radial-gradient(circle_at_75%_65%,#6366f1,transparent_55%)]" />
           <img
             src={loginimage}
-            alt="Login illustration"
-            className="max-w-full h-auto"
+            alt="Secure login illustration"
+            className="max-w-md w-full drop-shadow-[0_5px_25px_rgba(0,0,0,0.45)] animate-[float_10s_ease-in-out_infinite]"
           />
         </div>
       </div>

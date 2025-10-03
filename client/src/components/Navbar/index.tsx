@@ -50,7 +50,7 @@ const Navbar = () => {
     <div className={`w-full ${themeClass}`}>
       <div className="relative flex items-center justify-between px-6 py-4">
         <h1
-          className="lg:text-3xl font-bold sm:text-pink-700 sm: text-2xl"
+          className="lg:text-3xl font-bold sm: text-2xl text-green-400"
           onClick={() => nav("/")}
         >
           Quanta

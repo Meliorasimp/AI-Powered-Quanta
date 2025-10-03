@@ -22,13 +22,20 @@
     --dark-budget-card-color: #3b3b3b;
     --light-text-color: #3b3b3b;
     --dark-text-color: #ffffff;
-    --primary-landingpage-bgcolor: #23004b;
+    --primary-landingpage-bgcolor: #131313;
     --statcard-purple-bgcolor: #1d004b;
     --statcard-purple-textcolor: white;
     --statcard-dark-bgcolor: #3b3b3b;
     --statcard-dark-textcolor: white;
     --statcard-light-bgcolor: #f7f7f7;
     --statcard-light-textcolor: var(--light-text-color);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  /* Anchor offset helper so fixed navbar doesn't cover target sections */
+  .anchor-offset {
+    scroll-margin-top: 120px; /* accommodates fixed nav height */
   }
   .app {
     transition: background-color 0.2s linear;
@@ -73,6 +80,162 @@
   .landing-page-background-color {
     background: var(--primary-landingpage-bgcolor);
     color: var(--dark-text-color);
+  }
+  /* Enhanced gradient / ambient version (non-destructive: opt-in) */
+  .landing-page-enhanced-bg {
+    background: radial-gradient(
+        circle at 18% 22%,
+        rgba(99, 102, 241, 0.18),
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 82% 70%,
+        rgba(236, 72, 153, 0.16),
+        transparent 60%
+      ),
+      linear-gradient(135deg, #0d0d11 0%, #111827 45%, #0f0f17 100%);
+    /* Subtle vignette */
+    position: relative;
+  }
+  .landing-page-enhanced-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at 50% 120%,
+        rgba(255, 255, 255, 0.05),
+        transparent 70%
+      ),
+      linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent 35%);
+    mix-blend-mode: normal;
+  }
+  /* Floating ambient orbs for aesthetic depth */
+  .lp-orb {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    filter: blur(70px) saturate(160%);
+    opacity: 0.28;
+    mix-blend-mode: screen;
+    animation: orbFloat 18s linear infinite;
+  }
+  .lp-orb.orb-green {
+    background: radial-gradient(
+      circle at 30% 30%,
+      #10b981,
+      #065f46 60%,
+      transparent 75%
+    );
+  }
+  .lp-orb.orb-pink {
+    background: radial-gradient(
+      circle at 35% 40%,
+      #ec4899,
+      #7e194d 60%,
+      transparent 75%
+    );
+    animation-duration: 22s;
+  }
+  .lp-orb.orb-indigo {
+    background: radial-gradient(
+      circle at 45% 35%,
+      #6366f1,
+      #312e81 60%,
+      transparent 75%
+    );
+    animation-duration: 26s;
+  }
+  @keyframes orbFloat {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    25% {
+      transform: translate3d(60px, -40px, 0) scale(1.05);
+    }
+    50% {
+      transform: translate3d(-40px, 35px, 0) scale(0.95);
+    }
+    75% {
+      transform: translate3d(70px, 50px, 0) scale(1.08);
+    }
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+  /* Shimmer divider */
+  .gradient-divider {
+    position: relative;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(16, 185, 129, 0.6),
+      transparent
+    );
+    overflow: hidden;
+  }
+  .gradient-divider::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, #ffffff, transparent);
+    width: 40%;
+    animation: dividerShimmer 4.5s ease-in-out infinite;
+    opacity: 0.65;
+  }
+  @keyframes dividerShimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(160%);
+    }
+    100% {
+      transform: translateX(160%);
+    }
+  }
+  /* Soft pulse ring (used behind icons) */
+  .pulse-ring {
+    position: relative;
+  }
+  .pulse-ring::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(16, 185, 129, 0.5),
+      transparent 70%
+    );
+    animation: pulseRing 3.2s ease-in-out infinite;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  @keyframes pulseRing {
+    0%,
+    100% {
+      transform: scale(0.9);
+      opacity: 0.55;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 0.85;
+    }
+  }
+  /* Fade up utility (progressive reveal) */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: fadeUp 0.85s ease forwards;
+  }
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   .glow-text-white {
     color: #fff;

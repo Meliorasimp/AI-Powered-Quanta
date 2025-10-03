@@ -139,7 +139,7 @@ const Budgets = () => {
                     return (
                       <li key={b._id} className="budget-card-shell group">
                         <div className="flex items-start justify-between">
-                          <div className="budget-card-header">
+                          <div className="budget-card-header p-2">
                             <Heading
                               label={b.description}
                               className="text-base sm:text-lg font-semibold"
@@ -160,22 +160,24 @@ const Budgets = () => {
                               sdispatch(deleteBudget(b._id));
                             }}
                           >
-                            <Trash2Icon size={16} className="text-red-400" />
+                            <Trash2Icon size={16} className="text-red-400 " />
                           </button>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 p-2">
                           <div className="budget-progress">
                             <div
                               className="budget-progress-fill"
                               style={{ width: `${pct}%` }}
                             />
                             <div className="budget-progress-label">
-                              <span>{pct.toFixed(0)}%</span>
+                              <span className="p-2">{pct.toFixed(0)}%</span>
                             </div>
                           </div>
                           <div className="flex justify-between text-[11px] sm:text-xs opacity-80 font-medium">
                             <span>₱{used.toFixed(2)} used</span>
-                            <span>₱{(b.amount - used).toFixed(2)} left</span>
+                            <span className="p-2">
+                              ₱{(b.amount - used).toFixed(2)} left
+                            </span>
                           </div>
                         </div>
                       </li>

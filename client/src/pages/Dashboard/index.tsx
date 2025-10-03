@@ -75,37 +75,27 @@ const Dashboard = () => {
   const goalPopup = useAppSelector(
     (state: RootState) => state.interaction.isGoalPopupVisible
   );
-  console.log("User ID from state:", userId);
-  const userBudgets = useAppSelector(
-    (state: RootState) => state.userbudget.budgets
-  );
-  console.log("User Budgets from state:", userBudgets);
   const budgetedAmount = useAppSelector(
     (state: RootState) => state.userbudget.totalBudgetedAmount
   );
-  console.log("Total Budgeted Amount from state:", budgetedAmount);
   const summary = useAppSelector(
     (state: RootState) => state.dashboard.summarization
   );
-  console.log("AI Summary from state:", summary);
   const totalExpenses = useAppSelector(
     (state: RootState) => state.dashboard.totalExpense
   );
   const remainingBalance = useAppSelector(
     (state: RootState) => state.dashboard.remainingBalance
   );
-
   const totalTransfersMade = useAppSelector(
     (state: RootState) => state.dashboard.totalTransfersMade
   );
-
   const totalIncome = useAppSelector(
     (state: RootState) => state.dashboard.totalIncome
   );
   const totalBudgetedAmount = useAppSelector(
     (state: RootState) => state.userbudget.totalBudgetedAmount
   );
-
   const userTransaction = useAppSelector(
     (state: RootState) => state.usertransaction
   );
@@ -487,7 +477,7 @@ const Dashboard = () => {
             </div>
             <div className="mt-4 h-[290px] overflow-auto">
               {summary ? (
-                <p className="text-sm sm:text-base px-2 main-website-text-color text-gray-300 text-justify">
+                <p className="text-sm sm:text-base px-2 main-website-text-color text-gray-300 text-left">
                   {summary}
                 </p>
               ) : (
