@@ -2,8 +2,8 @@ import { Schema, model, Document } from "mongoose";
 
 interface IGoal extends Document {
   name: string;
-  target: string;
-  current: string;
+  target: number;
+  current: number;
   deadline: string;
   category: string;
   priority: string;
@@ -14,8 +14,8 @@ interface IGoal extends Document {
 
 const goalSchema = new Schema<IGoal>({
   name: { type: String, required: true },
-  target: { type: String, required: true },
-  current: { type: String, required: true },
+  target: { type: Number, required: true },
+  current: { type: Number, required: true },
   deadline: { type: String, required: true },
   category: { type: String, required: true },
   priority: { type: String, required: true },

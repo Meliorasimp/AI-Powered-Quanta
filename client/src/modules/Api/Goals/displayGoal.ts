@@ -1,10 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export interface DisplayGoal {
   userId: string;
   name: string;
-  target: number; // keep as string to mirror backend model
+  target: number;
   current: number;
   deadline: string;
   category?: string;
@@ -30,8 +30,8 @@ export const displayGoalSlice = createSlice({
   name: "displayGoal",
   initialState: initialGoalState,
   reducers: {
-    setDisplayGoal: (state, action) => {
-      return { ...state, ...action.payload };
+    setDisplayGoal: (state, action: PayloadAction<DisplayGoal>) => {
+      state.goals.unshift(action.payload);
     },
   },
   extraReducers: (builder) => {

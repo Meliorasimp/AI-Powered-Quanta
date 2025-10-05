@@ -48,6 +48,7 @@ import {
   showGoalPopup,
   showTransactionPopup,
   setIsAllocatePopupVisible,
+  setGoalId,
 } from "../../modules/Interaction.ts/index.ts";
 import TransactionCard from "../../components/transactionpopup/index.tsx";
 import GoalPopup from "../../components/GoalPopup/index.tsx";
@@ -105,6 +106,7 @@ const Dashboard = () => {
     (state: RootState) => state.interaction
   );
   const goals = useAppSelector((state: RootState) => state.displayGoal.goals);
+  const goalId = useAppSelector((state: RootState) => state.interaction.goalId);
   const isAllocatePopupVisible = useAppSelector(
     (state: RootState) => state.interaction.isAllocatePopupVisible
   );
@@ -122,19 +124,14 @@ const Dashboard = () => {
           ).unwrap();
           console.log("Fetched Transactions:", userTransactions);
           dispatch(setTransactions(userTransactions));
-
           const totalExpenses = calculateTotalExpenses(userTransactions);
           dispatch(setTotalExpense(totalExpenses));
-
           const remainingBalance = calculateRemainingBalance(userTransactions);
           dispatch(setRemainingBalance(remainingBalance));
-
           const totalTransfers = calculateTotalTransfersMade(userTransactions);
           dispatch(setTotalTransfersMade(totalTransfers));
-
           const totalIncome = calculateTotalIncome(userTransactions);
           dispatch(setTotalIncome(totalIncome));
-
           const userBudgets = await dispatch(
             fetchUserBudgets(response.data.user.id)
           ).unwrap();
@@ -181,7 +178,6 @@ const Dashboard = () => {
   }, [navigate, dispatch, userId]);
 
   useEffect(() => {
-    // Fetch goals only once per user (or when user changes) if none loaded yet
     if (!userId) return;
     if (goals.length > 0) return; // prevent loop / re-fetches
     (async () => {
@@ -509,15 +505,6 @@ const Dashboard = () => {
               />
               <div>
                 <Button
-                  label="Allocate"
-                  type="button"
-                  className="cursor-pointer mr-4"
-                  icon={<PlusIcon className="inline-block" />}
-                  onClick={() =>
-                    dispatch(setIsAllocatePopupVisible(!isAllocatePopupVisible))
-                  }
-                />
-                <Button
                   label="Add"
                   type="button"
                   className="cursor-pointer"
@@ -545,13 +532,27 @@ const Dashboard = () => {
                           </p>
                         </div>
                         <div>
-                          <p className="text-lg">${g.current}</p>
+                          <p
+                            className="mr-auto text-sm text-green-400 cursor-pointer"
+                            onClick={() => {
+                              if (!g._id) return;
+                              dispatch(setGoalId(g._id));
+                              dispatch(setIsAllocatePopupVisible(true));
+                            }}
+                          >
+                            <PlusIcon
+                              className="inline-block mr-1 mb-1"
+                              size={14}
+                            />
+                            Allocate
+                          </p>
+                          <p>${g.current}</p>
                         </div>
                       </div>
                       <div className="h-2 bg-gray-600 rounded-full">
                         {(() => {
-                          const currentVal = parseFloat(g.current || "0");
-                          const targetVal = parseFloat(g.target || "0");
+                          const currentVal = g.current;
+                          const targetVal = g.target;
                           const pct =
                             targetVal > 0
                               ? Math.min((currentVal / targetVal) * 100, 100)
@@ -575,7 +576,7 @@ const Dashboard = () => {
       </div>
       {transactionPopup && <TransactionCard />}
       {goalPopup && <GoalPopup />}
-      {isAllocatePopupVisible && <Allocate />}
+      {isAllocatePopupVisible && goalId && <Allocate />}
     </div>
   );
 };

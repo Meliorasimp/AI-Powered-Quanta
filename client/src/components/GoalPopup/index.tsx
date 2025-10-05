@@ -4,6 +4,7 @@ import Heading from "../Text/Heading";
 import { useEffect, useRef, useState } from "react";
 import { createGoal } from "../../modules/Api/Goals/goalSlice";
 import { RootState, AppDispatch } from "../../store";
+import { fetchUserGoal } from "../../modules/Api/Goals/displayGoal.ts";
 
 type GoalFormState = {
   name: string;
@@ -86,7 +87,7 @@ const GoalPopup = () => {
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     try {
-      await dispatch(
+      const result = await dispatch(
         createGoal({
           userId,
           goal: {
@@ -101,6 +102,8 @@ const GoalPopup = () => {
           },
         })
       ).unwrap();
+      dispatch(fetchUserGoal(userId));
+      console.log("Created goal:", result);
       close();
     } catch {
       setErrors((prev) => ({ ...prev, submit: "Failed to create goal" }));

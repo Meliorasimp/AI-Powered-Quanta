@@ -35,6 +35,9 @@ type dashboardState = {
   greeting: string;
   isAiPopupVisible?: boolean;
   messages: Message[];
+  isLoading: boolean;
+  amountAllocated?: number;
+  error: string | null;
 };
 
 const initialDashboardState: dashboardState = {
@@ -50,6 +53,9 @@ const initialDashboardState: dashboardState = {
   greeting: "",
   isAiPopupVisible: false,
   messages: [],
+  isLoading: false,
+  amountAllocated: 0,
+  error: null,
 };
 
 const dashboardSlice = createSlice({
@@ -112,6 +118,9 @@ const dashboardSlice = createSlice({
     builder.addCase(getAiSummary.rejected, (state) => {
       state.summarization = "Failed to load summary.";
     });
+    builder.addCase(allocateAmountToGoal.pending, (state) => {
+      state.isLoading = true;
+    });
   },
 });
 
@@ -121,6 +130,18 @@ export const getAiSummary = createAsyncThunk(
     const response = await axios.get(
       `http://localhost:5000/ai/summarize/${userId}`
     );
+    return response.data;
+  }
+);
+
+export const allocateAmountToGoal = createAsyncThunk(
+  "dashboard/allocateAmountToGoal",
+  async ({ goalId, amount }: { goalId: string; amount: number }) => {
+    const response = await axios.put(
+      `http://localhost:5000/goals/allocate/${goalId}`,
+      { amount }
+    );
+    console.log("Allocation response data:", response.data);
     return response.data;
   }
 );

@@ -65,3 +65,37 @@ export const getGoalData = async (req: Request, res: Response) => {
     }
   }
 };
+
+export const allocateAmountToGoal = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const amount = Number(req.body.amount);
+
+  if (isNaN(amount) || amount <= 0) {
+    return res.status(400).json({ message: "Invalid amount" });
+  }
+
+  try {
+    const goal = await Goal.findByIdAndUpdate(
+      id,
+      { $inc: { current: amount } },
+      { new: true }
+    );
+
+    if (!goal) {
+      return res.status(404).json({ message: "Goal not found" });
+    }
+
+    res.status(200).json({ message: "Amount allocated successfully", goal });
+  } catch (error) {
+    console.error(error); // 👈 log the real error
+    if (error instanceof Error) {
+      res
+        .status(500)
+        .json({ message: "Something went wrong", error: error.message });
+    } else {
+      res
+        .status(500)
+        .json({ message: "Something went wrong", error: "Unknown error" });
+    }
+  }
+};
