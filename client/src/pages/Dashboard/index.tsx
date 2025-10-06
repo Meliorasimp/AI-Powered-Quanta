@@ -2,7 +2,7 @@ import Navbar from "../../components/Navbar";
 import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import { useNavigate } from "react-router-dom";
-import { Info } from "lucide-react";
+import { Info, MoveUpRight, Target } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import "../../styles/index.css";
@@ -52,12 +52,10 @@ import {
 } from "../../modules/Interaction.ts/index.ts";
 import TransactionCard from "../../components/transactionpopup/index.tsx";
 import GoalPopup from "../../components/GoalPopup/index.tsx";
-import {
-  fetchUserGoal,
-  setDisplayGoal,
-} from "../../modules/Api/Goals/displayGoal.ts";
+import { fetchUserGoal } from "../../modules/Api/Goals/displayGoal.ts";
 import Pie from "../../components/Chartjs/Pie/index.tsx";
 import Allocate from "../../components/Allocate/index.tsx";
+import { DisplayGoal } from "../../modules/Api/Goals/displayGoal.ts";
 
 const override: CSSProperties = {
   display: "block",
@@ -179,13 +177,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!userId) return;
-    if (goals.length > 0) return; // prevent loop / re-fetches
+    if (goals.length > 0) return;
     (async () => {
       try {
         console.log("Fetching goals for User ID:", userId);
-        const payload = await dispatch(fetchUserGoal(userId)).unwrap();
-        dispatch(setDisplayGoal(payload));
-        console.log("Goals in state after fetch:", payload);
+        await dispatch(fetchUserGoal(userId)).unwrap();
+        console.log("Goals fetched and stored in state.");
       } catch (e) {
         console.error("Error fetching user goals:", e);
       }
@@ -503,13 +500,20 @@ const Dashboard = () => {
                 label="Goals"
                 className="text-lg main-website-text-color"
               />
-              <div>
+              <div className="flex flex-row gap-x-2">
                 <Button
                   label="Add"
                   type="button"
                   className="cursor-pointer"
                   icon={<PlusIcon className="inline-block" />}
                   onClick={() => dispatch(showGoalPopup())}
+                />
+                <Button
+                  label="View All"
+                  type="button"
+                  icon={<MoveUpRight className="inline-block" />}
+                  className="cursor-pointer"
+                  onClick={() => navigate("/goals")}
                 />
               </div>
             </div>
@@ -518,56 +522,64 @@ const Dashboard = () => {
                 <p className="text-gray-500">No goals set. Add a new goal!</p>
               )}
               {goals.length > 0 && (
-                <ul>
-                  {goals.map((g) => (
-                    <li key={g._id} className="mt-2">
-                      <div
-                        className="flex flex-row justify-between items-center relative"
-                        onClick={() => console.log("Clicked goal", g._id)}
+                <ul className="space-y-4">
+                  {goals
+                    .filter((g: DisplayGoal) => g.name && g.target)
+                    .map((g: DisplayGoal) => (
+                      <li
+                        key={g._id}
+                        className="rounded-xl px-2 py-3 shadow hover:shadow-lg transition-shadow duration-200 flex flex-col gap-2"
                       >
-                        <div>
-                          <p>{g.name}</p>
-                          <p className="text-md text-gray-500 mb-1">
-                            ${g.target}
-                          </p>
+                        <div className="flex flex-row justify-between items-center">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-lg font-semibold text-white truncate">
+                              {g.name}
+                            </span>
+                            <span className="text-xs text-gray-400 flex items-center gap-1">
+                              <Target className="inline-block" size={16} />
+                              {g.deadline
+                                ? `Due: ${g.deadline}`
+                                : "No deadline"}
+                            </span>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <button
+                              className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded-md flex items-center gap-1 font-medium shadow"
+                              onClick={() => {
+                                if (!g._id) return;
+                                dispatch(setGoalId(g._id));
+                                dispatch(setIsAllocatePopupVisible(true));
+                              }}
+                            >
+                              <PlusIcon size={12} /> Allocate
+                            </button>
+                            <span className="text-sm text-green-300 font-bold">
+                              ${g.current}
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              Target: ${g.target}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <p
-                            className="mr-auto text-sm text-green-400 cursor-pointer"
-                            onClick={() => {
-                              if (!g._id) return;
-                              dispatch(setGoalId(g._id));
-                              dispatch(setIsAllocatePopupVisible(true));
-                            }}
-                          >
-                            <PlusIcon
-                              className="inline-block mr-1 mb-1"
-                              size={14}
-                            />
-                            Allocate
-                          </p>
-                          <p>${g.current}</p>
+                        <div className="h-2 bg-gray-700 rounded-full mt-2">
+                          {(() => {
+                            const currentVal = Number(g.current) || 0;
+                            const targetVal = Number(g.target) || 0;
+                            const pct =
+                              targetVal > 0
+                                ? Math.min((currentVal / targetVal) * 100, 100)
+                                : 0;
+                            return (
+                              <div
+                                className="h-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-full transition-all duration-300"
+                                style={{ width: `${pct}%` }}
+                                title={pct.toFixed(2) + "% of goal reached"}
+                              />
+                            );
+                          })()}
                         </div>
-                      </div>
-                      <div className="h-2 bg-gray-600 rounded-full">
-                        {(() => {
-                          const currentVal = g.current;
-                          const targetVal = g.target;
-                          const pct =
-                            targetVal > 0
-                              ? Math.min((currentVal / targetVal) * 100, 100)
-                              : 0;
-                          return (
-                            <div
-                              className="h-full bg-green-500 rounded-full"
-                              style={{ width: `${pct}%` }}
-                              title={pct.toFixed(2) + "% of goal reached"}
-                            />
-                          );
-                        })()}
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    ))}
                 </ul>
               )}
             </div>

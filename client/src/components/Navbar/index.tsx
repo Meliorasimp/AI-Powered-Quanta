@@ -68,7 +68,7 @@ const Navbar = () => {
             label="Dashboard"
             onClick={() => handleNavigate("/dashboard")}
             type="button"
-            className="main-website-text-color text-lg hover:bg-gray-600 py-1 px-4 rounded-lg transition-colors duration-200 cursor-pointer"
+            className="main-website-text-color text-lg hover:bg-gray-600 py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer"
             icon={<LayoutDashboardIcon className="inline-block w-5 h-5 mr-2" />}
           />
 
@@ -109,6 +109,12 @@ const Navbar = () => {
               <Button
                 label="Analytics"
                 onClick={() => handleNavigate("/analytics/financialoverview")}
+                type="button"
+                className="text-left text-sm text-white hover:bg-gray-700 w-full px-4 py-2 rounded-lg"
+              />
+              <Button
+                label="Savings Goals"
+                onClick={() => handleNavigate("/goals")}
                 type="button"
                 className="text-left text-sm text-white hover:bg-gray-700 w-full px-4 py-2 rounded-lg"
               />

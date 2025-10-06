@@ -99,3 +99,60 @@ export const allocateAmountToGoal = async (req: Request, res: Response) => {
     }
   }
 };
+
+export const deleteGoal = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const deletedGoal = await Goal.findByIdAndDelete(id);
+    if (!deleteGoal) {
+      return res.status(404).json({ message: "Goal not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Goal deleted successfully", goal: deletedGoal });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res
+        .status(500)
+        .json({ message: "Something went wrong", error: error.message });
+    } else {
+      res
+        .status(500)
+        .json({ message: "Something went wrong", error: "Unknown error" });
+    }
+  }
+};
+
+export const updateGoal = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  try {
+    const updatedGoal = await Goal.findByIdAndUpdate(
+      id,
+      {
+        $set: updates,
+      },
+      { new: true }
+    );
+
+    if (!updatedGoal) {
+      return res.status(404).json({ message: "Goal not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Goal updated successfully", goal: updatedGoal });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res
+        .status(500)
+        .json({ message: "Something went wrong", error: error.message });
+    } else {
+      res
+        .status(500)
+        .json({ message: "Something went wrong", error: "Unknown error" });
+    }
+  }
+};

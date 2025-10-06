@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createGoal } from "../../modules/Api/Goals/goalSlice";
 import { RootState, AppDispatch } from "../../store";
 import { fetchUserGoal } from "../../modules/Api/Goals/displayGoal.ts";
+import { toast } from "react-toastify";
 
 type GoalFormState = {
   name: string;
@@ -103,7 +104,11 @@ const GoalPopup = () => {
         })
       ).unwrap();
       dispatch(fetchUserGoal(userId));
-      console.log("Created goal:", result);
+      if (result) {
+        toast.success("Goal created successfully!");
+      } else {
+        toast.error("Failed to create goal");
+      }
       close();
     } catch {
       setErrors((prev) => ({ ...prev, submit: "Failed to create goal" }));
@@ -124,7 +129,6 @@ const GoalPopup = () => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-[#0f0f17] border border-gray-700/60 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.25s_ease]">
-          {/* Header */}
           <div className="flex items-start justify-between px-6 py-5 bg-gradient-to-r from-indigo-600/20 via-purple-600/10 to-fuchsia-600/10 border-b border-gray-700/60">
             <Heading
               id="goal-popup-title"
@@ -144,7 +148,6 @@ const GoalPopup = () => {
             onSubmit={handleSubmit}
             className="px-6 py-6 grid grid-cols-1 md:grid-cols-12 gap-6"
           >
-            {/* Left column */}
             <div className="md:col-span-7 flex flex-col gap-5">
               <div className="flex flex-col gap-1">
                 <label

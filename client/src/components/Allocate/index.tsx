@@ -46,7 +46,6 @@ const Allocate = () => {
         appDispatch(setIsAllocatePopupVisible(false));
       }
     } catch (err) {
-      // Optionally handle error
       console.error("Allocation failed:", err);
     }
   };

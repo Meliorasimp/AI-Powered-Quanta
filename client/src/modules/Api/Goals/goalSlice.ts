@@ -56,6 +56,26 @@ export const createGoal = createAsyncThunk(
   }
 );
 
+export const deleteGoal = createAsyncThunk(
+  "goals/deleteGoal",
+  async (goalId: string, { rejectWithValue }) => {
+    try {
+      await axios.delete(`http://localhost:5000/goals/delete/${goalId}`, {
+        withCredentials: true,
+      });
+      return goalId; // ✅ return the id we know we deleted
+    } catch (err: unknown) {
+      if (typeof err === "object" && err !== null) {
+        const anyErr = err as { response?: { data?: { message?: string } } };
+        return rejectWithValue(
+          anyErr.response?.data?.message || "Failed to delete goal"
+        );
+      }
+      return rejectWithValue("Failed to delete goal");
+    }
+  }
+);
+
 const goalsSlice = createSlice({
   name: "goals",
   initialState,
@@ -65,6 +85,9 @@ const goalsSlice = createSlice({
     },
     clearGoals: (state) => {
       state.items = [];
+    },
+    removeGoal: (state, action: PayloadAction<string>) => {
+      state.items = state.items.filter((goal) => goal._id !== action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -83,9 +106,25 @@ const goalsSlice = createSlice({
           (action.payload as string) ||
           action.error.message ||
           "Failed to create goal";
+      })
+      .addCase(deleteGoal.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteGoal.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.filter((goal) => goal._id !== action.payload);
+        state.error = null;
+      })
+      .addCase(deleteGoal.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to delete goal";
       });
   },
 });
 
-export const { addGoalOptimistic, clearGoals } = goalsSlice.actions;
+export const { addGoalOptimistic, clearGoals, removeGoal } = goalsSlice.actions;
 export const goalsReducer = goalsSlice.reducer;

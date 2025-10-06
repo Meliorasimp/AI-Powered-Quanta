@@ -33,6 +33,9 @@ export const displayGoalSlice = createSlice({
     setDisplayGoal: (state, action: PayloadAction<DisplayGoal>) => {
       state.goals.unshift(action.payload);
     },
+    removeGoal: (state, action: PayloadAction<string>) => {
+      state.goals = state.goals.filter((goal) => goal._id !== action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserGoal.pending, (state) => {
@@ -60,7 +63,7 @@ export const fetchUserGoal = createAsyncThunk(
         `http://localhost:5000/goals/get/${userId}`,
         { withCredentials: true }
       );
-      const raw = response.data.goal; // expected array per backend (Goal.find)
+      const raw = response.data.goal;
       const goalsArray: DisplayGoal[] = Array.isArray(raw)
         ? raw
             .filter(
@@ -115,6 +118,6 @@ export const fetchUserGoal = createAsyncThunk(
   }
 );
 
-export const { setDisplayGoal } = displayGoalSlice.actions;
+export const { setDisplayGoal, removeGoal } = displayGoalSlice.actions;
 
 export default displayGoalSlice.reducer;

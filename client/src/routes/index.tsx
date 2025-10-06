@@ -11,6 +11,7 @@ import LandingPage from "../pages/Landingpage";
 import Navbar from "../components/Navbar";
 import About from "../pages/About";
 import Contacts from "../pages/Contacts";
+import SavingsGoals from "../pages/Goals";
 
 const routes: RouteObject[] = [
   {
@@ -60,6 +61,10 @@ const routes: RouteObject[] = [
   {
     path: "/contact",
     element: <Contacts />,
+  },
+  {
+    path: "/goals",
+    element: <SavingsGoals />,
   },
 ];
 
