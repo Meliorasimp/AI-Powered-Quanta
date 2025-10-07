@@ -3,6 +3,7 @@ import { Schema, model, Document } from "mongoose";
 export interface IBudget extends Document {
   description: string;
   amount: number;
+  category: string;
   dateCreated: Date;
   userId: string;
 }
@@ -10,6 +11,7 @@ export interface IBudget extends Document {
 const budgetSchema = new Schema<IBudget>({
   description: { type: String, required: true },
   amount: { type: Number, required: true },
+  category: { type: String, required: true },
   dateCreated: { type: Date, default: Date.now },
   userId: { type: String, required: true, ref: "User" },
 });

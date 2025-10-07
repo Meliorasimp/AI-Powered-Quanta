@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Dashboard from "../pages/Dashboard";
 import { Provider } from "react-redux";
-import store from "../store";
+import { store } from "../store";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Transactions from "../pages/Transactions";

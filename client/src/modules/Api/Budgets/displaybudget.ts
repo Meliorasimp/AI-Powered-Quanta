@@ -11,6 +11,7 @@ export type userBudgetState = {
     _id: string;
     description: string;
     amount: number;
+    category: string;
     dateCreated: string;
     userId: string;
   }>;
@@ -51,6 +52,7 @@ const userBudgetsSlice = createSlice({
   extraReducers: (builder) => {
     handleFetchBudgets(builder);
     handleDeleteBudget(builder);
+    handleDetectBudget(builder);
   },
 });
 
@@ -98,6 +100,50 @@ export const deleteUserBudget = createAsyncThunk(
     }
   }
 );
+
+export const deductBudget = createAsyncThunk(
+  "userBudgets/deductBudget",
+  async (
+    { budgetId, amount }: { budgetId: string; amount: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/budget/deductbudget",
+        {
+          budgetId,
+          amount,
+        }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to deduct budget");
+      }
+    }
+  }
+);
+
+function handleDetectBudget(builder: ActionReducerMapBuilder<userBudgetState>) {
+  builder.addCase(deductBudget.pending, (state) => {
+    state.loading = true;
+    state.error = null;
+  });
+  builder.addCase(deductBudget.fulfilled, (state, action) => {
+    state.loading = false;
+    const updatedBudget = action.payload;
+    const index = state.budgets.findIndex(
+      (budget) => budget._id === updatedBudget._id
+    );
+    if (index !== -1) {
+      state.budgets[index] = updatedBudget;
+    }
+  });
+  builder.addCase(deductBudget.rejected, (state, action) => {
+    state.loading = false;
+    state.error = action.payload as string;
+  });
+}
 
 function handleFetchBudgets(builder: ActionReducerMapBuilder<userBudgetState>) {
   builder.addCase(fetchUserBudgets.pending, (state) => {

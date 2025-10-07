@@ -24,6 +24,7 @@ type InteractionState = {
   goalId: string | null;
   amountToAllocate?: number | undefined;
   isDeleteGoalPopupVisible?: boolean;
+  isDeductBudgetPopupVisible?: boolean;
 };
 
 const initialState: InteractionState = {
@@ -50,6 +51,7 @@ const initialState: InteractionState = {
   goalId: null,
   amountToAllocate: 0,
   isDeleteGoalPopupVisible: false,
+  isDeductBudgetPopupVisible: false,
 };
 
 const interactionSlice = createSlice({
@@ -226,6 +228,9 @@ const interactionSlice = createSlice({
     setIsDeleteGoalPopupVisible: (state, action: PayloadAction<boolean>) => {
       state.isDeleteGoalPopupVisible = action.payload;
     },
+    setIsDeductBudgetPopupVisible: (state, action: PayloadAction<boolean>) => {
+      state.isDeductBudgetPopupVisible = action.payload;
+    },
   },
 });
 
@@ -260,6 +265,7 @@ export const {
   setGoalId,
   setAmountToAllocate,
   setIsDeleteGoalPopupVisible,
+  setIsDeductBudgetPopupVisible,
 } = interactionSlice.actions;
 
 export default interactionSlice.reducer;

@@ -20,6 +20,7 @@ import { displayTransactionsReducer } from "./modules/Api/transaction/displaytra
 import { dashboardReducer } from "./modules/Interaction.ts/dashboard/index.ts";
 import { goalsReducer } from "./modules/Api/Goals/goalSlice";
 import { displayGoalSlice } from "./modules/Api/Goals/displayGoal.ts";
+import { deductAmountReducer } from "./modules/Api/Budgets/addbudget.ts";
 
 const rootReducer = combineReducers({
   interaction: interactionReducer,
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   budget: budgetReducer,
   userbudget: userBudgetReducer,
+  deductAmount: deductAmountReducer,
   transaction: transactionReducer,
   usertransaction: displayTransactionsReducer,
   dashboard: dashboardReducer,

@@ -44,7 +44,7 @@ const SavingsGoals = () => {
   );
 
   useEffect(() => {
-    if (!userId) return; // don’t fetch if no user
+    if (!userId) return; // dont fetch if no user
     (async () => {
       try {
         const goals = await appDispatch(fetchUserGoal(userId)).unwrap();
@@ -132,7 +132,7 @@ const SavingsGoals = () => {
               goals.map((goal: DisplayGoal) => (
                 <div
                   key={goal._id}
-                  className="flex flex-col w-full mb-4 p-4 bg-gradient-to-r from-indigo-900 via-purple-900 to-fuchsia-500/10 border-2 border-purple-900 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
+                  className="flex flex-col w-full mb-4 p-4 bg-gradient-to-r from-indigo-900 via-purple-900 to-fuchsia-500/10 border-2 border-purple-900 rounded-2xl shadow-sm hover:shadow-md hover:border-green-500 transition-all duration-300"
                 >
                   <div className="flex w-full items-center gap-4">
                     <div className="text-white text-xl font-semibold">
@@ -216,11 +216,9 @@ const SavingsGoals = () => {
       {isDeleteGoalPopupVisible && (
         <DeleteGoalPopup
           onGoalDeleted={async (deletedGoalId?: string) => {
-            // Instantly remove the deleted goal from state for immediate UI update
             if (deletedGoalId) {
               appDispatch(removeGoal(deletedGoalId));
             }
-            // Optionally refetch from backend for consistency
             if (userId) await appDispatch(fetchUserGoal(userId));
           }}
         />

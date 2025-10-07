@@ -4,13 +4,17 @@ import axios from "axios";
 type BudgetState = {
   description: string;
   amount: number;
+  category: string;
   dateCreated: string;
   id: string;
+  amountToDeduct?: number;
+  idToDeductFrom?: string;
 };
 
 type AddBudgetState = {
   description: string;
   amount: number;
+  category: string;
   dateCreated: string;
   loading?: boolean;
   error?: string | null;
@@ -19,10 +23,27 @@ type AddBudgetState = {
 const initialAddBudgetState: AddBudgetState = {
   description: "",
   amount: 0,
+  category: "",
   dateCreated: new Date().toISOString(),
   loading: false,
   error: null,
 };
+
+const deductAmountSlice = createSlice({
+  name: "deductAmount",
+  initialState: {
+    amountToDeduct: 0,
+    idToDeductFrom: "",
+  },
+  reducers: {
+    setAmountToDeduct: (state, action: PayloadAction<number>) => {
+      state.amountToDeduct = action.payload;
+    },
+    setIdToDeductFrom: (state, action: PayloadAction<string>) => {
+      state.idToDeductFrom = action.payload;
+    },
+  },
+});
 
 const AddBudgetSlice = createSlice({
   name: "budget",
@@ -33,6 +54,9 @@ const AddBudgetSlice = createSlice({
     },
     setAmount: (state, action: PayloadAction<number>) => {
       state.amount = action.payload;
+    },
+    setCategory: (state, action: PayloadAction<string>) => {
+      state.category = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -71,6 +95,10 @@ export const addBudget = createAsyncThunk(
   }
 );
 
-export const { setDescription, setAmount } = AddBudgetSlice.actions;
+export const { setDescription, setAmount, setCategory } =
+  AddBudgetSlice.actions;
+export const { setAmountToDeduct, setIdToDeductFrom } =
+  deductAmountSlice.actions;
 
 export const budgetReducer = AddBudgetSlice.reducer;
+export const deductAmountReducer = deductAmountSlice.reducer;

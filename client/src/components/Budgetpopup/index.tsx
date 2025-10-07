@@ -7,6 +7,7 @@ import Button from "../Button/index.tsx";
 import {
   setDescription,
   setAmount,
+  setCategory,
 } from "../../modules/Api/Budgets/addbudget.ts";
 import { addBudget } from "../../modules/Api/Budgets/addbudget.ts";
 import { addBudget as addBudgetFromStore } from "../../modules/Api/Budgets/displaybudget.ts";
@@ -15,9 +16,10 @@ import { toast } from "react-toastify";
 
 const Budgetpopup = () => {
   const dispatch = useAppDispatch();
-  const { description, amount } = useSelector(
+  const { description, amount, category } = useSelector(
     (state: RootState) => state.budget
   );
+  console.log("Selected category:", category);
   const isBudgetPopupVisible = useSelector(
     (state: RootState) => state.interaction.isBudgetPopupVisible
   );
@@ -37,6 +39,7 @@ const Budgetpopup = () => {
         addBudget({
           description,
           amount,
+          category,
           id: userId,
           dateCreated: new Date().toISOString(),
         })
@@ -46,6 +49,7 @@ const Budgetpopup = () => {
         addBudgetFromStore({
           description,
           amount,
+          category,
           dateCreated: new Date().toISOString(),
         })
       );
@@ -57,53 +61,93 @@ const Budgetpopup = () => {
   };
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center 
-                bg-black/50 backdrop-blur-xs z-50 h-full w-full"
-    >
-      <div className="text-white">
-        <div className="bg-gray-900 flex flex-col justify-center rounded-2xl items-center">
-          <div className="w-full h-full p-10">
-            <Heading label="Add Budget" className="text-2xl font-semibold" />
-            <Paragraph
-              label="Create a new budget to manage your expenses."
-              variant="secondary"
-            />
-            <div className="mt-5">
-              <form onSubmit={handleBudgetSubmit}>
-                <Paragraph label="Description" variant="tertiary" />
-                <input
-                  type="text"
-                  value={description}
-                  className="w-full bg-gray-300 p-2 my-2 rounded-lg text-black"
-                  placeholder="e.g., Groceries"
-                  onChange={(e) => dispatch(setDescription(e.target.value))}
-                />
-                <Paragraph label="Amount" variant="tertiary" />
-                <input
-                  type="number"
-                  value={amount}
-                  className="w-full bg-gray-300 p-2 my-2 rounded-lg text-black"
-                  step={0.01}
-                  placeholder="0.00"
-                  onChange={(e) =>
-                    dispatch(setAmount(parseFloat(e.target.value)))
-                  }
-                />
-                <Button
-                  label="Create Budget"
-                  className="mt-7 w-full bg-gray-500 py-2 rounded-lg text-white font-semibold hover:bg-gray-400 cursor-pointer transition-colors duration-300"
-                  type="submit"
-                />
-                <Button
-                  label="Cancel Creation"
-                  className="mt-7 w-full bg-red-500 py-2 rounded-lg text-white font-semibold hover:bg-red-400 cursor-pointer transition-colors duration-300"
-                  type="button"
-                  onClick={() => dispatch(hideBudgetPopup())}
-                />
-              </form>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="relative w-full max-w-md mx-auto p-0">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 pt-6 flex flex-col gap-4 animate-fadeIn">
+          {/* Close button */}
+          <button
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors text-2xl font-bold focus:outline-none"
+            aria-label="Close"
+            type="button"
+            onClick={() => dispatch(hideBudgetPopup())}
+          >
+            &times;
+          </button>
+          <Heading
+            label="Add Budget"
+            className="text-2xl font-bold text-gray-900 dark:text-white mb-1"
+          />
+          <Paragraph
+            label="Create a new budget to manage your expenses."
+            variant="secondary"
+            className="mb-4 text-gray-500 dark:text-gray-300"
+          />
+          <form onSubmit={handleBudgetSubmit} className="flex flex-col gap-4">
+            <div>
+              <Paragraph
+                label="Budget Name"
+                variant="tertiary"
+                className="mb-1 text-gray-700 dark:text-gray-200"
+              />
+              <input
+                type="text"
+                value={description}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:focus:border-blue-400 transition-all outline-none"
+                placeholder="e.g., Groceries"
+                onChange={(e) => dispatch(setDescription(e.target.value))}
+                autoFocus
+              />
             </div>
-          </div>
+            <div>
+              <Paragraph
+                label="Starting Amount"
+                variant="tertiary"
+                className="mb-1 text-gray-700 dark:text-gray-200"
+              />
+              <input
+                type="number"
+                value={amount}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:focus:border-blue-400 transition-all outline-none"
+                step={0.01}
+                placeholder="0.00"
+                onChange={(e) =>
+                  dispatch(setAmount(parseFloat(e.target.value)))
+                }
+                min={0}
+              />
+              <Paragraph
+                label="Category"
+                variant="tertiary"
+                className="mb-1 text-gray-700 dark:text-gray-200"
+              />
+              <select
+                name="category"
+                id="category"
+                value={category}
+                onChange={(e) => dispatch(setCategory(e.target.value))}
+                className="mt-2 w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:focus:border-blue-400 transition-all outline-none"
+              >
+                <option value="Housing">Housing</option>
+                <option value="Food and Groceries">Food and Groceries</option>
+                <option value="Travel">Travel</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Debt Repayment">Debt Repayment</option>
+                <option value="Pets">Pets</option>
+              </select>
+            </div>
+            <Button
+              label="Create Budget"
+              className="mt-2 w-full bg-blue-600 py-2 rounded-lg text-white font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-sm"
+              type="submit"
+            />
+            <Button
+              label="Cancel"
+              className="w-full bg-gray-200 dark:bg-gray-700 py-2 rounded-lg text-gray-700 dark:text-white font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 shadow-sm"
+              type="button"
+              onClick={() => dispatch(hideBudgetPopup())}
+            />
+          </form>
         </div>
       </div>
     </div>

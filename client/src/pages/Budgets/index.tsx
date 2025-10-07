@@ -3,7 +3,7 @@ import Heading from "../../components/Text/Heading";
 import Paragraph from "../../components/Text/Paragraph";
 import "../../styles/index.css";
 import Button from "../../components/Button";
-import { Plus, Trash2Icon } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { showBudgetPopup } from "../../modules/Interaction.ts";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store.ts";
@@ -20,6 +20,9 @@ import {
   deleteBudget,
 } from "../../modules/Api/Budgets/displaybudget.ts";
 import AiModal from "../../components/AiModal/index.tsx";
+import { setIsDeductBudgetPopupVisible } from "../../modules/Interaction.ts";
+import DeductBudgetPopup from "../../components/DeductBudgetPopup/index.tsx";
+import { setIdToDeductFrom } from "../../modules/Api/Budgets/addbudget.ts";
 
 const override: CSSProperties = {
   display: "block",
@@ -37,9 +40,11 @@ const Budgets = () => {
   const { isThemeLight, isThemeDark, isThemePurple } = useSelector(
     (state: RootState) => state.interaction
   );
-
   const isBudgetPopupVisible = useSelector(
     (state: RootState) => state.interaction.isBudgetPopupVisible
+  );
+  const isDeductBudgetPopupVisible = useSelector(
+    (state: RootState) => state.interaction.isDeductBudgetPopupVisible
   );
 
   useEffect(() => {
@@ -74,7 +79,7 @@ const Budgets = () => {
       <Navbar />
       <div className="w-10/11 min-h-screen flex flex-col py-6 px-4 sm:px-6 gap-y-8 mx-auto">
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 border-b-4 pb-6 border-purple-700">
             <div className="space-y-1">
               <Heading
                 label="Budgets"
@@ -96,100 +101,84 @@ const Budgets = () => {
               />
             </div>
           </div>
-
-          <div className="relative">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-600 opacity-70 rounded-full" />
-            <div className="pt-3">
-              {budget.loading && (
-                <p className="flex justify-center items-center py-10">
-                  <MoonLoader
-                    color={"#36d7b7"}
-                    loading={budget.loading}
-                    cssOverride={override}
-                    size={52}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                  />
-                </p>
-              )}
-              {!budget.loading && budget.budgets.length === 0 && (
-                <div className="empty-state-box">
-                  <p className="font-medium mb-1">No budgets yet</p>
-                  <p className="text-xs opacity-70 mb-3">
-                    Start organizing your finances by creating your first
-                    budget.
+          <div>
+            {budget.loading && (
+              <MoonLoader
+                color="#7e22ce"
+                loading={budget.loading}
+                cssOverride={override}
+                size={40}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            )}
+            {!budget.loading && budget.budgets.length === 0 && (
+              <Paragraph
+                label="No budgets found. Start by adding a new budget."
+                variant="tertiary"
+                className="text-center text-gray-500 dark:text-gray-400 mt-10"
+              />
+            )}
+            {!budget.loading &&
+              budget.budgets.length > 0 &&
+              budget.budgets.map((b) => (
+                <div
+                  key={b._id}
+                  className="flex flex-col w-full mb-4 p-4 bg-gradient-to-r from-indigo-900 via-purple-900 to-fuchsia-500/10 border-2 border-purple-900 rounded-2xl shadow-sm hover:shadow-md hover:border-green-500 transition-all duration-300"
+                >
+                  <div className="flex w-full items-center justify-between gap-4">
+                    <div className="text-white text-xl font-semibold">
+                      <h1>{b.description}</h1>
+                    </div>
+                    <div className="flex gap-3 items-center">
+                      <Button
+                        label="Deduct"
+                        className="py-1 px-5 rounded-lg text-red-500 text- cursor-pointer"
+                        icon={<Minus className="inline-block" size={20} />}
+                        type="button"
+                        onClick={() => {
+                          dispatch(setIsDeductBudgetPopupVisible(true));
+                          dispatch(setIdToDeductFrom(b._id));
+                        }}
+                      />
+                      <Button
+                        label="Delete"
+                        type="button"
+                        className="text-red-500 text-md cursor-pointer"
+                        icon={<Trash2 className="inline-block" size={20} />}
+                        onClick={async () => {
+                          await dispatch(deleteUserBudget(b._id));
+                          sdispatch(deleteBudget(b._id));
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <p>
+                    Date created:{" "}
+                    {new Date(b.dateCreated).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </p>
-                  <Button
-                    label="Create Budget"
-                    type="button"
-                    onClick={() => dispatch(showBudgetPopup())}
-                    className="bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-600 text-white px-4 py-2 rounded-md cursor-pointer font-medium shadow hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-150"
-                  />
+                  <div className="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-start gap-4">
+                    <p className="text-sm text-gray-300 bg-blue-950 px-6 py-2 rounded-full">
+                      Category: {b.category}
+                    </p>
+                  </div>
+                  <div className="mt-5 text-lg">
+                    Budget Amount:{" "}
+                    <span className="text-green-400 font-semibold">
+                      ${b.amount}
+                    </span>
+                  </div>
                 </div>
-              )}
-
-              {!budget.loading && budget.budgets.length > 0 && (
-                <ul className="grid gap-5 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {budget.budgets.map((b) => {
-                    const used = 0; // Placeholder: replace with real used tracking if available
-                    const pct = Math.min(
-                      b.amount > 0 ? (used / b.amount) * 100 : 0,
-                      100
-                    );
-                    return (
-                      <li key={b._id} className="budget-card-shell group">
-                        <div className="flex items-start justify-between">
-                          <div className="budget-card-header p-2">
-                            <Heading
-                              label={b.description}
-                              className="text-base sm:text-lg font-semibold"
-                            />
-                            <div className="budget-meta">
-                              <span>
-                                Created:{" "}
-                                {new Date(b.dateCreated).toLocaleDateString()}
-                              </span>
-                              <span>Budgeted: ₱{b.amount.toFixed(2)}</span>
-                            </div>
-                          </div>
-                          <button
-                            aria-label="Delete budget"
-                            className="p-2 rounded-md bg-white/5 hover:bg-white/10 transition-colors border border-white/10 hover:border-white/20"
-                            onClick={() => {
-                              dispatch(deleteUserBudget(b._id));
-                              sdispatch(deleteBudget(b._id));
-                            }}
-                          >
-                            <Trash2Icon size={16} className="text-red-400 " />
-                          </button>
-                        </div>
-                        <div className="space-y-2 p-2">
-                          <div className="budget-progress">
-                            <div
-                              className="budget-progress-fill"
-                              style={{ width: `${pct}%` }}
-                            />
-                            <div className="budget-progress-label">
-                              <span className="p-2">{pct.toFixed(0)}%</span>
-                            </div>
-                          </div>
-                          <div className="flex justify-between text-[11px] sm:text-xs opacity-80 font-medium">
-                            <span>₱{used.toFixed(2)} used</span>
-                            <span className="p-2">
-                              ₱{(b.amount - used).toFixed(2)} left
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
+              ))}
           </div>
         </div>
         {isBudgetPopupVisible && <Budgetpopup />}
         {aiModal && <AiModal />}
+        {isDeductBudgetPopupVisible && <DeductBudgetPopup />}
       </div>
     </div>
   );
