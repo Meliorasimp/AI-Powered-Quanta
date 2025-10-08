@@ -155,7 +155,8 @@ const Dashboard = () => {
       }
     };
 
-    const fetchAiSummary = async () => {
+    {
+      /*const fetchAiSummary = async () => {
       try {
         if (!userId) {
           console.warn("No user ID available for AI summary fetch.");
@@ -169,7 +170,8 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching AI summary:", error);
       }
-    };
+    }; */
+    }
 
     //fetchAiSummary();
     fetchUserData();

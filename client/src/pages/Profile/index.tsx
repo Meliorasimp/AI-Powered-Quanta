@@ -197,7 +197,7 @@ const Profile = () => {
 
         {/* Avatar + Upload */}
         <section className="card-surface">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6">
             <div className="avatar-ring w-24 h-24 sm:w-28 sm:h-28">
               <img src={profilePicture || user} alt="profile" />
             </div>
@@ -222,7 +222,7 @@ const Profile = () => {
         </section>
 
         {/* Full Name */}
-        <section className="card-surface">
+        <section className="card-surface p-6">
           <div className="card-header">
             <div>
               <p className="section-title">Identity</p>
@@ -237,7 +237,7 @@ const Profile = () => {
               <input
                 type="text"
                 placeholder={userfirstname}
-                className="input-field"
+                className="input-field border-2 rounded-full border-gray-500 p-2 font-light mt-2 text-lg"
                 value={firstname}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   dispatch(setFirstName(e.target.value))
@@ -251,7 +251,7 @@ const Profile = () => {
               <input
                 type="text"
                 placeholder={userLastName}
-                className="input-field"
+                className="input-field border-2 rounded-full border-gray-500 p-2 font-light mt-2 text-lg"
                 value={lastname}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   dispatch(setLastName(e.target.value))
@@ -263,14 +263,14 @@ const Profile = () => {
                 type="submit"
                 label="Save Name"
                 icon={<FaPencilAlt className="inline-block" />}
-                className="gradient-btn-primary"
+                className="gradient-btn-primary px-4 py-2 rounded-full"
               />
             </div>
           </form>
         </section>
 
         {/* Email */}
-        <section className="card-surface">
+        <section className="card-surface p-6">
           <div className="card-header">
             <div>
               <p className="section-title">Contact</p>
@@ -291,7 +291,7 @@ const Profile = () => {
               <input
                 type="email"
                 placeholder={useremail}
-                className="input-field"
+                className="input-field border-2 rounded-full border-gray-500 p-2 font-light mt-2 text-lg"
                 value={email}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   dispatch(setEmail(e.target.value))
@@ -302,13 +302,13 @@ const Profile = () => {
               type="submit"
               label="Update Email"
               icon={<FaPlus className="inline-block" />}
-              className="gradient-btn-primary"
+              className="gradient-btn-primary px-4 py-2 rounded-full"
             />
           </form>
         </section>
 
         {/* Password */}
-        <section className="card-surface">
+        <section className="card-surface p-6">
           <div className="card-header">
             <div>
               <p className="section-title">Security</p>
@@ -322,7 +322,7 @@ const Profile = () => {
               </label>
               <input
                 type="password"
-                className="input-field"
+                className="input-field border-2 rounded-full border-gray-500 p-2 font-light mt-2 text-lg"
                 value={currentpasswordInput}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   dispatch(setCurrentPassword(e.target.value))
@@ -335,7 +335,7 @@ const Profile = () => {
               </label>
               <input
                 type="password"
-                className="input-field"
+                className="input-field border-2 rounded-full border-gray-500 p-2 font-light mt-2 text-lg"
                 value={newpasswordInput}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   dispatch(setNewPassword(e.target.value))
@@ -347,14 +347,14 @@ const Profile = () => {
                 type="submit"
                 label="Save Password"
                 icon={<FaPencilAlt className="inline-block" />}
-                className="gradient-btn-primary"
+                className="gradient-btn-primary px-4 py-2 rounded-full"
               />
             </div>
           </form>
         </section>
 
         {/* Account Security */}
-        <section className="card-surface">
+        <section className="card-surface p-6">
           <div className="card-header">
             <div>
               <p className="section-title">Account</p>
@@ -370,14 +370,14 @@ const Profile = () => {
               type="button"
               label="Log Out"
               icon={<FaDoorClosed className="inline-block" />}
-              className="gradient-btn-primary"
+              className="gradient-btn-primary px-4 py-2 rounded-full mt-4"
             />
             <Button
               onClick={() => {}}
               type="button"
               label="Remove Account"
               icon={<FaTrash className="inline-block" />}
-              className="danger-outline"
+              className="danger-outline px-4 py-2 rounded-full mt-4"
             />
           </div>
         </section>

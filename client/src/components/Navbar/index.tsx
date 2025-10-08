@@ -107,12 +107,6 @@ const Navbar = () => {
                 className="text-left text-sm text-white hover:bg-gray-700 w-full px-4 py-2 rounded-lg"
               />
               <Button
-                label="Analytics"
-                onClick={() => handleNavigate("/analytics/financialoverview")}
-                type="button"
-                className="text-left text-sm text-white hover:bg-gray-700 w-full px-4 py-2 rounded-lg"
-              />
-              <Button
                 label="Savings Goals"
                 onClick={() => handleNavigate("/goals")}
                 type="button"
