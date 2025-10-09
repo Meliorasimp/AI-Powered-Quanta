@@ -1,0 +1,9 @@
+With Jest in the frontend, you should primarily test:
+
+✅ Rendering
+✅ Props & conditional UI
+✅ User interactions
+✅ State & logic (Redux/hooks)
+✅ Edge cases & accessibility
+
+That gives you fast, reliable coverage without overcomplicating things.

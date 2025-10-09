@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import Goalpopup from "../components/GoalPopup";
-import Goals from "../pages/Goals";
+import Goalpopup from "../../components/GoalPopup";
+import Goals from "../../pages/Goals";
 import { Provider } from "react-redux";
-import { store } from "../store";
+import { store } from "../../store";
 import { MemoryRouter } from "react-router-dom";
 
 // Mocking the redux state means making a fake redux store with the right state in order to test if my component renders correctly based on that state

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import Button from "../components/Button";
+import Button from "../../components/Button";
 
 //Unit Testing is Hard for me XD
 

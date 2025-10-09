@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import Budgetpopup from "../components/Budgetpopup";
+import Budgetpopup from "../../components/Budgetpopup";
 import { Provider } from "react-redux";
-import { store } from "../store";
+import { store } from "../../store";
 
 // Mocking the redux state means making a fake redux store with the right state in order to test if my component renders correctly based on that state
 jest.mock("react-redux", () => ({

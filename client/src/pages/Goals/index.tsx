@@ -4,7 +4,7 @@ import Paragraph from "../../components/Text/Paragraph";
 import "../../styles/index.css";
 import { RootState } from "../../store";
 import { useSelector, useDispatch } from "react-redux";
-import { FilePenLine, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import Button from "../../components/Button";
 import {
   showGoalPopup,
@@ -148,14 +148,6 @@ const SavingsGoals = () => {
                           dispatch(setGoalId(goal._id ?? null));
                           dispatch(setIsAllocatePopupVisible(true));
                         }}
-                      />
-                      <Button
-                        label="Edit"
-                        className="py-1 px-5 rounded-lg text-blue-500 cursor-pointer"
-                        type="button"
-                        icon={
-                          <FilePenLine className="inline-block w-4 h-4 mb-1" />
-                        }
                       />
                       <Button
                         label="Delete"
