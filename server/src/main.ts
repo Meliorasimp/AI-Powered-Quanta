@@ -101,6 +101,11 @@ app.use("/api", TransactionRouter);
 app.use("/ai", AiRouter);
 app.use("/goals", goalRouter);
 
+//Health check!!!!!
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
 //connect to the database
 
 mongoose

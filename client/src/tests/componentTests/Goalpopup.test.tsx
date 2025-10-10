@@ -51,7 +51,7 @@ describe("Goals page", () => {
         </MemoryRouter>
       </Provider>
     );
-    // Find and click the +Add button (adjust selector as needed)
+    // Find and click the +Add button
     fireEvent.click(screen.getByRole("button", { name: /add/i }));
 
     // Now the popup should appear

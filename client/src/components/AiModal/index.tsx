@@ -1,5 +1,5 @@
 import "../../styles/index.css";
-import Qwen from "../../assets/Qwen.svg";
+import Qwen from "../../assets/qwen.svg";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";

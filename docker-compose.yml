@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/quanta
+    env_file:
+      - ./server/.env
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: quanta
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo_data:
