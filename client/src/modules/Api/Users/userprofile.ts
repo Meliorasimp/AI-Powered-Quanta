@@ -168,7 +168,9 @@ export const uploadProfilePicture = createAsyncThunk(
   "user/uploadProfilePicture",
   async ({ id, formData }: { id: string; formData: FormData }) => {
     const response = await axios.put(
-      `http://localhost:5000/api/users/uploadProfilePicture/${id}`,
+      `${
+        import.meta.env.REACT_APP_API_URL
+      }/api/users/uploadProfilePicture/${id}`,
       formData,
       {
         headers: {
@@ -184,7 +186,9 @@ export const updateFullName = createAsyncThunk(
   "user/updateFullName",
   async (fullNameData: FullNamePayload) => {
     const response = await axios.put(
-      `http://localhost:5000/api/users/updateFullName/${fullNameData.id}`,
+      `${import.meta.env.REACT_APP_API_URL}/api/users/updateFullName/${
+        fullNameData.id
+      }`,
       fullNameData
     );
     return response.data;
@@ -195,7 +199,9 @@ export const updateEmail = createAsyncThunk(
   "user/updateEmail",
   async (emailData: EmailPayload) => {
     const response = await axios.put(
-      `http://localhost:5000/api/users/updateEmail/${emailData.id}`,
+      `${import.meta.env.REACT_APP_API_URL}/api/users/updateEmail/${
+        emailData.id
+      }`,
       emailData
     );
     return response.data;
@@ -206,7 +212,9 @@ export const updatePassword = createAsyncThunk(
   "user/updatePassword",
   async (passwordData: PasswordPayload) => {
     const response = await axios.put(
-      `http://localhost:5000/api/users/updatePassword/${passwordData.id}`,
+      `${import.meta.env.REACT_APP_API_URL}/api/users/updatePassword/${
+        passwordData.id
+      }`,
       passwordData
     );
     return response.data;

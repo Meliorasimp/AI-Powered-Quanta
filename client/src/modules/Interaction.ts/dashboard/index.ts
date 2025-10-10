@@ -128,7 +128,7 @@ export const getAiSummary = createAsyncThunk(
   "dashboard/fetchSummary",
   async (userId: string) => {
     const response = await axios.get(
-      `http://localhost:5000/ai/summarize/${userId}`
+      `${import.meta.env.REACT_APP_API_URL}/ai/summarize/${userId}`
     );
     return response.data;
   }
@@ -138,7 +138,7 @@ export const allocateAmountToGoal = createAsyncThunk(
   "dashboard/allocateAmountToGoal",
   async ({ goalId, amount }: { goalId: string; amount: number }) => {
     const response = await axios.put(
-      `http://localhost:5000/goals/allocate/${goalId}`,
+      `${import.meta.env.REACT_APP_API_URL}/goals/allocate/${goalId}`,
       { amount }
     );
     console.log("Allocation response data:", response.data);

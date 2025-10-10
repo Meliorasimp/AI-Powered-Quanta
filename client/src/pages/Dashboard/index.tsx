@@ -112,7 +112,7 @@ const Dashboard = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/user/protected",
+          `${import.meta.env.REACT_APP_API_URL}/user/protected`,
           { withCredentials: true }
         );
         dispatch(setUser(response.data.user));

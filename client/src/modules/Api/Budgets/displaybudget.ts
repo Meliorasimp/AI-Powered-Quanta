@@ -61,7 +61,7 @@ export const fetchUserBudgets = createAsyncThunk(
   async (userId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/userbudgets/${userId}`
+        `${import.meta.env.REACT_APP_API_URL}/api/userbudgets/${userId}`
       );
       // If server returns 404 treat it as empty list (older server versions) – newer returns 200 []
       if (response.status === 404) {
@@ -88,7 +88,7 @@ export const deleteUserBudget = createAsyncThunk(
   async (budgetId: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/deletebudget/${budgetId}`
+        `${import.meta.env.REACT_APP_API_URL}/api/deletebudget/${budgetId}`
       );
       toast.success("Budget deleted successfully!");
       return response.data;
@@ -109,7 +109,7 @@ export const deductBudget = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/budget/deductbudget",
+        `${import.meta.env.REACT_APP_API_URL}/api/budget/deductbudget`,
         {
           budgetId,
           amount,

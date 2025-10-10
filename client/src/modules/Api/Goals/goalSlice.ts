@@ -37,7 +37,7 @@ export const createGoal = createAsyncThunk(
     try {
       const { userId, goal } = payload;
       const response = await axios.post(
-        `http://localhost:5000/goals/post/${userId}`,
+        `${import.meta.env.REACT_APP_API_URL}/goals/post/${userId}`,
         goal,
         {
           withCredentials: true,
@@ -60,9 +60,12 @@ export const deleteGoal = createAsyncThunk(
   "goals/deleteGoal",
   async (goalId: string, { rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:5000/goals/delete/${goalId}`, {
-        withCredentials: true,
-      });
+      await axios.delete(
+        `${import.meta.env.REACT_APP_API_URL}/goals/delete/${goalId}`,
+        {
+          withCredentials: true,
+        }
+      );
       return goalId; // ✅ return the id we know we deleted
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null) {

@@ -81,7 +81,7 @@ export const addBudget = createAsyncThunk(
   async (budgetData: BudgetState) => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/budgets/${budgetData.id}`,
+        `${import.meta.env.REACT_APP_API_URL}/api/budgets/${budgetData.id}`,
         budgetData
       );
       return response.data;

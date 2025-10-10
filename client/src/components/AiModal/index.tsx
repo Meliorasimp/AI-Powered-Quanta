@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 import { addMessages, Message } from "../../modules/Interaction.ts/dashboard";
 
 // Single shared socket instance (module scope). Consider moving URL to env var.
-const socket = io("http://localhost:5000", {
+const socket = io(import.meta.env.VITE_API_URL, {
   transports: ["websocket"],
 });
 
