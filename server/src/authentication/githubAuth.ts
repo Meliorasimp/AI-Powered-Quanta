@@ -19,7 +19,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      callbackURL: "http://localhost:5000/api/auth/github/callback",
+      callbackURL: process.env.GITHUB_CALLBACK_URL as string,
     },
     async (
       _accessToken: string,
@@ -102,11 +102,15 @@ export const githubAuth = async (
   passport.authenticate(
     "github",
     {
-      failureRedirect: "http://localhost:5173",
+      failureRedirect:
+        process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app",
     },
     (err: any, user: Express.User | null | false) => {
       if (err) return next(err);
-      if (!user) return res.redirect("http://localhost:5173");
+      if (!user)
+        return res.redirect(
+          process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app"
+        );
 
       const userObj = user as any;
       const token = jwt.sign(
@@ -122,7 +126,9 @@ export const githubAuth = async (
 
       if (!token) {
         console.log("No token found, redirecting to home", token);
-        return res.redirect("http://localhost:5173");
+        return res.redirect(
+          process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app"
+        );
       }
 
       res.cookie("token", token, {
@@ -137,7 +143,10 @@ export const githubAuth = async (
 
       req.logIn(user, (err) => {
         if (err) return next(err);
-        return res.redirect("http://localhost:5173/dashboard");
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/dashboard` ||
+            "https://ai-powered-quanta.vercel.app/dashboard"
+        );
       });
     }
   )(req, res, next);

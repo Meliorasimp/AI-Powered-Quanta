@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: "http://localhost:5000/api/auth/google/callback",
+      callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
     },
     async (_accessToken, _refreshToken, profile, done) => {
       const email = profile.emails?.[0]?.value;
@@ -53,10 +53,16 @@ passport.deserializeUser((user: Express.User, done) => {
 export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate(
     "google",
-    { failureRedirect: "http://localhost:5173" },
+    {
+      failureRedirect:
+        process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app",
+    },
     (err: any, user: Express.User | false | null) => {
       if (err) return next(err);
-      if (!user) return res.redirect("http://localhost:5173");
+      if (!user)
+        return res.redirect(
+          process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app"
+        );
 
       const userObj = user as any;
 
@@ -72,7 +78,9 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
       );
       if (!token) {
         console.log("No token found, redirecting to home", token);
-        return res.redirect("http://localhost:5173");
+        return res.redirect(
+          process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app"
+        );
       } else {
         console.log("Token generated, redirecting to dashboard", token);
       }
@@ -88,7 +96,10 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
       req.logIn(user, (err) => {
         console.log("logging in user", user);
         if (err) return next(err);
-        return res.redirect("http://localhost:5173/dashboard");
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/dashboard` ||
+            "https://ai-powered-quanta.vercel.app/dashboard"
+        );
       });
     }
   )(req, res, next);
