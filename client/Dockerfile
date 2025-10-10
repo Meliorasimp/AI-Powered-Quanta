@@ -6,14 +6,14 @@ WORKDIR /app
 COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./ 
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
-# Copy source
+# Copy all files
 COPY . .
 
 # Build (Vite outputs to dist/)
 ENV NODE_ENV=production
 RUN npm run build
 
-# --- Runtime stage (pure static hosting) ---
+#Runtime stage (pure static hosting)
 FROM nginx:1.27-alpine AS runtime
 RUN rm /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
