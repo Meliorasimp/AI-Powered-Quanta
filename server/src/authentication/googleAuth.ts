@@ -6,6 +6,9 @@ import User from "../models/usermodel";
 import jwt from "jsonwebtoken";
 dotenv.config();
 
+const FRONTEND_URL =
+  process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app";
+
 passport.use(
   new GoogleStrategy(
     {
@@ -54,15 +57,11 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate(
     "google",
     {
-      failureRedirect:
-        process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app",
+      failureRedirect: FRONTEND_URL,
     },
     (err: any, user: Express.User | false | null) => {
       if (err) return next(err);
-      if (!user)
-        return res.redirect(
-          process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app"
-        );
+      if (!user) return res.redirect(FRONTEND_URL);
 
       const userObj = user as any;
 
@@ -78,9 +77,7 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
       );
       if (!token) {
         console.log("No token found, redirecting to home", token);
-        return res.redirect(
-          process.env.FRONTEND_URL || "https://ai-powered-quanta.vercel.app"
-        );
+        return res.redirect(FRONTEND_URL);
       } else {
         console.log("Token generated, redirecting to dashboard", token);
       }
@@ -96,10 +93,7 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
       req.logIn(user, (err) => {
         console.log("logging in user", user);
         if (err) return next(err);
-        return res.redirect(
-          `${process.env.FRONTEND_URL}/dashboard` ||
-            "https://ai-powered-quanta.vercel.app/dashboard"
-        );
+        return res.redirect(`${FRONTEND_URL}/dashboard`);
       });
     }
   )(req, res, next);
