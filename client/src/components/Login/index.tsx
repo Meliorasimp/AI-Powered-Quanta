@@ -33,7 +33,7 @@ const Login = () => {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setLoginPassword(e.target.value));
   };
-
+  //CAN YOU PLEASE MAKE THE REDIRECT URL DYNAMIC BASED ON ENVIRONMENT VARIABLES SO THAT IT WORKS IN PRODUCTION AND DEVELOPMENT
   const handleGoogleLogin = () => {
     window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
   };
