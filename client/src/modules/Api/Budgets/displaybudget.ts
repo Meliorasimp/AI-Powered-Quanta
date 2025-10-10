@@ -88,7 +88,7 @@ export const deleteUserBudget = createAsyncThunk(
   async (budgetId: string) => {
     try {
       const response = await axios.delete(
-        `${import.meta.env.REACT_APP_API_URL}/api/deletebudget/${budgetId}`
+        `${import.meta.env.VITE_API_URL}/api/deletebudget/${budgetId}`
       );
       toast.success("Budget deleted successfully!");
       return response.data;

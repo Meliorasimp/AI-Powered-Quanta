@@ -173,7 +173,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userData: LoginPayload) => {
     const response = await axios.post(
-      `${import.meta.env.REACT_APP_API_URL}/api/users/login`,
+      `${import.meta.env.VITE_API_URL}/api/users/login`,
       userData,
       { withCredentials: true }
     );
@@ -185,7 +185,7 @@ export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (userData: RegisterPayload) => {
     const response = await axios.post(
-      `${import.meta.env.REACT_APP_API_URL}/api/users/register`,
+      `${import.meta.env.VITE_API_URL}/api/users/register`,
       userData,
       { withCredentials: true }
     );

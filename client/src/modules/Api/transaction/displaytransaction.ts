@@ -111,7 +111,7 @@ export const getUserTransactions = createAsyncThunk(
   async (userId: string) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.REACT_APP_API_URL}/api/get/transactions/${userId}`
+        `${import.meta.env.VITE_API_URL}/api/get/transactions/${userId}`
       );
       if (response.status !== 200) {
         throw new Error("Failed to fetch user transactions");
@@ -130,7 +130,7 @@ export const getTransactionsByType = createAsyncThunk(
   async ({ userId, type }: { userId: string; type: string }) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.REACT_APP_API_URL}/api/get/${type}/${userId}`
+        `${import.meta.env.VITE_API_URL}/api/get/${type}/${userId}`
       );
       if (response.status !== 200) {
         throw new Error(`Failed to fetch ${type} transactions`);
@@ -149,9 +149,7 @@ export const getTransactionsByStatus = createAsyncThunk(
   async ({ userId, status }: { userId: string; status: string }) => {
     try {
       const response = await axios.get(
-        `${
-          import.meta.env.REACT_APP_API_URL
-        }/api/get/status/${status}/${userId}`
+        `${import.meta.env.VITE_API_URL}/api/get/status/${status}/${userId}`
       );
       if (response.status !== 200) {
         throw new Error(`Failed to fetch ${status} transactions`);

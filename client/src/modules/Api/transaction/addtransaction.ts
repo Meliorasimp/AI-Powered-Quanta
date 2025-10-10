@@ -116,7 +116,7 @@ export const submitTransaction = createAsyncThunk(
   async (transactionPayload: TransactionType) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.REACT_APP_API_URL}/api/create/transaction/${
+        `${import.meta.env.VITE_API_URL}/api/create/transaction/${
           transactionPayload.userId
         }`,
         transactionPayload

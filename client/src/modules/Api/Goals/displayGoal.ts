@@ -60,7 +60,7 @@ export const fetchUserGoal = createAsyncThunk(
     if (!userId) return rejectWithValue("User ID not available yet");
     try {
       const response = await axios.get(
-        `${import.meta.env.REACT_APP_API_URL}/goals/get/${userId}`,
+        `${import.meta.env.VITE_API_URL}/goals/get/${userId}`,
         { withCredentials: true }
       );
       const raw = response.data.goal;

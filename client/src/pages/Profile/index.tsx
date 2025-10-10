@@ -58,7 +58,7 @@ const Profile = () => {
     console.log("Logging out user with ID:", userid);
     try {
       const response = await axios.post(
-        `${import.meta.env.REACT_APP_API_URL}/api/logout`,
+        `${import.meta.env.VITE_API_URL}/api/logout`,
         {},
         {
           withCredentials: true,

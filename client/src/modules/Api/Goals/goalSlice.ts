@@ -37,7 +37,7 @@ export const createGoal = createAsyncThunk(
     try {
       const { userId, goal } = payload;
       const response = await axios.post(
-        `${import.meta.env.REACT_APP_API_URL}/goals/post/${userId}`,
+        `${import.meta.env.VITE_API_URL}/goals/post/${userId}`,
         goal,
         {
           withCredentials: true,
@@ -61,7 +61,7 @@ export const deleteGoal = createAsyncThunk(
   async (goalId: string, { rejectWithValue }) => {
     try {
       await axios.delete(
-        `${import.meta.env.REACT_APP_API_URL}/goals/delete/${goalId}`,
+        `${import.meta.env.VITE_API_URL}/goals/delete/${goalId}`,
         {
           withCredentials: true,
         }

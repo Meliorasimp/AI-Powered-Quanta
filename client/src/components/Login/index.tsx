@@ -35,15 +35,11 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${
-      import.meta.env.REACT_APP_API_URL
-    }/api/auth/google`;
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
   };
 
   const handleGithubLogin = () => {
-    window.location.href = `${
-      import.meta.env.REACT_APP_API_URL
-    }/api/auth/github`;
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`;
   };
 
   const [submitting, setSubmitting] = useState(false);
