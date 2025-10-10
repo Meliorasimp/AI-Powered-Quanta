@@ -5,7 +5,7 @@ import { Bounce, ToastContainer } from "react-toastify";
 
 function App() {
   const route = useRoutes(routes);
-
+  console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
   return (
     <>
       {route}
