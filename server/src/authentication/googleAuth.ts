@@ -85,9 +85,9 @@ export const googleAuth = (req: Request, res: Response, next: NextFunction) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 3600000, // 1hour
+        maxAge: 3600000,
       });
 
       req.logIn(user, (err) => {
