@@ -134,9 +134,9 @@ export const githubAuth = async (
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 3600000, // 1 hour
+        maxAge: 3600000,
       });
 
       console.log("Token generated, redirecting to dashboard", token);

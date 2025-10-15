@@ -5,6 +5,7 @@ import { githubAuth } from "../authentication/githubAuth";
 
 const authRouter = Router();
 
+// Start OAuth (relative paths)
 authRouter.get(
   "/auth/google",
   passport.authenticate("google", {
@@ -12,12 +13,12 @@ authRouter.get(
     prompt: "select_account",
   })
 );
-
 authRouter.get(
   "/auth/github",
   passport.authenticate("github", { scope: ["user:email"] })
 );
 
+// Callback routes (relative)
 authRouter.get("/auth/google/callback", googleAuth);
 authRouter.get("/auth/github/callback", githubAuth);
 
