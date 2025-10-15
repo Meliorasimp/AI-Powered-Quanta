@@ -1,6 +1,6 @@
 import "./authentication/googleAuth";
 import "./authentication/githubAuth";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import userRouter from "./routes/userroute";
@@ -19,16 +19,21 @@ import http from "http";
 import { Server } from "socket.io";
 import axios from "axios";
 
-// Load environment variables from .env file
-
 dotenv.config();
 
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const PORT = Number(process.env.PORT) || 5000;
+
 const app = express();
-const port = 5000;
+
+// required so "secure" cookies work behind Render/Proxies
+app.set("trust proxy", 1);
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: FRONTEND_URL,
+    credentials: true,
   },
 });
 
@@ -36,8 +41,6 @@ io.on("connection", (socket) => {
   console.log("A user connected", socket.id);
 
   socket.on("UserMessage", async (message) => {
-    console.log("Received message from user:", message);
-
     try {
       const response = await axios.post("http://localhost:11434/api/generate", {
         model: "qwen:4b",
@@ -47,7 +50,6 @@ io.on("connection", (socket) => {
         temperature: 0.7,
         top_p: 0.9,
       });
-
       socket.emit("AIResponse", {
         role: "AI",
         content: response.data.response,
@@ -60,6 +62,7 @@ io.on("connection", (socket) => {
       });
     }
   });
+
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
   });
@@ -68,14 +71,16 @@ io.on("connection", (socket) => {
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+
+const corsOptions: cors.CorsOptions = {
+  origin: FRONTEND_URL,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "your_secret_key",
@@ -99,8 +104,7 @@ app.use(
 
 const uri = process.env.MONGO_URI as string;
 
-//routes
-
+// routes
 app.use("/api", userRouter);
 app.use("/api", authRouter);
 app.use("/api", budgetRouter);
@@ -109,23 +113,22 @@ app.use("/api", TransactionRouter);
 app.use("/ai", AiRouter);
 app.use("/goals", goalRouter);
 
-//Health check!!!!!
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+// Health check
+app.get("/health", (_req, res) => res.json({ status: "ok" }));
+
+// JSON error handler
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err);
+  const status = err.status || 500;
+  res.status(status).json({ message: err.message || "Internal Server Error" });
 });
 
-//connect to the database
-
+// connect DB and start server
 mongoose
   .connect(uri)
-  .then(() => {
-    console.log("✅ Connected to MongoDB");
-  })
-  .catch((error) => {
-    console.error("❌ Error connecting to MongoDB:", error);
-  });
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((error) => console.error("❌ Error connecting to MongoDB:", error));
 
-server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-  console.log(`Press Ctrl+C to stop the server`);
+server.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
