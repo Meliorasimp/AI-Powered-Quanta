@@ -61,7 +61,7 @@ export const fetchUserBudgets = createAsyncThunk(
   async (userId: string) => {
     try {
       const response = await fetch(
-        `${import.meta.env.REACT_APP_API_URL}/api/userbudgets/${userId}`
+        `${import.meta.env.VITE_API_URL}/api/userbudgets/${userId}`
       );
       // If server returns 404 treat it as empty list (older server versions) – newer returns 200 []
       if (response.status === 404) {
@@ -109,7 +109,7 @@ export const deductBudget = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.REACT_APP_API_URL}/api/budget/deductbudget`,
+        `${import.meta.env.VITE_API_URL}/api/budget/deductbudget`,
         {
           budgetId,
           amount,
