@@ -16,8 +16,31 @@ import axios from "axios";
 import "./authentication/googleAuth";
 import "./authentication/githubAuth";
 
+// Environment-aware URLs
+const isDev = process.env.NODE_ENV !== "production";
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 const PORT = Number(process.env.PORT) || 5000;
+
+// Ollama URL configuration for production deployment
+const getOllamaUrl = () => {
+  if (process.env.OLLAMA_URL) {
+    return process.env.OLLAMA_URL;
+  }
+
+  // Default based on deployment type
+  if (isDev) {
+    return "http://localhost:11434";
+  } else {
+    // Production: try container service first, fallback to localhost
+    return process.env.RAILWAY_PRIVATE_DOMAIN
+      ? "http://ollama:11434" // Railway/Docker internal
+      : process.env.RENDER_SERVICE_NAME
+      ? "http://ollama:11434" // Render internal
+      : "http://localhost:11434"; // VPS/dedicated server
+  }
+};
+
+const OLLAMA_URL = getOllamaUrl();
 
 // Guard helpers
 const guardMethods = (target: any, label: string) => {
@@ -73,34 +96,123 @@ const io = new Server(server, {
   cors: { origin: FRONTEND_URL, credentials: true },
 });
 
+// Helper function to check if Ollama is available
+const checkOllamaHealth = async (): Promise<boolean> => {
+  try {
+    await axios.get(`${OLLAMA_URL}/api/tags`, { timeout: 5000 });
+    return true;
+  } catch (error) {
+    console.warn(
+      `Ollama health check failed at ${OLLAMA_URL}:`,
+      (error as any).message
+    );
+    return false;
+  }
+};
+
+// Helper function to ensure model is available
+const ensureModel = async (modelName: string): Promise<boolean> => {
+  try {
+    const response = await axios.get(`${OLLAMA_URL}/api/tags`);
+    const models = response.data.models || [];
+    const modelExists = models.some((model: any) =>
+      model.name.includes(modelName)
+    );
+
+    if (!modelExists) {
+      console.log(`Pulling model ${modelName}...`);
+      await axios.post(
+        `${OLLAMA_URL}/api/pull`,
+        { name: modelName },
+        { timeout: 300000 }
+      );
+      console.log(`Model ${modelName} pulled successfully`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error(
+      `Failed to ensure model ${modelName}:`,
+      (error as any).message
+    );
+    return false;
+  }
+};
+
 io.on("connection", (socket) => {
   socket.on("UserMessage", async (message) => {
     try {
-      const response = await axios.post("http://localhost:11434/api/generate", {
-        model: "qwen:4b",
-        prompt: message.content,
-        stream: false,
-        num_predict: 1000,
-        temperature: 0.7,
-        top_p: 0.9,
-      });
-      socket.emit("AIResponse", {
-        role: "AI",
-        content: response.data.response,
-      });
-    } catch (error: unknown) {
-      // Narrow the error type
-      if (axios.isAxiosError(error)) {
-        console.error("Axios error response data:", error.response?.data);
-      } else if (error instanceof Error) {
-        console.error("Error message:", error.message);
-      } else {
-        console.error("Unknown error:", error);
+      console.log(`Making AI request to: ${OLLAMA_URL}`);
+
+      // Check if Ollama is available
+      const ollamaAvailable = await checkOllamaHealth();
+
+      if (ollamaAvailable) {
+        // Ensure model is available
+        const modelReady = await ensureModel("qwen:4b");
+
+        if (modelReady) {
+          const response = await axios.post(
+            `${OLLAMA_URL}/api/generate`,
+            {
+              model: "qwen:4b",
+              prompt: message.content,
+              stream: false,
+              num_predict: 1000,
+              temperature: 0.7,
+              top_p: 0.9,
+            },
+            {
+              timeout: 60000, // Increased timeout for model loading
+            }
+          );
+
+          socket.emit("AIResponse", {
+            role: "AI",
+            content: response.data.response,
+          });
+          return;
+        }
       }
 
+      // Fallback to OpenAI if available
+      if (process.env.OPENAI_API_KEY) {
+        console.log("Falling back to OpenAI API");
+        const response = await axios.post(
+          "https://api.openai.com/v1/chat/completions",
+          {
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: message.content }],
+            max_tokens: 1000,
+            temperature: 0.7,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            timeout: 30000,
+          }
+        );
+
+        socket.emit("AIResponse", {
+          role: "AI",
+          content: response.data.choices[0].message.content,
+        });
+      } else {
+        // No AI service available
+        socket.emit("AIResponse", {
+          role: "AI",
+          content:
+            "AI service is currently unavailable. Please check if Ollama is running or configure an OpenAI API key.",
+        });
+      }
+    } catch (error) {
+      console.error("AI API error:", error);
       socket.emit("AIResponse", {
         role: "AI",
-        content: "Sorry, there was an error processing your request.",
+        content:
+          "Sorry, there was an error processing your request. Please try again later.",
       });
     }
   });
@@ -109,8 +221,30 @@ io.on("connection", (socket) => {
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+
+// Environment-aware CORS
+const getAllowedOrigins = () => {
+  const origins = [FRONTEND_URL];
+  if (isDev) {
+    origins.push(
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://localhost:3001"
+    );
+  }
+  return origins;
+};
+
 const corsOptions: cors.CorsOptions = {
-  origin: FRONTEND_URL,
+  origin: (origin, callback) => {
+    const allowedOrigins = getAllowedOrigins();
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: Origin ${origin} not allowed`));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -121,10 +255,10 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "your_secret_key",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: !isDev,
+      sameSite: isDev ? "lax" : "none",
       httpOnly: true,
       maxAge: 3600000,
     },
@@ -143,8 +277,24 @@ app.use("/api", TransactionRouter);
 app.use("/ai", AiRouter);
 app.use("/goals", goalRouter);
 
-// Health + errors
-app.get("/health", (_req, res) => res.json({ status: "ok" }));
+// Health endpoint with AI service status
+app.get("/health", async (_req, res) => {
+  const ollamaAvailable = await checkOllamaHealth();
+  res.json({
+    status: "ok",
+    environment: process.env.NODE_ENV,
+    frontend: FRONTEND_URL,
+    ollama: {
+      url: OLLAMA_URL,
+      available: ollamaAvailable,
+    },
+    aiServices: {
+      ollama: ollamaAvailable,
+      openai: !!process.env.OPENAI_API_KEY,
+    },
+  });
+});
+
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err);
   res
@@ -153,9 +303,34 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // DB + start
+const MONGO_URI =
+  process.env.MONGO_URI ||
+  (isDev ? "mongodb://localhost:27017/quanta" : "mongodb://mongo:27017/quanta");
+
 mongoose
-  .connect(process.env.MONGO_URI as string)
+  .connect(MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((error) => console.error("❌ Error connecting to MongoDB:", error));
 
-server.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+server.listen(PORT, async () => {
+  console.log(`🚀 Server listening on port ${PORT}`);
+  console.log(`📡 Frontend: ${FRONTEND_URL}`);
+  console.log(`🤖 Ollama URL: ${OLLAMA_URL}`);
+  console.log(`🗃️  Database: ${MONGO_URI}`);
+
+  // Check AI services on startup
+  const ollamaAvailable = await checkOllamaHealth();
+  console.log(
+    `🤖 Ollama: ${ollamaAvailable ? "✅ Available" : "❌ Unavailable"}`
+  );
+  console.log(
+    `🤖 OpenAI: ${
+      process.env.OPENAI_API_KEY ? "✅ Configured" : "❌ Not configured"
+    }`
+  );
+
+  if (ollamaAvailable) {
+    console.log("🔄 Ensuring qwen:4b model is available...");
+    await ensureModel("qwen:4b");
+  }
+});
