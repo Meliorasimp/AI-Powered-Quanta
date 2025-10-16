@@ -18,7 +18,7 @@ const emptyChartData: ChartData<"bar", number[], string> = {
 
 export interface Message {
   id: string;
-  role: "user" | "AI";
+  role: "user" | "AI" | "system"; // Added "system" here
   content: string;
 }
 
@@ -107,6 +107,9 @@ const dashboardSlice = createSlice({
     addMessages: (state, action: PayloadAction<Message>) => {
       state.messages.push(action.payload);
     },
+    clearMessages: (state) => {
+      state.messages = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getAiSummary.pending, (state) => {
@@ -160,6 +163,7 @@ export const {
   toggleAiPopup,
   addMessages,
   setMessages,
+  clearMessages, // Added clearMessages export
 } = dashboardSlice.actions;
 
 export const dashboardReducer = dashboardSlice.reducer;

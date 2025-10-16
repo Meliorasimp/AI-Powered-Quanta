@@ -20,27 +20,9 @@ import "./authentication/githubAuth";
 const isDev = process.env.NODE_ENV !== "production";
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 const PORT = Number(process.env.PORT) || 5000;
-
-// Ollama URL configuration for production deployment
-const getOllamaUrl = () => {
-  if (process.env.OLLAMA_URL) {
-    return process.env.OLLAMA_URL;
-  }
-
-  // Default based on deployment type
-  if (isDev) {
-    return "http://localhost:11434";
-  } else {
-    // Production: try container service first, fallback to localhost
-    return process.env.RAILWAY_PRIVATE_DOMAIN
-      ? "http://ollama:11434" // Railway/Docker internal
-      : process.env.RENDER_SERVICE_NAME
-      ? "http://ollama:11434" // Render internal
-      : "http://localhost:11434"; // VPS/dedicated server
-  }
-};
-
-const OLLAMA_URL = getOllamaUrl();
+const OLLAMA_URL =
+  process.env.OLLAMA_URL ||
+  (isDev ? "http://localhost:11434" : "http://localhost:11434");
 
 // Guard helpers
 const guardMethods = (target: any, label: string) => {
@@ -62,29 +44,6 @@ const guardMethods = (target: any, label: string) => {
 
 const app = express();
 guardMethods(app as any, "app");
-app.get("/test-ollama", async (_req, res) => {
-  try {
-    console.log(`Testing Ollama connectivity from Render to: ${OLLAMA_URL}`);
-    const response = await axios.get(`${OLLAMA_URL}/api/tags`, {
-      timeout: 10000,
-    });
-    res.json({
-      success: true,
-      ollamaUrl: OLLAMA_URL,
-      models: response.data.models || [],
-      status: "Ollama is reachable from Render",
-    });
-  } catch (error) {
-    console.error("Ollama connectivity test failed:", (error as any).message);
-    res.status(500).json({
-      success: false,
-      ollamaUrl: OLLAMA_URL,
-      error: (error as any).message,
-      code: (error as any).code,
-      status: "Ollama is NOT reachable from Render",
-    });
-  }
-});
 
 // Guard every Router BEFORE any routers are created/imported
 const OriginalRouter: any = (express as any).Router;
@@ -115,137 +74,8 @@ const AiRouter = require("./routes/aiRoute").default;
 
 // Socket.io setup
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: FRONTEND_URL, credentials: true },
-});
 
-// Helper function to check if Ollama is available
-const checkOllamaHealth = async (): Promise<boolean> => {
-  try {
-    await axios.get(`${OLLAMA_URL}/api/tags`, { timeout: 5000 });
-    return true;
-  } catch (error) {
-    console.warn(
-      `Ollama health check failed at ${OLLAMA_URL}:`,
-      (error as any).message
-    );
-    return false;
-  }
-};
-
-// Helper function to ensure model is available
-const ensureModel = async (modelName: string): Promise<boolean> => {
-  try {
-    const response = await axios.get(`${OLLAMA_URL}/api/tags`);
-    const models = response.data.models || [];
-    const modelExists = models.some((model: any) =>
-      model.name.includes(modelName)
-    );
-
-    if (!modelExists) {
-      console.log(`Pulling model ${modelName}...`);
-      await axios.post(
-        `${OLLAMA_URL}/api/pull`,
-        { name: modelName },
-        { timeout: 300000 }
-      );
-      console.log(`Model ${modelName} pulled successfully`);
-    }
-
-    return true;
-  } catch (error) {
-    console.error(
-      `Failed to ensure model ${modelName}:`,
-      (error as any).message
-    );
-    return false;
-  }
-};
-
-io.on("connection", (socket) => {
-  socket.on("UserMessage", async (message) => {
-    try {
-      console.log(`Making AI request to: ${OLLAMA_URL}`);
-
-      // Check if Ollama is available
-      const ollamaAvailable = await checkOllamaHealth();
-
-      if (ollamaAvailable) {
-        // Ensure model is available
-        const modelReady = await ensureModel("qwen:4b");
-
-        if (modelReady) {
-          const response = await axios.post(
-            `${OLLAMA_URL}/api/generate`,
-            {
-              model: "qwen:4b",
-              prompt: message.content,
-              stream: false,
-              num_predict: 1000,
-              temperature: 0.7,
-              top_p: 0.9,
-            },
-            {
-              timeout: 60000, // Increased timeout for model loading
-            }
-          );
-
-          socket.emit("AIResponse", {
-            role: "AI",
-            content: response.data.response,
-          });
-          return;
-        }
-      }
-
-      // Fallback to OpenAI if available
-      if (process.env.OPENAI_API_KEY) {
-        console.log("Falling back to OpenAI API");
-        const response = await axios.post(
-          "https://api.openai.com/v1/chat/completions",
-          {
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: message.content }],
-            max_tokens: 1000,
-            temperature: 0.7,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-              "Content-Type": "application/json",
-            },
-            timeout: 30000,
-          }
-        );
-
-        socket.emit("AIResponse", {
-          role: "AI",
-          content: response.data.choices[0].message.content,
-        });
-      } else {
-        // No AI service available
-        socket.emit("AIResponse", {
-          role: "AI",
-          content:
-            "AI service is currently unavailable. Please check if Ollama is running or configure an OpenAI API key.",
-        });
-      }
-    } catch (error) {
-      console.error("AI API error:", error);
-      socket.emit("AIResponse", {
-        role: "AI",
-        content:
-          "Sorry, there was an error processing your request. Please try again later.",
-      });
-    }
-  });
-});
-
-// Middleware
-app.use(express.json());
-app.use(cookieParser());
-
-// Environment-aware CORS
+// Environment-aware CORS origins
 const getAllowedOrigins = () => {
   const origins = [FRONTEND_URL];
   if (isDev) {
@@ -254,13 +84,171 @@ const getAllowedOrigins = () => {
       "http://localhost:5173",
       "http://localhost:3001"
     );
+  } else {
+    // Add common production frontend URLs
+    origins.push(
+      "https://your-frontend-domain.com", // Replace with your actual frontend URL
+      "https://your-app.vercel.app", // If using Vercel
+      "https://your-app.netlify.app" // If using Netlify
+    );
   }
   return origins;
 };
 
+const io = new Server(server, {
+  cors: {
+    origin: getAllowedOrigins(),
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+  pingTimeout: 120000,
+  pingInterval: 25000,
+  transports: ["polling", "websocket"],
+});
+
+// Test Ollama connectivity endpoint
+app.get("/test-ollama", async (_req, res) => {
+  try {
+    console.log(`Testing Ollama connectivity from Render to: ${OLLAMA_URL}`);
+    const response = await axios.get(`${OLLAMA_URL}/api/tags`, {
+      timeout: 10000,
+    });
+    res.json({
+      success: true,
+      ollamaUrl: OLLAMA_URL,
+      models: response.data.models || [],
+      status: "Ollama is reachable from Render",
+    });
+  } catch (error: any) {
+    console.error("Ollama connectivity test failed:", error.message);
+    res.status(500).json({
+      success: false,
+      ollamaUrl: OLLAMA_URL,
+      error: error.message || "Unknown error",
+      code: error.code || "UNKNOWN",
+      status: "Ollama is NOT reachable from Render",
+    });
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("👤 User connected:", socket.id);
+
+  // Test ping endpoint
+  socket.on("ping", (data) => {
+    console.log("📍 Ping received from", socket.id, ":", data);
+    socket.emit("pong", "Server is responding");
+  });
+
+  socket.on("UserMessage", async (message) => {
+    try {
+      console.log(
+        `📨 Received message from ${socket.id}: "${message.content}"`
+      );
+      console.log(`🎯 Targeting Ollama at: ${OLLAMA_URL}`);
+
+      const response = await axios.post(
+        `${OLLAMA_URL}/api/generate`,
+        {
+          model: "qwen:4b",
+          prompt: message.content,
+          stream: false,
+          num_predict: 1000,
+          temperature: 0.7,
+          top_p: 0.9,
+        },
+        {
+          timeout: 180000, // 3 minutes for Ollama
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(`✅ Ollama response received for ${socket.id}:`, {
+        status: response.status,
+        responseLength: response.data?.response?.length || 0,
+        model: response.data?.model,
+      });
+
+      if (response.data?.response) {
+        socket.emit("AIResponse", {
+          role: "AI",
+          content: response.data.response,
+        });
+      } else {
+        console.error(
+          `❌ Empty response from Ollama for ${socket.id}:`,
+          response.data
+        );
+        socket.emit("AIResponse", {
+          role: "AI",
+          content: "Received empty response from AI service.",
+        });
+      }
+    } catch (error: any) {
+      console.error(`❌ AI error for ${socket.id}:`, {
+        message: error.message,
+        code: error.code,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: `${OLLAMA_URL}/api/generate`,
+      });
+
+      // Fallback to OpenAI if available
+      if (process.env.OPENAI_API_KEY) {
+        try {
+          console.log(`🔄 Falling back to OpenAI for ${socket.id}`);
+          const openaiResponse = await axios.post(
+            "https://api.openai.com/v1/chat/completions",
+            {
+              model: "gpt-3.5-turbo",
+              messages: [{ role: "user", content: message.content }],
+              max_tokens: 1000,
+              temperature: 0.7,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              timeout: 30000,
+            }
+          );
+
+          socket.emit("AIResponse", {
+            role: "AI",
+            content: openaiResponse.data.choices[0].message.content,
+          });
+          return;
+        } catch (openaiError: any) {
+          console.error(
+            `❌ OpenAI fallback failed for ${socket.id}:`,
+            openaiError.message
+          );
+        }
+      }
+
+      socket.emit("AIResponse", {
+        role: "AI",
+        content: `AI Error: ${error.message}. The service might be overloaded. Please try again.`,
+      });
+    }
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log("👋 User disconnected:", socket.id, "Reason:", reason);
+  });
+});
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = getAllowedOrigins();
+    // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -302,20 +290,76 @@ app.use("/goals", goalRouter);
 
 // Health endpoint with AI service status
 app.get("/health", async (_req, res) => {
-  const ollamaAvailable = await checkOllamaHealth();
+  let ollamaStatus = { available: false, error: null };
+
+  try {
+    await axios.get(`${OLLAMA_URL}/api/tags`, { timeout: 5000 });
+    ollamaStatus.available = true;
+  } catch (error: any) {
+    ollamaStatus.error = error.message;
+  }
+
   res.json({
     status: "ok",
     environment: process.env.NODE_ENV,
     frontend: FRONTEND_URL,
     ollama: {
       url: OLLAMA_URL,
-      available: ollamaAvailable,
+      ...ollamaStatus,
     },
     aiServices: {
-      ollama: ollamaAvailable,
+      ollama: ollamaStatus.available,
       openai: !!process.env.OPENAI_API_KEY,
     },
   });
+});
+
+// Socket.io test endpoint
+app.get("/test-socket", (_req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Socket.io Test</title>
+    </head>
+    <body>
+        <h1>Socket.io Connection Test</h1>
+        <div id="status">Connecting...</div>
+        <div id="log"></div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          const socket = io();
+          const status = document.getElementById('status');
+          const log = document.getElementById('log');
+          
+          function addLog(message) {
+            log.innerHTML += '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>';
+          }
+          
+          socket.on("connect", () => {
+            status.textContent = "Connected: " + socket.id;
+            addLog("Connected successfully");
+          });
+          
+          socket.on("disconnect", () => {
+            status.textContent = "Disconnected";
+            addLog("Disconnected");
+          });
+          
+          socket.on("connect_error", (error) => {
+            status.textContent = "Connection Error";
+            addLog("Connection error: " + error.message);
+          });
+          
+          socket.emit("ping", "test from browser");
+          
+          socket.on("pong", (data) => {
+            addLog("Pong received: " + data);
+          });
+        </script>
+    </body>
+    </html>
+  `);
 });
 
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -335,25 +379,10 @@ mongoose
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((error) => console.error("❌ Error connecting to MongoDB:", error));
 
-server.listen(PORT, async () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server listening on port ${PORT}`);
   console.log(`📡 Frontend: ${FRONTEND_URL}`);
   console.log(`🤖 Ollama URL: ${OLLAMA_URL}`);
   console.log(`🗃️  Database: ${MONGO_URI}`);
-
-  // Check AI services on startup
-  const ollamaAvailable = await checkOllamaHealth();
-  console.log(
-    `🤖 Ollama: ${ollamaAvailable ? "✅ Available" : "❌ Unavailable"}`
-  );
-  console.log(
-    `🤖 OpenAI: ${
-      process.env.OPENAI_API_KEY ? "✅ Configured" : "❌ Not configured"
-    }`
-  );
-
-  if (ollamaAvailable) {
-    console.log("🔄 Ensuring qwen:4b model is available...");
-    await ensureModel("qwen:4b");
-  }
+  console.log(`🔌 Socket.io ready for connections`);
 });
