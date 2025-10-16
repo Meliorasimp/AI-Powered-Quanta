@@ -9,7 +9,7 @@ export interface IUser extends Document {
   lastname: string;
   username: string;
   email: string;
-  password: string;
+  password?: string;
   createdAt: Date;
   comparePassword: (candidatePassword: string) => Promise<boolean>;
   googlePhoto?: string;
@@ -36,7 +36,12 @@ const userSchema = new Schema<IUser>(
     lastname: { type: String },
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: function (this: IUser) {
+        return !this.googleId && !this.githubId;
+      },
+    },
     createdAt: { type: Date, default: Date.now },
     googlePhoto: { type: String },
     githubPhoto: { type: String },
@@ -47,7 +52,9 @@ const userSchema = new Schema<IUser>(
 
 userSchema.pre("save", async function (next) {
   const user = this as IUser;
-  if (!user.isModified("password")) return next();
+
+  // ✅ Fix: Check if password exists and is modified
+  if (!user.password || !user.isModified("password")) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -62,6 +69,12 @@ userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   const user = this as IUser;
+
+  // ✅ Fix: Handle cases where password doesn't exist (OAuth users)
+  if (!user.password) {
+    return false;
+  }
+
   return bcrypt.compare(candidatePassword, user.password);
 };
 
