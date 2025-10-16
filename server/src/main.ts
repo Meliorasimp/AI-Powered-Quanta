@@ -62,6 +62,29 @@ const guardMethods = (target: any, label: string) => {
 
 const app = express();
 guardMethods(app as any, "app");
+app.get("/test-ollama", async (_req, res) => {
+  try {
+    console.log(`Testing Ollama connectivity from Render to: ${OLLAMA_URL}`);
+    const response = await axios.get(`${OLLAMA_URL}/api/tags`, {
+      timeout: 10000,
+    });
+    res.json({
+      success: true,
+      ollamaUrl: OLLAMA_URL,
+      models: response.data.models || [],
+      status: "Ollama is reachable from Render",
+    });
+  } catch (error) {
+    console.error("Ollama connectivity test failed:", (error as any).message);
+    res.status(500).json({
+      success: false,
+      ollamaUrl: OLLAMA_URL,
+      error: (error as any).message,
+      code: (error as any).code,
+      status: "Ollama is NOT reachable from Render",
+    });
+  }
+});
 
 // Guard every Router BEFORE any routers are created/imported
 const OriginalRouter: any = (express as any).Router;
