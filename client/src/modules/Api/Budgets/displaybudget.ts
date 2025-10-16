@@ -63,7 +63,6 @@ export const fetchUserBudgets = createAsyncThunk(
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/userbudgets/${userId}`
       );
-      // If server returns 404 treat it as empty list (older server versions) – newer returns 200 []
       if (response.status === 404) {
         return [];
       }
@@ -72,7 +71,6 @@ export const fetchUserBudgets = createAsyncThunk(
         throw new Error(text || "Failed to fetch budgets");
       }
       const data = await response.json();
-      // Ensure array
       return Array.isArray(data) ? data : [];
     } catch (error: unknown) {
       if (error instanceof Error) {

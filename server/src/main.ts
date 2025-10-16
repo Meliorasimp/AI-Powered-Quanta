@@ -88,7 +88,16 @@ io.on("connection", (socket) => {
         role: "AI",
         content: response.data.response,
       });
-    } catch {
+    } catch (error: unknown) {
+      // Narrow the error type
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error response data:", error.response?.data);
+      } else if (error instanceof Error) {
+        console.error("Error message:", error.message);
+      } else {
+        console.error("Unknown error:", error);
+      }
+
       socket.emit("AIResponse", {
         role: "AI",
         content: "Sorry, there was an error processing your request.",

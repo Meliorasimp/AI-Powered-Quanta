@@ -61,7 +61,6 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page-background-color landing-page-enhanced-bg relative min-h-screen w-full flex flex-col overflow-hidden">
-      {/* Ambient background orbs */}
       <div
         className="lp-orb orb-indigo"
         style={{ top: "-140px", left: "-120px" }}
@@ -71,7 +70,6 @@ const LandingPage = () => {
         style={{ bottom: "-160px", right: "-70px" }}
       />
       <div className="lp-orb orb-pink" style={{ top: "40%", left: "65%" }} />
-      {/* Navbar stays at top (hidden when login modal is active) */}
       <div
         className={`transition-opacity duration-300 ${
           LoginFormState
@@ -83,9 +81,7 @@ const LandingPage = () => {
         <LandingPageNavbar />
       </div>
 
-      {/* Hero Section */}
       <main className="flex flex-col flex-grow w-full items-center justify-center px-4 sm:px-6 md:px-12 relative pt-32">
-        {/* Optional subtle overlay gradient for readability if background is busy */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/20" />
         <div className="relative z-10 w-full flex flex-col items-center text-center max-w-6xl mx-auto my-12 sm:my-16">
           <motion.div

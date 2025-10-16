@@ -33,7 +33,7 @@ const Login = () => {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setLoginPassword(e.target.value));
   };
-  //CAN YOU PLEASE MAKE THE REDIRECT URL DYNAMIC BASED ON ENVIRONMENT VARIABLES SO THAT IT WORKS IN PRODUCTION AND DEVELOPMENT
+
   const handleGoogleLogin = () => {
     window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
   };
@@ -76,11 +76,8 @@ const Login = () => {
   };
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center px-4 py-6 bg-black/80 backdrop-blur-xl">
-      {/* Outer container */}
       <div className="relative w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-slate-800/70 backdrop-blur-xl">
-        {/* Decorative gradient accent */}
         <div className="pointer-events-none absolute inset-0 opacity-[0.15] mix-blend-overlay bg-[radial-gradient(circle_at_20%_25%,#10b981,transparent_60%),radial-gradient(circle_at_85%_70%,#6366f1,transparent_55%)]" />
-        {/* Left / Form Section */}
         <div className="relative flex flex-col gap-6 p-8 sm:p-10 lg:p-12">
           <button
             onClick={() => dispatch(hideLoginForm())}
