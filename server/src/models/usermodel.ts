@@ -20,16 +20,26 @@ export interface IUser extends Document {
 const userSchema = new Schema<IUser>(
   {
     profilepicture: { type: String },
-    googleId: { type: String, unique: true, sparse: true },
-    githubId: { type: String, unique: true, sparse: true },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      default: undefined,
+    },
+    githubId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      default: undefined,
+    },
     firstname: { type: String },
     lastname: { type: String },
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    googlePhoto: { type: String, default: null },
-    githubPhoto: { type: String, default: null },
+    googlePhoto: { type: String },
+    githubPhoto: { type: String },
     authProvider: { type: String },
   },
   { timestamps: true }
