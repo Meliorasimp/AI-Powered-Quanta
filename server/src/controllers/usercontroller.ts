@@ -9,15 +9,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-//function to generate a token when the user registers or logs in
-
 function generateToken(id: string | Types.ObjectId, email: string) {
   return jwt.sign({ id: id.toString(), email }, process.env.JWT_SECRET!, {
     expiresIn: "1h",
   });
 }
 
-//if the user registers, do this function
 export const postUserData = async (
   req: Request,
   res: Response
@@ -64,10 +61,8 @@ export const postUserData = async (
   }
 };
 
-//if the user logged in, do this function
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  // token will be generated after verifying the user, using the actual user id
 
   try {
     const useremail = await User.findOne({ email });
@@ -77,6 +72,13 @@ export const loginUser = async (req: Request, res: Response) => {
         message: "Email or Password is Incorrect.",
       });
       return;
+    }
+
+    if (!useremail.password) {
+      return res.status(400).json({
+        message:
+          "This account uses Google/GitHub login. Please use the social login option.",
+      });
     }
 
     const isMatchedPassword = await useremail.comparePassword(password);
@@ -172,7 +174,6 @@ export const updateEmail = async (req: Request, res: Response) => {
   }
 };
 
-//method to update the password in the profile page
 export const updatePassword = async (req: Request, res: Response) => {
   console.log("Received user ID:", req.params.id);
 
@@ -184,6 +185,14 @@ export const updatePassword = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    if (!user.password) {
+      return res.status(400).json({
+        message:
+          "Cannot update password for OAuth users. Please contact support.",
+      });
+    }
+
     console.log("Current password from request:", currentpassword);
     console.log("User.password from DB:", user.password);
 
@@ -191,6 +200,7 @@ export const updatePassword = async (req: Request, res: Response) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Incorrect current password" });
     }
+
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid or missing user ID" });
     }
