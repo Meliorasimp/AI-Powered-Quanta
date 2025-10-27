@@ -185,11 +185,6 @@ const Login = () => {
               onClick={() => dispatch(hideLoginForm())}
               className="w-full py-2.5 rounded-lg bg-red-500/80 hover:bg-red-500 text-sm font-medium tracking-wide transition shadow focus:ring-2 focus:ring-red-400/40"
             />
-            <p className="text-[10px] text-white/40 text-center leading-relaxed pt-2">
-              By signing in you agree to the processing of data in accordance
-              with our placeholder Terms & Privacy. This interface is in
-              preview.
-            </p>
           </form>
         </div>
         {/* Right / Illustration Section */}

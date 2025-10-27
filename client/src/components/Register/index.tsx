@@ -18,6 +18,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/index.ts";
 import { useState, useMemo } from "react";
+import google from "../../assets/google.png";
+import github from "../../assets/github.png";
 
 const RegisterForm = () => {
   const dispatch = useAppDispatch();
@@ -42,6 +44,13 @@ const RegisterForm = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setRegisterPassword(e.target.value));
+  };
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`;
   };
 
   const [submitting, setSubmitting] = useState(false);
@@ -105,7 +114,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center px-4 py-6 bg-black/80 backdrop-blur-xl">
+    <div className="fixed inset-0 z-[999] flex items-center justify-center px-4 py-2 bg-black/80 backdrop-blur-xl">
       <div className="relative w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-gradient-to-br from-slate-900/85 via-slate-900/65 to-slate-800/70 backdrop-blur-xl">
         <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-overlay bg-[radial-gradient(circle_at_25%_30%,#10b981,transparent_60%),radial-gradient(circle_at_80%_70%,#6366f1,transparent_55%)]" />
         {/* Illustration Side */}
@@ -247,11 +256,26 @@ const RegisterForm = () => {
                 Log in
               </button>
             </div>
-            <p className="text-[10px] text-white/40 text-center leading-relaxed pt-2">
-              By creating an account you agree to our placeholder Terms &
-              Privacy. This UI is a preview.
-            </p>
           </form>
+          <p className="text-xs text-gray-400 text-center">or Continue with</p>
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="group flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 px-3 py-2.5 text-sm font-medium text-white transition"
+            >
+              <img src={google} alt="Google" className="w-5 h-5" />
+              <span>Google</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleGithubLogin}
+              className="group flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 px-3 py-2.5 text-sm font-medium text-white transition"
+            >
+              <img src={github} alt="GitHub" className="w-5 h-5" />
+              <span>GitHub</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
